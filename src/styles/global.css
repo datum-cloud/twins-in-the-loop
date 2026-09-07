@@ -1,0 +1,102 @@
+@import '@fontsource-variable/geist';
+@import '@fontsource/ibm-plex-mono';
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    'Alliance No.1', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Climate Crisis', 'Geist Variable', sans-serif;
+  --font-mono: 'IBM Plex Mono', 'DejaVu Sans Mono', ui-monospace, monospace;
+  --color-fjord: #0c1d31;
+  --color-mist: #f6f6f5;
+  --color-zac: #7aff82;
+  --color-zac-tag: #a2ffa8;
+  --color-jacob: #e6a7ff;
+  --color-jacob-tag: #f2d3ff;
+  --color-utility: #67717c;
+  --max-width-8xl: 105rem;
+  --border-width-10: 10px;
+  --radius-2xs: 0.1875rem;
+  --tracking-heading: 0.025rem;
+  --tracking-section: -0.01875rem;
+  --shadow-hard: 4px 4px 0 0 var(--color-fjord);
+  --shadow-zac: 0 8px 0 0 var(--color-zac);
+  --shadow-jacob: 0 8px 0 0 var(--color-jacob);
+  --grid-template-columns-footer: 1fr auto 10.9375rem;
+}
+
+@font-face {
+  font-family: 'Alliance No.1';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    url('/fonts/allianceno1-regular-webfont.woff2') format('woff2'),
+    url('/fonts/allianceno1-regular-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Alliance No.1';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    url('/fonts/allianceno1-regular-italic-webfont.woff2') format('woff2'),
+    url('/fonts/allianceno1-regular-italic-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Alliance No.1';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src:
+    url('/fonts/allianceno1-medium-webfont.woff2') format('woff2'),
+    url('/fonts/allianceno1-medium-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Alliance No.1';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 500;
+  src:
+    url('/fonts/allianceno1-medium-italic-webfont.woff2') format('woff2'),
+    url('/fonts/allianceno1-medium-italic-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Alliance No.1';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src:
+    url('/fonts/allianceno1-semibold-webfont.woff2') format('woff2'),
+    url('/fonts/allianceno1-semibold-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Climate Crisis';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('https://fonts.gstatic.com/s/climatecrisis/v10/wmo5AAgUB0L1q5qO4h_lANofKhE8QqlF.woff2')
+    format('woff2');
+}
+
+@layer base {
+  a,
+  button {
+    @apply transition-[color,background-color,border-color,opacity,transform,text-decoration-color] duration-150 ease-in-out motion-reduce:transition-none;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline-2 outline-offset-2 outline-current;
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+  font-variation-settings: 'YEAR' 1979;
+}

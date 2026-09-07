@@ -1,0 +1,42 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+import type { IconName } from '../../lib/types';
+import Icon from './Icon.astro';
+
+type Variant = 'solid' | 'outline' | 'icon';
+
+interface Props extends HTMLAttributes<'a'> {
+  href: string;
+  variant?: Variant;
+  icon?: IconName;
+  external?: boolean;
+}
+
+const {
+  href,
+  variant = 'solid',
+  icon,
+  external = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const classes = {
+  solid:
+    'inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-md border border-fjord bg-fjord px-7 text-xs leading-4 font-semibold text-white hover:bg-white hover:text-fjord active:translate-y-px motion-reduce:active:translate-y-0',
+  outline:
+    'inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-md border border-fjord bg-transparent px-7 text-xs leading-4 font-semibold text-fjord hover:bg-fjord hover:text-white active:translate-y-px motion-reduce:active:translate-y-0',
+  icon: 'inline-flex size-13 items-center justify-center rounded-md border border-current hover:bg-current/10 active:translate-y-px active:bg-current/20 motion-reduce:active:translate-y-0',
+} as const;
+---
+
+<a
+  href={href}
+  class:list={[classes[variant], className]}
+  target={external ? '_blank' : undefined}
+  rel={external ? 'noreferrer noopener' : undefined}
+  {...rest}
+>
+  <slot />
+  {icon ? <Icon name={icon} size={16} /> : null}
+</a>

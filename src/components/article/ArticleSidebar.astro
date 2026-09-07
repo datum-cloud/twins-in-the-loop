@@ -1,0 +1,21 @@
+---
+import ShareActions from './ShareActions.astro';
+
+interface Props {
+  tldr: string;
+  url: string;
+  title: string;
+  author: 'zac' | 'jacob';
+}
+
+const { tldr, url, title, author } = Astro.props;
+const accent = author === 'zac' ? 'border-zac' : 'border-jacob';
+---
+
+<aside class:list={['col-span-full w-full max-w-92 self-start border-t-10 bg-mist p-10 lg:col-span-4', accent]}>
+  <p class="text-2xl font-semibold text-fjord">TL;DR</p>
+  <p class="mt-4 text-lg leading-6.5 text-fjord">{tldr}</p>
+  <div class="mt-8">
+    <ShareActions url={url} title={title} />
+  </div>
+</aside>

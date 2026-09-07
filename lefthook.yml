@@ -1,0 +1,13 @@
+pre-commit:
+  commands:
+    format:
+      glob: '*.{js,ts,astro,css,md,mdx,json,yml}'
+      run: bunx prettier --write {staged_files}
+    lint:
+      glob: '*.{js,ts,astro}'
+      run: bunx eslint {staged_files}
+
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}

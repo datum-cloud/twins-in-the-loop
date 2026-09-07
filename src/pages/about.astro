@@ -1,0 +1,84 @@
+---
+import { render } from 'astro:content';
+import { getEntry } from 'astro:content';
+import AuthorCard from '../components/about/AuthorCard.astro';
+import PageHero from '../components/layout/PageHero.astro';
+import Container from '../components/ui/Container.astro';
+import Prose from '../components/ui/Prose.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAuthors, getSiteSettings } from '../lib/content';
+import { ogImageSrc } from '../lib/seo';
+import { isAuthorId } from '../lib/types';
+
+const site = await getSiteSettings();
+const page = await getEntry('pages', 'about');
+if (!page) {
+  throw new Error('Missing about page content');
+}
+
+const { Content } = await render(page);
+const authors = await getAuthors();
+const siteSeo = {
+  title: site.title,
+  description: site.description,
+  siteUrl: Astro.site?.toString() ?? 'https://twinsintheloop.com',
+  defaultOgImage: site.defaultOgImage,
+};
+---
+
+<BaseLayout
+  path="/about"
+  current="about"
+  site={siteSeo}
+  title={page.data.title}
+  description={page.data.description}
+  canonical={page.data.canonical}
+  og={{
+    title: page.data.og?.title,
+    description: page.data.og?.description,
+    image: ogImageSrc(page.data.og?.image),
+    type: page.data.og?.type,
+  }}
+  noindex={page.data.noindex}
+  keywords={page.data.keywords}
+  footer={{
+    lead: site.title,
+    blurb: site.footerBlurb,
+    subscribeUrl: site.subscribeUrl,
+    datumUrl: site.datumUrl,
+    copyrightName: site.copyright,
+    socials: site.socials,
+  }}
+>
+  <PageHero>
+    <h1 class="text-5xl font-semibold leading-14.5 tracking-heading text-white">{page.data.heading}</h1>
+  </PageHero>
+  <Container columns="12" class="py-20">
+    <div class="col-span-full min-w-0 lg:col-span-8 lg:col-start-5">
+      <Prose variant="intro">
+        <Content />
+      </Prose>
+      <h2 class="mt-12 text-4xl font-semibold tracking-section">Meet the twins</h2>
+      <div class="mt-8 grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+        {
+          authors.map((author) => {
+            if (!isAuthorId(author.id)) {
+              return null;
+            }
+
+            return (
+              <AuthorCard
+                author={author.id}
+                name={author.data.name}
+                role={author.data.role}
+                photo={author.data.photo}
+                linkedin={author.data.linkedin}
+                email={author.data.email}
+              />
+            );
+          })
+        }
+      </div>
+    </div>
+  </Container>
+</BaseLayout>

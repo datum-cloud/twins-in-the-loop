@@ -1,0 +1,25 @@
+---
+import { TOPIC_LABELS, type TopicId } from '../../lib/types';
+import Chip from '../ui/Chip.astro';
+
+interface Props {
+  current?: TopicId;
+}
+
+const { current } = Astro.props;
+const topics: TopicId[] = ['data-centers', 'infrastructure', 'hardware', 'ai'];
+---
+
+<div class="flex flex-wrap items-center gap-4">
+  <p class="text-base font-semibold text-fjord">Explore topics:</p>
+  <div class="flex flex-wrap gap-2">
+    <Chip href="/" active={!current} data-topic="all">All</Chip>
+    {
+      topics.map((topic) => (
+        <Chip href={`/?topic=${topic}`} active={current === topic} data-topic={topic}>
+          {TOPIC_LABELS[topic]}
+        </Chip>
+      ))
+    }
+  </div>
+</div>
