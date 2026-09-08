@@ -8,6 +8,7 @@ import SiteHero from '../components/layout/SiteHero.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts, getSiteSettings } from '../lib/content';
 import { partitionByAuthor, splitFeatured } from '../lib/posts';
+import { withBase } from '../lib/siteEnv';
 
 const site = await getSiteSettings();
 const posts = await getPublishedPosts();
@@ -73,7 +74,7 @@ const siteSeo = {
         {
           featured.map((post) => (
             <ArticleCard
-              href={`/${post.entry.id}`}
+              href={withBase(`/${post.entry.id}`)}
               title={post.entry.data.title}
               excerpt={post.entry.data.excerpt}
               published={post.entry.data.published}
@@ -93,7 +94,7 @@ const siteSeo = {
           {
             columns.zac.map((post) => (
               <ArticleRow
-                href={`/${post.entry.id}`}
+                href={withBase(`/${post.entry.id}`)}
                 title={post.entry.data.title}
                 published={post.entry.data.published}
                 author={post.entry.data.author}
@@ -106,7 +107,7 @@ const siteSeo = {
           {
             columns.jacob.map((post) => (
               <ArticleRow
-                href={`/${post.entry.id}`}
+                href={withBase(`/${post.entry.id}`)}
                 title={post.entry.data.title}
                 published={post.entry.data.published}
                 author={post.entry.data.author}

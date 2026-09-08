@@ -4,7 +4,7 @@ on:
   push:
     branches-ignore:
       - main
-      - "release-please--*"
+      - 'release-please--*'
 
 permissions:
   contents: write
@@ -21,7 +21,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          if gh pr view --head "$GITHUB_REF_NAME" --json number --jq .number >/dev/null 2>&1; then
+          if [ -n "$(gh pr list --head "$GITHUB_REF_NAME" --base main --state open --json number --jq '.[0].number')" ]; then
             echo "Pull request already exists for $GITHUB_REF_NAME"
             exit 0
           fi

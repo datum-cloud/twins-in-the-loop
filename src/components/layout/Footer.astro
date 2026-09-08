@@ -3,6 +3,7 @@ import Button from '../ui/Button.astro';
 import Container from '../ui/Container.astro';
 import Logo from '../ui/Logo.astro';
 import SocialLinks from './SocialLinks.astro';
+import { withBase } from '../../lib/siteEnv';
 import type { IconName } from '../../lib/types';
 
 interface Social {
@@ -19,9 +20,12 @@ interface Props {
   socials: Social[];
 }
 
-const { lead, blurb, subscribeUrl, datumUrl, copyrightName, socials } = Astro.props;
+const { lead, blurb, subscribeUrl, datumUrl, copyrightName, socials } =
+  Astro.props;
 const year = new Date().getFullYear();
-const blurbBody = blurb.startsWith(lead) ? blurb.slice(lead.length) : ` ${blurb}`;
+const blurbBody = blurb.startsWith(lead)
+  ? blurb.slice(lead.length)
+  : ` ${blurb}`;
 ---
 
 <footer id="stay-in-the-loop" class="bg-zac">
@@ -29,31 +33,46 @@ const blurbBody = blurb.startsWith(lead) ? blurb.slice(lead.length) : ` ${blurb}
     <div class="col-span-full lg:col-span-4">
       <Logo theme="on-light" size="sm" stacked />
     </div>
-    <div class="col-span-full grid gap-16 md:grid-cols-footer md:items-stretch lg:col-span-8">
+    <div
+      class="md:grid-cols-footer col-span-full grid gap-16 md:items-stretch lg:col-span-8"
+    >
       <div class="flex flex-col items-start justify-center gap-8">
-        <p class="text-lg font-normal leading-6.5 text-fjord">
+        <p class="text-fjord text-lg leading-6.5 font-normal">
           <span class="font-semibold">{lead}</span>{blurbBody}{' '}
-          <a href="/about" class="font-normal underline decoration-solid hover:opacity-70 active:opacity-50">Learn more</a>
+          <a
+            href={withBase('/about')}
+            class="font-normal underline decoration-solid hover:opacity-70 active:opacity-50"
+            >Learn more</a
+          >
         </p>
         <Button href={subscribeUrl} variant="solid" icon="linkedin" external>
           Subscribe on LinkedIn
         </Button>
       </div>
-      <div class="hidden w-px self-stretch bg-fjord md:block"></div>
+      <div class="bg-fjord hidden w-px self-stretch md:block"></div>
       <div class="flex flex-col justify-between gap-8">
         <div class="flex w-full flex-col items-start gap-2">
-          <p class="max-w-39 text-xs font-normal leading-4 text-fjord">
+          <p class="text-fjord max-w-39 text-xs leading-4 font-normal">
             Learn more about what the twins are doing with Datum
           </p>
-          <Button href={datumUrl} variant="outline" icon="external-link" external class="w-full">
+          <Button
+            href={datumUrl}
+            variant="outline"
+            icon="external-link"
+            external
+            class="w-full"
+          >
             Datum.net
           </Button>
         </div>
         <div class="flex flex-col items-start gap-1">
-          <p class="text-xs font-normal leading-4 text-fjord">Find Datum on:</p>
+          <p class="text-fjord text-xs leading-4 font-normal">Find Datum on:</p>
           <SocialLinks items={socials} />
         </div>
-        <p class="text-xs font-normal leading-4 text-fjord/40">© {year} {copyrightName}</p>
+        <p class="text-fjord/40 text-xs leading-4 font-normal">
+          © {year}
+          {copyrightName}
+        </p>
       </div>
     </div>
   </Container>

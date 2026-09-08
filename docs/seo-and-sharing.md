@@ -6,35 +6,35 @@ The resolver lives in `src/lib/seo.ts`. Pages pass MDX fields through `BaseLayou
 
 ## What visitors and crawlers see
 
-| Surface | Source |
-| --- | --- |
-| Browser tab | `title`, then ` · Twins in the Loop` unless the title already is the site name |
-| Google snippet | `<title>`, `description`, `canonical`, `robots` |
-| Slack / LinkedIn / iMessage | Open Graph: `og:title`, `og:description`, `og:image`, `og:url`, `og:type` |
-| X / Twitter cards | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`) |
-| RSS (`/rss.xml`) | Channel from site settings; items from post `title`, `description`, `published` |
-| Sitemap | Built at `/sitemap-index.xml`. Includes published pages |
-| robots.txt | Allows `/` and points at the sitemap |
-| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title` |
+| Surface                           | Source                                                                                          |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                  |
+| Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                 |
+| Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`                       |
+| X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                 |
+| RSS (`/rss.xml`)                  | Channel from site settings; items from post `title`, `description`, `published`                 |
+| Sitemap                           | Built at `/sitemap-index.xml` in production. Omitted when `PUBLIC_SITE_ENV` is not `production` |
+| robots.txt                        | Production: allows `/` and points at the sitemap. Other envs: `Disallow: /`                     |
+| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title`                     |
 
 ## Shared frontmatter (every collection)
 
 These fields exist on posts, pages, authors, and site settings:
 
-| Field | Type | Default | Effect |
-| --- | --- | --- | --- |
-| `title` | string | required | Document title (`<title>`). Also used for `og:title` unless `og.title` is set |
-| `description` | string | required | Meta description. Also used for `og:description` unless `og.description` is set |
-| `canonical` | absolute URL | current page URL | `<link rel="canonical">` and `og:url` |
-| `og` | object | omitted | Nested Open Graph: `title`, `description`, `image`, `type` |
-| `noindex` | boolean | `false` | `true` → `noindex, nofollow` |
-| `keywords` | string array | omitted | `<meta name="keywords">` |
+| Field         | Type         | Default          | Effect                                                                          |
+| ------------- | ------------ | ---------------- | ------------------------------------------------------------------------------- |
+| `title`       | string       | required         | Document title (`<title>`). Also used for `og:title` unless `og.title` is set   |
+| `description` | string       | required         | Meta description. Also used for `og:description` unless `og.description` is set |
+| `canonical`   | absolute URL | current page URL | `<link rel="canonical">` and `og:url`                                           |
+| `og`          | object       | omitted          | Nested Open Graph: `title`, `description`, `image`, `type`                      |
+| `noindex`     | boolean      | `false`          | `true` → `noindex, nofollow`                                                    |
+| `keywords`    | string array | omitted          | `<meta name="keywords">`                                                        |
 
 Example:
 
 ```yaml
 title: "Arm's Next Chapter: What Custom Silicon Means for Cloud-Native Apps"
-description: "Custom silicon is reshaping how cloud-native apps are built, deployed, and priced."
+description: 'Custom silicon is reshaping how cloud-native apps are built, deployed, and priced.'
 canonical: https://twinsintheloop.com/arms-next-chapter
 og:
   title: Custom silicon is reshaping cloud-native apps
@@ -80,23 +80,23 @@ og:
   type: website
 ```
 
-| Field | Tag | Fallback |
-| --- | --- | --- |
-| `og.title` | `og:title`, `twitter:title` | Page `title` plus ` · Twins in the Loop` |
-| `og.description` | `og:description`, `twitter:description` | Page `description` |
-| `og.image` | `og:image`, `twitter:image` | Article `cover`, then site `defaultOgImage` |
-| `og.type` | `og:type` | `website` (posts default to `article`) |
+| Field            | Tag                                     | Fallback                                    |
+| ---------------- | --------------------------------------- | ------------------------------------------- |
+| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`    |
+| `og.description` | `og:description`, `twitter:description` | Page `description`                          |
+| `og.image`       | `og:image`, `twitter:image`             | Article `cover`, then site `defaultOgImage` |
+| `og.type`        | `og:type`                               | `website` (posts default to `article`)      |
 
 `og.title` is used as-is (no site suffix). Omit any `og` field to use its fallback.
 
 Image paths:
 
-| Kind | Example | Where the file lives |
-| --- | --- | --- |
-| Content image | `image: ../../assets/covers/arms-next-chapter.png` | `src/assets/` (Astro processes it) |
-| Public file | `image: /og.png` | `public/og.png` |
-| Public subfolder | `image: /share/my-post.png` | `public/share/my-post.png` |
-| Absolute | `image: https://cdn.example.com/card.png` | Remote URL |
+| Kind             | Example                                            | Where the file lives               |
+| ---------------- | -------------------------------------------------- | ---------------------------------- |
+| Content image    | `image: ../../assets/covers/arms-next-chapter.png` | `src/assets/` (Astro processes it) |
+| Public file      | `image: /og.png`                                   | `public/og.png`                    |
+| Public subfolder | `image: /share/my-post.png`                        | `public/share/my-post.png`         |
+| Absolute         | `image: https://cdn.example.com/card.png`          | Remote URL                         |
 
 Recommended card size: 1200×630 PNG or JPEG.
 
@@ -138,6 +138,8 @@ noindex: true
 ```
 
 That sets `robots` to `noindex, nofollow`. Draft posts (`draft: true`) are already omitted from the production build, sitemap, and RSS, so they do not need `noindex`.
+
+Indexing is allowed only when `PUBLIC_SITE_ENV=production`. Staging GitHub Pages and any other env force site-wide `noindex, nofollow` and a disallowing `robots.txt`, even if MDX sets `noindex: false`. See [GitHub Pages staging](./github-pages.md).
 
 ## Keywords
 
@@ -186,10 +188,10 @@ Absolute URLs for canonical, sitemap, RSS, and OG images use:
 
 ```js
 // astro.config.mjs
-site: 'https://twinsintheloop.com'
+site: process.env.SITE ?? 'https://twinsintheloop.com';
 ```
 
-Change that value if the public domain changes. `defaultOgImage: /og.png` becomes `https://twinsintheloop.com/og.png`.
+Override `SITE` and `BASE_PATH` for GitHub Pages staging. Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /og.png` becomes `https://twinsintheloop.com/og.png` when `SITE` is the production origin.
 
 ## Favicon
 

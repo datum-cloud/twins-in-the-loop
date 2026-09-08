@@ -1,3 +1,5 @@
+import { isSiteIndexable, withBase } from './siteEnv';
+
 export type OgType = 'website' | 'article';
 
 export interface OgInput {
@@ -35,7 +37,13 @@ export interface SiteSeoDefaults {
   defaultOgImage: string;
 }
 
-export function ogImageSrc(image: string | { src: string } | undefined): string | undefined {
+export interface ResolveSeoOptions {
+  indexable?: boolean;
+}
+
+export function ogImageSrc(
+  image: string | { src: string } | undefined,
+): string | undefined {
   if (!image) {
     return undefined;
   }
@@ -47,9 +55,19 @@ export function ogImageSrc(image: string | { src: string } | undefined): string 
   return image.src;
 }
 
-export function resolveSeo(input: SeoInput, site: SiteSeoDefaults, path: string): ResolvedSeo {
-  const canonical = input.canonical ?? new URL(path, site.siteUrl).toString();
-  const ogImage = new URL(input.og?.image ?? site.defaultOgImage, site.siteUrl).toString();
+export function resolveSeo(
+  input: SeoInput,
+  site: SiteSeoDefaults,
+  path: string,
+  options: ResolveSeoOptions = {},
+): ResolvedSeo {
+  const canonical =
+    input.canonical ?? new URL(withBase(path), site.siteUrl).toString();
+  const ogSource = input.og?.image ?? site.defaultOgImage;
+  const ogImage = /^https?:\/\//.test(ogSource)
+    ? ogSource
+    : new URL(withBase(ogSource), site.siteUrl).toString();
+  const indexable = options.indexable ?? isSiteIndexable();
 
   return {
     title: input.title,
@@ -59,7 +77,7 @@ export function resolveSeo(input: SeoInput, site: SiteSeoDefaults, path: string)
     ogDescription: input.og?.description ?? input.description,
     ogImage,
     ogType: input.og?.type ?? 'website',
-    robots: input.noindex ? 'noindex, nofollow' : 'index, follow',
+    robots: !indexable || input.noindex ? 'noindex, nofollow' : 'index, follow',
     keywords: input.keywords,
   };
 }

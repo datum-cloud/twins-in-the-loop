@@ -2,6 +2,7 @@
 import logoStackedOnDark from '../../assets/logo/twins-in-the-loop-logo.svg?raw';
 import logoStackedOnLight from '../../assets/logo/twins-in-the-loop-logo-alt.svg?raw';
 import logoWide from '../../assets/logo/twins-in-the-loop-logo-wide.svg?raw';
+import { withBase } from '../../lib/siteEnv';
 
 interface Props {
   theme?: 'on-dark' | 'on-light';
@@ -11,9 +12,16 @@ interface Props {
   href?: string;
 }
 
-const { theme = 'on-dark', mark = 'stacked', href = '/' } = Astro.props;
+const {
+  theme = 'on-dark',
+  mark = 'stacked',
+  href = withBase('/'),
+} = Astro.props;
 
-function logoMarkup(mark: 'wide' | 'stacked', theme: 'on-dark' | 'on-light'): string {
+function logoMarkup(
+  mark: 'wide' | 'stacked',
+  theme: 'on-dark' | 'on-light',
+): string {
   switch (mark) {
     case 'wide':
       return logoWide;
@@ -58,7 +66,7 @@ const svg = logoMarkup(mark, theme);
 >
   <span
     class:list={[
-      'inline-block max-w-full overflow-visible [&_svg]:block [&_svg]:overflow-visible [&_svg]:isolation-auto',
+      'inline-block max-w-full overflow-visible [&_svg]:isolation-auto [&_svg]:block [&_svg]:overflow-visible',
       sizeClass(mark),
     ]}
     aria-hidden="true"

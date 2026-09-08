@@ -1,4 +1,5 @@
 ---
+import { withBase } from '../../lib/siteEnv';
 import type { IconName } from '../../lib/types';
 
 interface Props {
@@ -9,12 +10,12 @@ interface Props {
 }
 
 const { name, size = 16, alt = '', class: className } = Astro.props;
+const iconUrl = withBase(`/icons/${name}.svg`);
 ---
 
 <span
   class:list={['inline-block shrink-0 bg-current', className]}
-  style={`width:${size}px;height:${size}px;-webkit-mask:url('/icons/${name}.svg') center / contain no-repeat;mask:url('/icons/${name}.svg') center / contain no-repeat;mask-mode:alpha;`}
+  style={`width:${size}px;height:${size}px;-webkit-mask:url('${iconUrl}') center / contain no-repeat;mask:url('${iconUrl}') center / contain no-repeat;mask-mode:alpha;`}
   role={alt ? 'img' : undefined}
   aria-label={alt || undefined}
-  aria-hidden={alt ? undefined : 'true'}
-></span>
+  aria-hidden={alt ? undefined : 'true'}></span>

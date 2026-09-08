@@ -9,6 +9,7 @@ import Prose from '../components/ui/Prose.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAuthors, getPublishedPosts, getSiteSettings } from '../lib/content';
 import { ogImageSrc } from '../lib/seo';
+import { withBase } from '../lib/siteEnv';
 
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
@@ -32,7 +33,7 @@ const related = posts
   .filter((entry) => entry.id !== post.id)
   .slice(0, 4)
   .map((entry) => ({
-    href: `/${entry.id}`,
+    href: withBase(`/${entry.id}`),
     title: entry.data.title,
     published: entry.data.published,
     author: entry.data.author,
