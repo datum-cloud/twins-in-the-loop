@@ -4,6 +4,7 @@ import Footer from '../components/layout/Footer.astro';
 import Header from '../components/layout/Header.astro';
 import Seo from '../components/seo/Seo.astro';
 import type { SeoInput, SiteSeoDefaults } from '../lib/seo';
+import { withBase } from '../lib/siteEnv';
 import type { IconName } from '../lib/types';
 
 interface Social {
@@ -34,12 +35,17 @@ const { path, site, current, footer, jsonLd, ...seo } = Astro.props;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={withBase('/favicon.ico')} sizes="32x32" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href={withBase('/favicon-32x32.png')}
+    />
+    <link rel="apple-touch-icon" href={withBase('/apple-touch-icon.png')} />
     <Seo {...seo} path={path} site={site} jsonLd={jsonLd} />
   </head>
-  <body class="min-h-screen bg-white font-sans text-fjord">
+  <body class="text-fjord min-h-screen bg-white font-sans">
     <Header current={current} datumUrl={footer.datumUrl} />
     <main>
       <slot />

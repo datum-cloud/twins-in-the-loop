@@ -6,8 +6,11 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import expressiveCode from 'astro-expressive-code';
 
+const isProduction = process.env.PUBLIC_SITE_ENV === 'production';
+
 export default defineConfig({
-  site: 'https://twinsintheloop.com',
+  site: process.env.SITE ?? 'https://twinsintheloop.com',
+  base: process.env.BASE_PATH || '/',
   integrations: [
     expressiveCode({
       plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
@@ -17,7 +20,7 @@ export default defineConfig({
       },
     }),
     mdx(),
-    sitemap(),
+    ...(isProduction ? [sitemap()] : []),
   ],
   vite: {
     plugins: [tailwindcss()],

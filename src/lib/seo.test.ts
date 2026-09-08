@@ -14,6 +14,7 @@ describe('resolveSeo', () => {
       { title: 'About', description: 'Meet the twins' },
       site,
       '/about',
+      { indexable: true },
     );
 
     expect(seo.canonical).toBe('https://twinsintheloop.com/about');
@@ -30,7 +31,8 @@ describe('resolveSeo', () => {
         description: 'Why we write',
         og: {
           title: 'We’re on a mission to help the next 1k clouds thrive',
-          description: 'We are infrastructure, open source software, and design nerds who love building for the future.',
+          description:
+            'We are infrastructure, open source software, and design nerds who love building for the future.',
           image: '/share/about.png',
         },
       },
@@ -40,7 +42,9 @@ describe('resolveSeo', () => {
 
     expect(seo.title).toBe('About this blog');
     expect(seo.description).toBe('Why we write');
-    expect(seo.ogTitle).toBe('We’re on a mission to help the next 1k clouds thrive');
+    expect(seo.ogTitle).toBe(
+      'We’re on a mission to help the next 1k clouds thrive',
+    );
     expect(seo.ogDescription).toBe(
       'We are infrastructure, open source software, and design nerds who love building for the future.',
     );
@@ -67,6 +71,17 @@ describe('resolveSeo', () => {
       { title: 'Draft', description: 'Hidden', noindex: true },
       site,
       '/draft',
+      { indexable: true },
+    );
+    expect(seo.robots).toBe('noindex, nofollow');
+  });
+
+  it('forces noindex when the site is not indexable', () => {
+    const seo = resolveSeo(
+      { title: 'About', description: 'Meet the twins', noindex: false },
+      site,
+      '/about',
+      { indexable: false },
     );
     expect(seo.robots).toBe('noindex, nofollow');
   });
@@ -74,10 +89,14 @@ describe('resolveSeo', () => {
 
 describe('withSiteTitle', () => {
   it('avoids duplicating the site title on the homepage', () => {
-    expect(withSiteTitle('Twins in the Loop', 'Twins in the Loop')).toBe('Twins in the Loop');
+    expect(withSiteTitle('Twins in the Loop', 'Twins in the Loop')).toBe(
+      'Twins in the Loop',
+    );
   });
 
   it('appends the site title on inner pages', () => {
-    expect(withSiteTitle('About', 'Twins in the Loop')).toBe('About · Twins in the Loop');
+    expect(withSiteTitle('About', 'Twins in the Loop')).toBe(
+      'About · Twins in the Loop',
+    );
   });
 });
