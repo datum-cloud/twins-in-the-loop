@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.0.0...v1.0.1) (2026-09-08)
+
+
+### Bug Fixes
+
+* dedupe related-posts fetch and add missing apple touch icon ([401d725](https://github.com/datum-cloud/twins-in-the-loop/commit/401d725df6999b9e08dcdf10a966477624f1d934))
+* dedupe related-posts fetch and add missing apple touch icon ([ff94df0](https://github.com/datum-cloud/twins-in-the-loop/commit/ff94df0cd5fc3f24a0f62fac9a78a5aef4e73961))
+
 ## 1.0.0 (2026-09-08)
 
 
