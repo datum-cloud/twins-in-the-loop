@@ -17,8 +17,8 @@ const { posts } = Astro.props;
 ---
 
 <section class="mt-16">
-  <h2 class="text-2xl font-semibold text-fjord">More articles:</h2>
-  <div class="mt-6 border-t-2 border-jacob">
-    {posts.map((post) => <ArticleRow {...post} />)}
+  <h2 class="text-fjord text-2xl font-semibold">More articles:</h2>
+  <div class="border-fjord mt-6 border-t-2">
+    {posts.map((post) => <ArticleRow {...post} neutral />)}
   </div>
 </section>

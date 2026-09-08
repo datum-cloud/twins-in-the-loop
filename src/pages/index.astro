@@ -58,12 +58,18 @@ const siteSeo = {
 >
   <SiteHero />
   <Container columns="12" class="py-20" data-filter-root>
-    <div class="col-span-full flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div
+      class="col-span-full flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
+    >
       <TopicFilter />
       <AuthorFilter current="all" />
     </div>
-    <div class="col-span-full flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24">
-      <div class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+    <div
+      class="col-span-full flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24"
+    >
+      <div
+        class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+      >
         {
           featured.map((post) => (
             <ArticleCard
@@ -79,28 +85,35 @@ const siteSeo = {
           ))
         }
       </div>
-      <div class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
-        <div class="border-t-2 border-zac">
-          {columns.zac.map((post) => (
-            <ArticleRow
-              href={`/${post.entry.id}`}
-              title={post.entry.data.title}
-              published={post.entry.data.published}
-              author={post.entry.data.author}
-              topics={post.entry.data.topics}
-            />
-          ))}
+      <div
+        class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+        data-columns-grid
+      >
+        <div class="border-zac border-t-2" data-author-column="zac">
+          {
+            columns.zac.map((post) => (
+              <ArticleRow
+                href={`/${post.entry.id}`}
+                title={post.entry.data.title}
+                published={post.entry.data.published}
+                author={post.entry.data.author}
+                topics={post.entry.data.topics}
+              />
+            ))
+          }
         </div>
-        <div class="border-t-2 border-jacob">
-          {columns.jacob.map((post) => (
-            <ArticleRow
-              href={`/${post.entry.id}`}
-              title={post.entry.data.title}
-              published={post.entry.data.published}
-              author={post.entry.data.author}
-              topics={post.entry.data.topics}
-            />
-          ))}
+        <div class="border-jacob border-t-2" data-author-column="jacob">
+          {
+            columns.jacob.map((post) => (
+              <ArticleRow
+                href={`/${post.entry.id}`}
+                title={post.entry.data.title}
+                published={post.entry.data.published}
+                author={post.entry.data.author}
+                topics={post.entry.data.topics}
+              />
+            ))
+          }
         </div>
       </div>
     </div>
@@ -108,8 +121,16 @@ const siteSeo = {
 </BaseLayout>
 
 <script>
-  const authorFilter = document.querySelector<HTMLElement>('[data-filter-select="author"]');
+  const authorFilter = document.querySelector<HTMLElement>(
+    '[data-filter-select="author"]',
+  );
   const chips = document.querySelectorAll<HTMLElement>('[data-topic]');
+  const columnsGrid = document.querySelector<HTMLElement>(
+    '[data-columns-grid]',
+  );
+  const authorColumns = document.querySelectorAll<HTMLElement>(
+    '[data-author-column]',
+  );
 
   function setChipActive(chip: HTMLElement, active: boolean) {
     chip.classList.toggle('bg-fjord', active);
@@ -124,7 +145,9 @@ const siteSeo = {
     const params = new URLSearchParams(window.location.search);
     const topic = params.get('topic');
     const author = params.get('author') ?? 'all';
-    authorFilter?.dispatchEvent(new CustomEvent('select:sync', { detail: author }));
+    authorFilter?.dispatchEvent(
+      new CustomEvent('select:sync', { detail: author }),
+    );
     chips.forEach((chip) => {
       const chipTopic = chip.dataset.topic;
       const active = topic ? chipTopic === topic : chipTopic === 'all';
@@ -136,6 +159,16 @@ const siteSeo = {
       const matchTopic = !topic || topics.includes(topic);
       node.classList.toggle('hidden', !(matchAuthor && matchTopic));
     });
+
+    const singleAuthor = author !== 'all';
+    authorColumns.forEach((column) => {
+      column.classList.toggle(
+        'hidden',
+        singleAuthor && column.dataset.authorColumn !== author,
+      );
+    });
+    columnsGrid?.classList.toggle('md:grid-cols-1', singleAuthor);
+    columnsGrid?.classList.toggle('md:grid-cols-2', !singleAuthor);
   }
 
   function replaceFilter(key: string, value: string | null) {
