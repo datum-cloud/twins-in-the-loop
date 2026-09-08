@@ -1,0 +1,67 @@
+---
+import logoStackedOnDark from '../../assets/logo/twins-in-the-loop-logo.svg?raw';
+import logoStackedOnLight from '../../assets/logo/twins-in-the-loop-logo-alt.svg?raw';
+import logoWide from '../../assets/logo/twins-in-the-loop-logo-wide.svg?raw';
+
+interface Props {
+  theme?: 'on-dark' | 'on-light';
+  mark?: 'wide' | 'stacked';
+  size?: 'sm' | 'lg';
+  stacked?: boolean;
+  href?: string;
+}
+
+const { theme = 'on-dark', mark = 'stacked', href = '/' } = Astro.props;
+
+function logoMarkup(mark: 'wide' | 'stacked', theme: 'on-dark' | 'on-light'): string {
+  switch (mark) {
+    case 'wide':
+      return logoWide;
+    case 'stacked':
+      switch (theme) {
+        case 'on-light':
+          return logoStackedOnLight;
+        case 'on-dark':
+          return logoStackedOnDark;
+        default: {
+          const _exhaustive: never = theme;
+          return _exhaustive;
+        }
+      }
+    default: {
+      const _exhaustive: never = mark;
+      return _exhaustive;
+    }
+  }
+}
+
+function sizeClass(mark: 'wide' | 'stacked'): string {
+  switch (mark) {
+    case 'wide':
+      return 'h-auto w-full max-w-217 [&_svg]:h-auto [&_svg]:w-full';
+    case 'stacked':
+      return 'h-35 w-auto [&_svg]:h-full [&_svg]:w-auto';
+    default: {
+      const _exhaustive: never = mark;
+      return _exhaustive;
+    }
+  }
+}
+
+const svg = logoMarkup(mark, theme);
+---
+
+<a
+  href={href}
+  class="inline-flex items-start no-underline hover:opacity-80 active:opacity-60"
+  aria-label="Twins in the Loop"
+>
+  <span
+    class:list={[
+      'inline-block max-w-full overflow-visible [&_svg]:block [&_svg]:overflow-visible [&_svg]:isolation-auto',
+      sizeClass(mark),
+    ]}
+    aria-hidden="true"
+    set:html={svg}
+  />
+</a>

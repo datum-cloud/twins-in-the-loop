@@ -1,0 +1,15 @@
+---
+import Container from '../ui/Container.astro';
+import Logo from '../ui/Logo.astro';
+---
+
+<section class="bg-fjord">
+  <Container columns="12" class="items-start py-20">
+    <div class="col-span-full lg:col-span-4">
+      <Logo mark="stacked" theme="on-dark" />
+    </div>
+    <div class="col-span-full min-w-0 text-white lg:col-span-8 lg:self-end">
+      <slot />
+    </div>
+  </Container>
+</section>

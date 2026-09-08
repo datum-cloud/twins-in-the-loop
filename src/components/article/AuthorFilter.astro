@@ -1,0 +1,21 @@
+---
+import { AUTHOR_FILTER_LABELS, AUTHOR_FILTERS, type AuthorFilter } from '../../lib/types';
+import Select from '../ui/Select.astro';
+
+interface Props {
+  current: AuthorFilter;
+}
+
+const { current } = Astro.props;
+---
+
+<Select
+  name="author"
+  label="Show articles by:"
+  value={current}
+  options={AUTHOR_FILTERS.map((value) => ({
+    value,
+    label: AUTHOR_FILTER_LABELS[value],
+    accent: value,
+  }))}
+/>

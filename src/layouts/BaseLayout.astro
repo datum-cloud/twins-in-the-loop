@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import Footer from '../components/layout/Footer.astro';
+import Header from '../components/layout/Header.astro';
+import Seo from '../components/seo/Seo.astro';
+import type { SeoInput, SiteSeoDefaults } from '../lib/seo';
+import type { IconName } from '../lib/types';
+
+interface Social {
+  name: IconName;
+  href: string;
+}
+
+interface Props extends SeoInput {
+  path: string;
+  site: SiteSeoDefaults;
+  current: 'blog' | 'about' | 'article';
+  footer: {
+    lead: string;
+    blurb: string;
+    subscribeUrl: string;
+    datumUrl: string;
+    copyrightName: string;
+    socials: Social[];
+  };
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const { path, site, current, footer, jsonLd, ...seo } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth motion-reduce:scroll-auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <Seo {...seo} path={path} site={site} jsonLd={jsonLd} />
+  </head>
+  <body class="min-h-screen bg-white font-sans text-fjord">
+    <Header current={current} datumUrl={footer.datumUrl} />
+    <main>
+      <slot />
+    </main>
+    <Footer {...footer} />
+  </body>
+</html>

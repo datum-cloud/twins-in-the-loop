@@ -1,0 +1,112 @@
+---
+import { render } from 'astro:content';
+import ArticleHero from '../components/article/ArticleHero.astro';
+import ArticleSidebar from '../components/article/ArticleSidebar.astro';
+import RelatedArticles from '../components/article/RelatedArticles.astro';
+import Container from '../components/ui/Container.astro';
+import Prose from '../components/ui/Prose.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAuthors, getPublishedPosts, getSiteSettings } from '../lib/content';
+import { ogImageSrc } from '../lib/seo';
+
+export async function getStaticPaths() {
+  const posts = await getPublishedPosts();
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const site = await getSiteSettings();
+const authors = await getAuthors();
+const author = authors.find((entry) => entry.id === post.data.author);
+if (!author) {
+  throw new Error(`Missing author ${post.data.author}`);
+}
+
+const { Content } = await render(post);
+const posts = await getPublishedPosts();
+const related = posts
+  .filter((entry) => entry.id !== post.id)
+  .slice(0, 4)
+  .map((entry) => ({
+    href: `/${entry.id}`,
+    title: entry.data.title,
+    published: entry.data.published,
+    author: entry.data.author,
+    topics: entry.data.topics,
+  }));
+
+const siteSeo = {
+  title: site.title,
+  description: site.description,
+  siteUrl: Astro.site?.toString() ?? 'https://twinsintheloop.com',
+  defaultOgImage: site.defaultOgImage,
+};
+const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
+---
+
+<BaseLayout
+  path={`/${post.id}`}
+  current="article"
+  site={siteSeo}
+  title={post.data.title}
+  description={post.data.description}
+  canonical={post.data.canonical}
+  og={{
+    title: post.data.og?.title,
+    description: post.data.og?.description,
+    image: ogImageSrc(post.data.og?.image) ?? post.data.cover?.src,
+    type: post.data.og?.type ?? 'article',
+  }}
+  noindex={post.data.noindex}
+  keywords={post.data.keywords}
+  footer={{
+    lead: site.title,
+    blurb: site.footerBlurb,
+    subscribeUrl: site.subscribeUrl,
+    datumUrl: site.datumUrl,
+    copyrightName: site.copyright,
+    socials: site.socials,
+  }}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.data.title,
+    datePublished: post.data.published.toISOString(),
+    author: {
+      '@type': 'Person',
+      name: author.data.name,
+    },
+    image: post.data.cover?.src,
+  }}
+>
+  <ArticleHero
+    title={post.data.title}
+    published={post.data.published}
+    authorName={author.data.name}
+    authorRole={author.data.role}
+    authorPhoto={author.data.photo}
+    url={canonical}
+  />
+  <Container columns="12" class="py-20">
+    <ArticleSidebar
+      tldr={post.data.tldr ?? post.data.excerpt}
+      url={canonical}
+      title={post.data.title}
+      author={post.data.author}
+    />
+    <article class="col-span-full min-w-0 lg:col-span-8">
+      {
+        post.data.cover ? (
+          <img src={post.data.cover.src} alt="" class="mb-10 w-full object-cover" />
+        ) : null
+      }
+      <Prose>
+        <Content />
+      </Prose>
+      <RelatedArticles posts={related} />
+    </article>
+  </Container>
+</BaseLayout>

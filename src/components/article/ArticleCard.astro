@@ -1,0 +1,53 @@
+---
+import type { ImageMetadata } from 'astro';
+import type { AuthorId, ContentType, TopicId } from '../../lib/types';
+import { formatPostDate } from '../../lib/dates';
+import AuthorTag from '../ui/AuthorTag.astro';
+
+interface Props {
+  href: string;
+  title: string;
+  excerpt: string;
+  published: Date;
+  author: AuthorId;
+  type: ContentType;
+  cover?: ImageMetadata;
+  topics: TopicId[];
+}
+
+const { href, title, excerpt, published, author, type, cover, topics } = Astro.props;
+
+let shadow: 'shadow-zac' | 'shadow-jacob';
+switch (author) {
+  case 'zac':
+    shadow = 'shadow-zac';
+    break;
+  case 'jacob':
+    shadow = 'shadow-jacob';
+    break;
+  default: {
+    const _exhaustive: never = author;
+    shadow = _exhaustive;
+  }
+}
+---
+
+<article class:list={['flex h-full flex-col border-2 border-fjord bg-white', shadow]} data-author={author} data-topics={topics.join(' ')}>
+  <a href={href} class="flex h-full flex-col no-underline hover:opacity-90 active:opacity-80">
+    <div class="relative h-90 overflow-hidden bg-fjord">
+      {
+        cover ? (
+          <img src={cover.src} alt="" class="absolute inset-0 size-full object-cover" />
+        ) : null
+      }
+      <div class="absolute left-0 top-0">
+        <AuthorTag author={author} type={type} />
+      </div>
+    </div>
+    <div class="flex flex-1 flex-col gap-3 px-5 pb-6 pt-6 text-fjord md:px-8 md:pb-8 md:pt-8 xl:px-10 xl:pb-10 xl:pt-9">
+      <h2 class="text-2xl font-semibold leading-7.5">{title}</h2>
+      <p class="text-lg leading-6.5">{excerpt}</p>
+      <p class="text-base leading-6 text-fjord/60">{formatPostDate(published)}</p>
+    </div>
+  </a>
+</article>

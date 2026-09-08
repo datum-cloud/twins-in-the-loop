@@ -1,0 +1,28 @@
+---
+import type { IconName } from '../../lib/types';
+import Icon from '../ui/Icon.astro';
+
+interface Social {
+  name: IconName;
+  href: string;
+}
+
+interface Props {
+  items: Social[];
+}
+
+const { items } = Astro.props;
+---
+
+<ul class="flex items-start gap-2.5 text-fjord">
+  {
+    items.map((item) => (
+      <li>
+        <a href={item.href} target="_blank" rel="noreferrer noopener" class="inline-flex size-5 overflow-clip text-fjord hover:opacity-70 active:opacity-40">
+          <span class="sr-only">{item.name}</span>
+          <Icon name={item.name} size={20} />
+        </a>
+      </li>
+    ))
+  }
+</ul>

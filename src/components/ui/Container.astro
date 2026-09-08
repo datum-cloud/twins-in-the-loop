@@ -1,0 +1,27 @@
+---
+interface Props {
+  class?: string;
+  as?: 'div' | 'section' | 'header' | 'footer';
+  columns?: '12';
+}
+
+const { class: className, as: Tag = 'div', columns, ...rest }: Props = Astro.props;
+
+let columnsClass: string | undefined;
+switch (columns) {
+  case '12':
+    columnsClass = 'grid grid-cols-1 gap-7 lg:grid-cols-12';
+    break;
+  case undefined:
+    columnsClass = undefined;
+    break;
+  default: {
+    const _exhaustive: never = columns;
+    columnsClass = _exhaustive;
+  }
+}
+---
+
+<Tag {...rest} class:list={['mx-auto w-full max-w-8xl px-6 md:px-10 lg:px-16 xl:px-24 2xl:px-45.5', columnsClass, className]}>
+  <slot />
+</Tag>

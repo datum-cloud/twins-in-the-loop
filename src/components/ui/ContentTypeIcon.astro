@@ -1,0 +1,27 @@
+---
+import { CONTENT_TYPE_ICONS, type ContentType } from '../../lib/types';
+import Icon from './Icon.astro';
+
+interface Props {
+  type: ContentType;
+  size?: number;
+}
+
+const { type, size = 20 } = Astro.props;
+
+function iconFor(contentType: ContentType) {
+  switch (contentType) {
+    case 'post':
+    case 'musing':
+    case 'video':
+    case 'podcast':
+      return CONTENT_TYPE_ICONS[contentType];
+    default: {
+      const exhaustive: never = contentType;
+      return exhaustive;
+    }
+  }
+}
+---
+
+<Icon name={iconFor(type)} size={size} />

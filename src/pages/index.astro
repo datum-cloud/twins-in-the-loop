@@ -1,0 +1,166 @@
+---
+import ArticleCard from '../components/article/ArticleCard.astro';
+import ArticleRow from '../components/article/ArticleRow.astro';
+import AuthorFilter from '../components/article/AuthorFilter.astro';
+import TopicFilter from '../components/article/TopicFilter.astro';
+import Container from '../components/ui/Container.astro';
+import SiteHero from '../components/layout/SiteHero.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts, getSiteSettings } from '../lib/content';
+import { partitionByAuthor, splitFeatured } from '../lib/posts';
+
+const site = await getSiteSettings();
+const posts = await getPublishedPosts();
+const visible = posts.map((post) => ({
+  id: post.id,
+  author: post.data.author,
+  topics: post.data.topics,
+  featured: post.data.featured,
+  published: post.data.published,
+  entry: post,
+}));
+const { featured, rest } = splitFeatured(visible);
+const columns = partitionByAuthor(rest);
+
+const siteSeo = {
+  title: site.title,
+  description: site.description,
+  siteUrl: Astro.site?.toString() ?? 'https://twinsintheloop.com',
+  defaultOgImage: site.defaultOgImage,
+};
+---
+
+<BaseLayout
+  path="/"
+  current="blog"
+  site={siteSeo}
+  title={site.title}
+  description={site.description}
+  canonical={site.canonical}
+  og={site.og}
+  noindex={site.noindex}
+  keywords={site.keywords}
+  footer={{
+    lead: site.title,
+    blurb: site.footerBlurb,
+    subscribeUrl: site.subscribeUrl,
+    datumUrl: site.datumUrl,
+    copyrightName: site.copyright,
+    socials: site.socials,
+  }}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: site.title,
+    description: site.description,
+    url: siteSeo.siteUrl,
+  }}
+>
+  <SiteHero />
+  <Container columns="12" class="py-20" data-filter-root>
+    <div class="col-span-full flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <TopicFilter />
+      <AuthorFilter current="all" />
+    </div>
+    <div class="col-span-full flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24">
+      <div class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+        {
+          featured.map((post) => (
+            <ArticleCard
+              href={`/${post.entry.id}`}
+              title={post.entry.data.title}
+              excerpt={post.entry.data.excerpt}
+              published={post.entry.data.published}
+              author={post.entry.data.author}
+              type={post.entry.data.type}
+              cover={post.entry.data.cover}
+              topics={post.entry.data.topics}
+            />
+          ))
+        }
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+        <div class="border-t-2 border-zac">
+          {columns.zac.map((post) => (
+            <ArticleRow
+              href={`/${post.entry.id}`}
+              title={post.entry.data.title}
+              published={post.entry.data.published}
+              author={post.entry.data.author}
+              topics={post.entry.data.topics}
+            />
+          ))}
+        </div>
+        <div class="border-t-2 border-jacob">
+          {columns.jacob.map((post) => (
+            <ArticleRow
+              href={`/${post.entry.id}`}
+              title={post.entry.data.title}
+              published={post.entry.data.published}
+              author={post.entry.data.author}
+              topics={post.entry.data.topics}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  </Container>
+</BaseLayout>
+
+<script>
+  const authorFilter = document.querySelector<HTMLElement>('[data-filter-select="author"]');
+  const chips = document.querySelectorAll<HTMLElement>('[data-topic]');
+
+  function setChipActive(chip: HTMLElement, active: boolean) {
+    chip.classList.toggle('bg-fjord', active);
+    chip.classList.toggle('text-white', active);
+    chip.classList.toggle('border', !active);
+    chip.classList.toggle('border-fjord', !active);
+    chip.classList.toggle('bg-transparent', !active);
+    chip.classList.toggle('text-fjord', !active);
+  }
+
+  function syncFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const topic = params.get('topic');
+    const author = params.get('author') ?? 'all';
+    authorFilter?.dispatchEvent(new CustomEvent('select:sync', { detail: author }));
+    chips.forEach((chip) => {
+      const chipTopic = chip.dataset.topic;
+      const active = topic ? chipTopic === topic : chipTopic === 'all';
+      setChipActive(chip, active);
+    });
+    document.querySelectorAll<HTMLElement>('[data-author]').forEach((node) => {
+      const matchAuthor = author === 'all' || node.dataset.author === author;
+      const topics = (node.dataset.topics ?? '').split(' ').filter(Boolean);
+      const matchTopic = !topic || topics.includes(topic);
+      node.classList.toggle('hidden', !(matchAuthor && matchTopic));
+    });
+  }
+
+  function replaceFilter(key: string, value: string | null) {
+    const url = new URL(window.location.href);
+    if (!value) {
+      url.searchParams.delete(key);
+    } else {
+      url.searchParams.set(key, value);
+    }
+    window.history.replaceState({}, '', url);
+    syncFromUrl();
+  }
+
+  authorFilter?.addEventListener('select:change', (event) => {
+    const value = (event as CustomEvent<string>).detail;
+    replaceFilter('author', value === 'all' ? null : value);
+  });
+
+  chips.forEach((chip) => {
+    chip.addEventListener('click', (event) => {
+      event.preventDefault();
+      const value = chip.dataset.topic;
+      replaceFilter('topic', !value || value === 'all' ? null : value);
+    });
+  });
+
+  syncFromUrl();
+</script>
