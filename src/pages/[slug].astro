@@ -15,11 +15,23 @@ export async function getStaticPaths() {
   const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      related: posts
+        .filter((entry) => entry.id !== post.id)
+        .slice(0, 4)
+        .map((entry) => ({
+          href: withBase(`/${entry.id}`),
+          title: entry.data.title,
+          published: entry.data.published,
+          author: entry.data.author,
+          topics: entry.data.topics,
+        })),
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, related } = Astro.props;
 const site = await getSiteSettings();
 const authors = await getAuthors();
 const author = authors.find((entry) => entry.id === post.data.author);
@@ -28,17 +40,6 @@ if (!author) {
 }
 
 const { Content } = await render(post);
-const posts = await getPublishedPosts();
-const related = posts
-  .filter((entry) => entry.id !== post.id)
-  .slice(0, 4)
-  .map((entry) => ({
-    href: withBase(`/${entry.id}`),
-    title: entry.data.title,
-    published: entry.data.published,
-    author: entry.data.author,
-    topics: entry.data.topics,
-  }));
 
 const siteSeo = {
   title: site.title,
