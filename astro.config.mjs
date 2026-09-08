@@ -11,6 +11,9 @@ const isProduction = process.env.PUBLIC_SITE_ENV === 'production';
 export default defineConfig({
   site: process.env.SITE ?? 'https://twinsintheloop.com',
   base: process.env.BASE_PATH || '/',
+  server: {
+    port: 7788,
+  },
   integrations: [
     expressiveCode({
       plugins: [pluginCollapsibleSections(), pluginLineNumbers()],

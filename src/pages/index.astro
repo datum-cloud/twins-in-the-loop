@@ -88,8 +88,9 @@ const siteSeo = {
       </div>
       <div
         class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+        data-columns-grid
       >
-        <div class="border-zac border-t-2">
+        <div class="border-zac border-t-2" data-author-column="zac">
           {
             columns.zac.map((post) => (
               <ArticleRow
@@ -102,7 +103,7 @@ const siteSeo = {
             ))
           }
         </div>
-        <div class="border-jacob border-t-2">
+        <div class="border-jacob border-t-2" data-author-column="jacob">
           {
             columns.jacob.map((post) => (
               <ArticleRow
@@ -125,6 +126,12 @@ const siteSeo = {
     '[data-filter-select="author"]',
   );
   const chips = document.querySelectorAll<HTMLElement>('[data-topic]');
+  const columnsGrid = document.querySelector<HTMLElement>(
+    '[data-columns-grid]',
+  );
+  const authorColumns = document.querySelectorAll<HTMLElement>(
+    '[data-author-column]',
+  );
 
   function setChipActive(chip: HTMLElement, active: boolean) {
     chip.classList.toggle('bg-fjord', active);
@@ -153,6 +160,16 @@ const siteSeo = {
       const matchTopic = !topic || topics.includes(topic);
       node.classList.toggle('hidden', !(matchAuthor && matchTopic));
     });
+
+    const singleAuthor = author !== 'all';
+    authorColumns.forEach((column) => {
+      column.classList.toggle(
+        'hidden',
+        singleAuthor && column.dataset.authorColumn !== author,
+      );
+    });
+    columnsGrid?.classList.toggle('md:grid-cols-1', singleAuthor);
+    columnsGrid?.classList.toggle('md:grid-cols-2', !singleAuthor);
   }
 
   function replaceFilter(key: string, value: string | null) {
