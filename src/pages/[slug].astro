@@ -1,5 +1,6 @@
 ---
 import { render } from 'astro:content';
+import ArticleCover from '../components/article/ArticleCover.astro';
 import ArticleHero from '../components/article/ArticleHero.astro';
 import ArticleSidebar from '../components/article/ArticleSidebar.astro';
 import RelatedArticles from '../components/article/RelatedArticles.astro';
@@ -98,11 +99,7 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
       author={post.data.author}
     />
     <article class="col-span-full min-w-0 lg:col-span-8">
-      {
-        post.data.cover ? (
-          <img src={post.data.cover.src} alt="" class="mb-10 w-full object-cover" />
-        ) : null
-      }
+      {post.data.cover ? <ArticleCover cover={post.data.cover} /> : null}
       <Prose>
         <Content />
       </Prose>
