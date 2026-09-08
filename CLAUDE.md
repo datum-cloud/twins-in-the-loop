@@ -16,5 +16,6 @@ Follow `.cursor/rules/` even when working in Claude Code:
 
 - MDX for all page and post copy
 - Component-first UI in `src/components/`
+- Reusable helpers in `src/lib/` (not Astro frontmatter)
 - Conventional Commits and Release Please for versioning
 - No Turborepo

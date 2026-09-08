@@ -1,0 +1,26 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+import {
+  ARTICLE_COVER_SIZES,
+  OPTIMIZED_IMAGE_FORMAT,
+  OPTIMIZED_IMAGE_QUALITY,
+  articleCoverWidths,
+} from '../../lib/images';
+
+interface Props {
+  cover: ImageMetadata;
+}
+
+const { cover } = Astro.props;
+---
+
+<Image
+  src={cover}
+  alt=""
+  widths={articleCoverWidths(cover.width)}
+  sizes={ARTICLE_COVER_SIZES}
+  format={OPTIMIZED_IMAGE_FORMAT}
+  quality={OPTIMIZED_IMAGE_QUALITY}
+  class="mb-10 w-full object-cover"
+/>
