@@ -1,0 +1,25 @@
+src/pages/[slug].astro
+  s_cabb72b4752684::t_5d00e939541478 18-23,25-30,34
+  h_c7951bc64db670 24
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "ff94df0cd5fc3f24a0f62fac9a78a5aef4e73961",
+  "prompts": {},
+  "humans": {
+    "h_c7951bc64db670": {
+      "author": "AriaEdo <aria.edo@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_cabb72b4752684": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "719db58e-61dd-4779-8502-07a82aa33a60",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "AriaEdo <aria.edo@gmail.com>"
+    }
+  }
+}
