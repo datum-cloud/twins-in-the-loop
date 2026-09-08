@@ -55,16 +55,17 @@ keywords:
 - Other pages become `{title} · Twins in the Loop`.
 - Changing the site suffix means changing `title` in settings (the homepage title will match, so it will not double-suffix).
 
-Keep titles unique and roughly under 60 characters. Quotes in YAML need wrapping: `title: "Arm's Next Chapter: …"`.
+Keep titles unique and roughly under 60 characters when you can; longer titles still work. Quotes in YAML need wrapping: `title: "The AI and datacenter conversations I'm having with my neighbors."`.
 
 ## Description
 
 - Homepage: `description` in `settings.mdx`.
 - About: `description` in `pages/about.mdx`.
 - Articles: `description` in the post. This is **not** the same as `excerpt` or `tldr`.
-  - `description` → search + social snippet + RSS
+  - `description` → search + RSS; also social snippet unless `og.description` is set
   - `excerpt` → homepage cards and TL;DR fallback
   - `tldr` → article sidebar only
+  - Example: [ai-and-datacenter-conversations.mdx](../src/content/posts/ai-and-datacenter-conversations.mdx) uses a short `description` for snippets and a longer `excerpt` for the card. It has no `tldr`, so the sidebar uses `excerpt`.
 
 Aim for one or two sentences (about 150–160 characters).
 
@@ -91,12 +92,12 @@ og:
 
 Image paths:
 
-| Kind             | Example                                            | Where the file lives               |
-| ---------------- | -------------------------------------------------- | ---------------------------------- |
-| Content image    | `image: ../../assets/covers/arms-next-chapter.png` | `src/assets/` (Astro processes it) |
-| Public file      | `image: /og.png`                                   | `public/og.png`                    |
-| Public subfolder | `image: /share/my-post.png`                        | `public/share/my-post.png`         |
-| Absolute         | `image: https://cdn.example.com/card.png`          | Remote URL                         |
+| Kind             | Example                                                  | Where the file lives               |
+| ---------------- | -------------------------------------------------------- | ---------------------------------- |
+| Content image    | `image: ../../assets/covers/ai-datacenter-neighbors.png` | `src/assets/` (Astro processes it) |
+| Public file      | `image: /og.png`                                         | `public/og.png`                    |
+| Public subfolder | `image: /share/my-post.png`                              | `public/share/my-post.png`         |
+| Absolute         | `image: https://cdn.example.com/card.png`                | Remote URL                         |
 
 Recommended card size: 1200×630 PNG or JPEG.
 
@@ -110,10 +111,14 @@ defaultOgImage: /og.png
 To give **one article** a share image different from its cover:
 
 ```yaml
-cover: ../../assets/covers/arms-next-chapter.png
+cover: ../../assets/covers/ai-datacenter-neighbors.png
 og:
-  image: /share/arms-next-chapter-og.png
+  image: /share/ai-datacenter-neighbors-og.png
 ```
+
+When `og.image` and `cover` point at the same file (as in `ai-and-datacenter-conversations.mdx`), the card, article hero, and share preview all use that image.
+
+`embedUrl` is not an SEO field. It does not become `og:video` or a Twitter player card.
 
 Homepage and About have no cover, so they use `og.image` or `defaultOgImage`.
 
@@ -126,7 +131,7 @@ Omit `canonical` unless you need to point elsewhere (syndication, trailing-slash
 When omitted, the site builds `https://twinsintheloop.com{path}` from `site` in `astro.config.mjs`.
 
 ```yaml
-canonical: https://twinsintheloop.com/arms-next-chapter
+canonical: https://twinsintheloop.com/ai-and-datacenter-conversations
 ```
 
 Must be an absolute URL (`https://…`). A relative path will fail the schema.
@@ -176,7 +181,9 @@ From `src/content/posts/{slug}.mdx`:
 - `title` → tab and share-sheet title; `og.title` → `og:title` / `twitter:title` when set
 - `description` → meta and RSS; `og.description` → social description when set
 - `og.image` or `cover` → share image
+- `og.type` on posts defaults to `article` even if `og` is omitted
 - JSON-LD `BlogPosting` uses `title`, `published`, author `name`, and cover
+- `embedUrl` is unused for meta tags
 
 ### RSS `/rss.xml`
 
