@@ -8,6 +8,9 @@ import expressiveCode from 'astro-expressive-code';
 
 export default defineConfig({
   site: 'https://twinsintheloop.com',
+  server: {
+    port: 7788,
+  },
   integrations: [
     expressiveCode({
       plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
