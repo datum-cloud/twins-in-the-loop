@@ -8,7 +8,7 @@ import Container from '../components/ui/Container.astro';
 import Prose from '../components/ui/Prose.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAuthors, getPublishedPosts, getSiteSettings } from '../lib/content';
-import { ogImageSrc } from '../lib/seo';
+import { articleOgImage } from '../lib/seo';
 import { withBase } from '../lib/siteEnv';
 
 export async function getStaticPaths() {
@@ -60,7 +60,7 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
   og={{
     title: post.data.og?.title,
     description: post.data.og?.description,
-    image: ogImageSrc(post.data.og?.image) ?? post.data.cover?.src,
+    image: articleOgImage(post.data.og?.image),
     type: post.data.og?.type ?? 'article',
   }}
   noindex={post.data.noindex}

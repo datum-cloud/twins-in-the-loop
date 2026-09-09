@@ -81,12 +81,12 @@ og:
   type: website
 ```
 
-| Field            | Tag                                     | Fallback                                    |
-| ---------------- | --------------------------------------- | ------------------------------------------- |
-| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`    |
-| `og.description` | `og:description`, `twitter:description` | Page `description`                          |
-| `og.image`       | `og:image`, `twitter:image`             | Article `cover`, then site `defaultOgImage` |
-| `og.type`        | `og:type`                               | `website` (posts default to `article`)      |
+| Field            | Tag                                     | Fallback                                                            |
+| ---------------- | --------------------------------------- | ------------------------------------------------------------------- |
+| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`                            |
+| `og.description` | `og:description`, `twitter:description` | Page `description`                                                  |
+| `og.image`       | `og:image`, `twitter:image`             | Articles: `/images/og-news.jpg`. Other pages: site `defaultOgImage` |
+| `og.type`        | `og:type`                               | `website` (posts default to `article`)                              |
 
 `og.title` is used as-is (no site suffix). Omit any `og` field to use its fallback.
 
@@ -95,17 +95,24 @@ Image paths:
 | Kind             | Example                                                  | Where the file lives               |
 | ---------------- | -------------------------------------------------------- | ---------------------------------- |
 | Content image    | `image: ../../assets/covers/ai-datacenter-neighbors.png` | `src/assets/` (Astro processes it) |
-| Public file      | `image: /og.png`                                         | `public/og.png`                    |
+| Public file      | `image: /images/og-default.jpg`                          | `public/images/og-default.jpg`     |
 | Public subfolder | `image: /share/my-post.png`                              | `public/share/my-post.png`         |
 | Absolute         | `image: https://cdn.example.com/card.png`                | Remote URL                         |
 
 Recommended card size: 1200×630 PNG or JPEG.
 
-To change the **site-wide fallback**, replace `public/og.png` or set:
+Defaults:
+
+| Surface            | File                           | Wired from                                      |
+| ------------------ | ------------------------------ | ----------------------------------------------- |
+| Homepage and About | `public/images/og-default.jpg` | `og.image` and `defaultOgImage` in settings/MDX |
+| Article pages      | `public/images/og-news.jpg`    | `ARTICLE_OG_IMAGE` when `og.image` is omitted   |
+
+To change the **homepage / site-wide fallback**, replace `public/images/og-default.jpg` or set:
 
 ```yaml
 # src/content/site/settings.mdx
-defaultOgImage: /og.png
+defaultOgImage: /images/og-default.jpg
 ```
 
 To give **one article** a share image different from its cover:
@@ -116,11 +123,9 @@ og:
   image: /share/ai-datacenter-neighbors-og.png
 ```
 
-When `og.image` and `cover` point at the same file (as in `ai-and-datacenter-conversations.mdx`), the card, article hero, and share preview all use that image.
-
 `embedUrl` is not an SEO field. It does not become `og:video` or a Twitter player card.
 
-Homepage and About have no cover, so they use `og.image` or `defaultOgImage`.
+Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article `cover` is the on-page image only; it is not the share card unless you copy that path into `og.image`.
 
 Crawlers cache social cards. After changing an image, use LinkedIn Post Inspector, Facebook Sharing Debugger, or X Card Validator to refresh.
 
@@ -163,7 +168,7 @@ keywords:
 From `src/content/site/settings.mdx`:
 
 - `title`, `description`, `canonical`, `og`, `noindex`, `keywords`
-- Share image fallback: `og.image` or `defaultOgImage`
+- Share image fallback: `og.image` or `defaultOgImage` (`/images/og-default.jpg`)
 - JSON-LD `Blog` uses site `title` and `description`
 
 ### About `/about`
@@ -172,7 +177,7 @@ From `src/content/pages/about.mdx`:
 
 - `title`, `description`, `heading` (on-page only, not the social title)
 - Same SEO fields as above
-- Share image: page `og.image` or `defaultOgImage`
+- Share image: page `og.image` or `defaultOgImage` (`/images/og-default.jpg`)
 
 ### Article `/{slug}`
 
@@ -180,7 +185,7 @@ From `src/content/posts/{slug}.mdx`:
 
 - `title` → tab and share-sheet title; `og.title` → `og:title` / `twitter:title` when set
 - `description` → meta and RSS; `og.description` → social description when set
-- `og.image` or `cover` → share image
+- `og.image` or `/images/og-news.jpg` → share image; `cover` stays on-page
 - `og.type` on posts defaults to `article` even if `og` is omitted
 - JSON-LD `BlogPosting` uses `title`, `published`, author `name`, and cover
 - `embedUrl` is unused for meta tags
@@ -198,7 +203,7 @@ Absolute URLs for canonical, sitemap, RSS, and OG images use:
 site: process.env.SITE ?? 'https://twinsintheloop.com';
 ```
 
-Override `SITE` and `BASE_PATH` for GitHub Pages staging. Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /og.png` becomes `https://twinsintheloop.com/og.png` when `SITE` is the production origin.
+Override `SITE` and `BASE_PATH` for GitHub Pages staging. Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /images/og-default.jpg` becomes `https://twinsintheloop.com/images/og-default.jpg` when `SITE` is the production origin.
 
 ## Favicon
 

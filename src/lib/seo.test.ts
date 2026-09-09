@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { resolveSeo, withSiteTitle } from './seo';
+import {
+  ARTICLE_OG_IMAGE,
+  DEFAULT_OG_IMAGE,
+  articleOgImage,
+  resolveSeo,
+  withSiteTitle,
+} from './seo';
 
 const site = {
   title: 'Twins in the Loop',
   description: 'Editorial site',
   siteUrl: 'https://twinsintheloop.com',
-  defaultOgImage: '/og.png',
+  defaultOgImage: DEFAULT_OG_IMAGE,
 };
 
 describe('resolveSeo', () => {
@@ -18,7 +24,7 @@ describe('resolveSeo', () => {
     );
 
     expect(seo.canonical).toBe('https://twinsintheloop.com/about');
-    expect(seo.ogImage).toBe('https://twinsintheloop.com/og.png');
+    expect(seo.ogImage).toBe(`https://twinsintheloop.com${DEFAULT_OG_IMAGE}`);
     expect(seo.ogTitle).toBe('About · Twins in the Loop');
     expect(seo.ogDescription).toBe('Meet the twins');
     expect(seo.robots).toBe('index, follow');
@@ -84,6 +90,16 @@ describe('resolveSeo', () => {
       { indexable: false },
     );
     expect(seo.robots).toBe('noindex, nofollow');
+  });
+});
+
+describe('articleOgImage', () => {
+  it('uses the article default when og.image is omitted', () => {
+    expect(articleOgImage(undefined)).toBe(ARTICLE_OG_IMAGE);
+  });
+
+  it('keeps an explicit og.image', () => {
+    expect(articleOgImage('/share/custom.png')).toBe('/share/custom.png');
   });
 });
 
