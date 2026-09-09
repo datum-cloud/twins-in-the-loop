@@ -60,7 +60,7 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
   og={{
     title: post.data.og?.title,
     description: post.data.og?.description,
-    image: articleOgImage(post.data.og?.image, post.data.cover),
+    image: articleOgImage(post.data.og?.image, post.data.cover, post.id),
     type: post.data.og?.type ?? 'article',
   }}
   noindex={post.data.noindex}

@@ -96,11 +96,17 @@ describe('resolveSeo', () => {
 describe('articleOgImage', () => {
   it('uses og.image first', () => {
     expect(
-      articleOgImage('/share/custom.png', { src: '/covers/post.png' }),
+      articleOgImage('/share/custom.png', { src: '/covers/post.png' }, 'post'),
     ).toBe('/share/custom.png');
   });
 
-  it('falls back to cover when og.image is omitted', () => {
+  it('uses a framed share card when a cover and slug are present', () => {
+    expect(articleOgImage(undefined, { src: '/covers/post.png' }, 'post')).toBe(
+      '/og/post.jpg',
+    );
+  });
+
+  it('falls back to cover when og.image and slug are omitted', () => {
     expect(articleOgImage(undefined, { src: '/covers/post.png' })).toBe(
       '/covers/post.png',
     );
