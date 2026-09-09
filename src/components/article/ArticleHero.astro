@@ -1,6 +1,13 @@
 ---
 import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import { formatPostDate } from '../../lib/dates';
+import {
+  AUTHOR_AVATAR_SIZES,
+  authorAvatarWidths,
+  OPTIMIZED_IMAGE_FORMAT,
+  OPTIMIZED_IMAGE_QUALITY,
+} from '../../lib/images';
 import PageHero from '../layout/PageHero.astro';
 import ShareActions from './ShareActions.astro';
 
@@ -13,16 +20,29 @@ interface Props {
   url: string;
 }
 
-const { title, published, authorName, authorRole, authorPhoto, url } = Astro.props;
+const { title, published, authorName, authorRole, authorPhoto, url } =
+  Astro.props;
 ---
 
 <PageHero>
   <p class="text-sm text-white/70">{formatPostDate(published)}</p>
-  <h1 class="mt-4 text-5xl font-semibold leading-14.5 tracking-heading text-white">
+  <h1
+    class="tracking-heading mt-4 text-5xl leading-14.5 font-semibold text-white"
+  >
     {title}
   </h1>
   <div class="mt-10 flex items-center gap-6">
-    <img src={authorPhoto.src} alt="" width="60" height="60" class="size-15 rounded-full object-cover" />
+    <Image
+      src={authorPhoto}
+      alt=""
+      width={60}
+      height={60}
+      widths={authorAvatarWidths(authorPhoto.width)}
+      sizes={AUTHOR_AVATAR_SIZES}
+      format={OPTIMIZED_IMAGE_FORMAT}
+      quality={OPTIMIZED_IMAGE_QUALITY}
+      class="size-15 rounded-sm object-cover"
+    />
     <div class="min-w-0 flex-1">
       <p class="text-base font-semibold text-white">{authorName}</p>
       <p class="text-sm text-white/70">{authorRole}</p>

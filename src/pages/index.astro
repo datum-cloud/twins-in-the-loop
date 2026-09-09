@@ -59,62 +59,62 @@ const siteSeo = {
 >
   <SiteHero />
   <Container columns="12" class="py-20" data-filter-root>
-    <div
-      class="col-span-full flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
-    >
-      <TopicFilter />
-      <AuthorFilter current="all" />
-    </div>
-    <div
-      class="col-span-full flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24"
-    >
+    <div class="col-span-full flex flex-col gap-16">
       <div
-        class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+        class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
       >
-        {
-          featured.map((post) => (
-            <ArticleCard
-              href={withBase(`/${post.entry.id}`)}
-              title={post.entry.data.title}
-              excerpt={post.entry.data.excerpt}
-              published={post.entry.data.published}
-              author={post.entry.data.author}
-              type={post.entry.data.type}
-              cover={post.entry.data.cover}
-              topics={post.entry.data.topics}
-            />
-          ))
-        }
+        <TopicFilter />
+        <AuthorFilter current="all" />
       </div>
-      <div
-        class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
-        data-columns-grid
-      >
-        <div class="border-zac border-t-2" data-author-column="zac">
+      <div class="flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24">
+        <div
+          class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+        >
           {
-            columns.zac.map((post) => (
-              <ArticleRow
+            featured.map((post) => (
+              <ArticleCard
                 href={withBase(`/${post.entry.id}`)}
                 title={post.entry.data.title}
+                excerpt={post.entry.data.excerpt}
                 published={post.entry.data.published}
                 author={post.entry.data.author}
+                type={post.entry.data.type}
+                cover={post.entry.data.cover}
                 topics={post.entry.data.topics}
               />
             ))
           }
         </div>
-        <div class="border-jacob border-t-2" data-author-column="jacob">
-          {
-            columns.jacob.map((post) => (
-              <ArticleRow
-                href={withBase(`/${post.entry.id}`)}
-                title={post.entry.data.title}
-                published={post.entry.data.published}
-                author={post.entry.data.author}
-                topics={post.entry.data.topics}
-              />
-            ))
-          }
+        <div
+          class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+          data-columns-grid
+        >
+          <div class="border-zac border-t-2" data-author-column="zac">
+            {
+              columns.zac.map((post) => (
+                <ArticleRow
+                  href={withBase(`/${post.entry.id}`)}
+                  title={post.entry.data.title}
+                  published={post.entry.data.published}
+                  author={post.entry.data.author}
+                  topics={post.entry.data.topics}
+                />
+              ))
+            }
+          </div>
+          <div class="border-jacob border-t-2" data-author-column="jacob">
+            {
+              columns.jacob.map((post) => (
+                <ArticleRow
+                  href={withBase(`/${post.entry.id}`)}
+                  title={post.entry.data.title}
+                  published={post.entry.data.published}
+                  author={post.entry.data.author}
+                  topics={post.entry.data.topics}
+                />
+              ))
+            }
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   articleCoverWidths,
+  authorAvatarWidths,
+  authorPhotoWidths,
   logoStackedWidths,
   logoWideWidths,
   responsiveImageWidths,
@@ -46,5 +48,17 @@ describe('logoWideWidths', () => {
 describe('logoStackedWidths', () => {
   it('uses the stacked logo candidate list', () => {
     expect(logoStackedWidths(270)).toEqual([140, 270]);
+  });
+});
+
+describe('authorAvatarWidths', () => {
+  it('uses the author avatar candidate list', () => {
+    expect(authorAvatarWidths(180)).toEqual([60, 120, 180]);
+  });
+});
+
+describe('authorPhotoWidths', () => {
+  it('uses the about-card photo candidate list', () => {
+    expect(authorPhotoWidths(800)).toEqual([400, 640, 800]);
   });
 });
