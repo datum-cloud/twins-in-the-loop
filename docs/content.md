@@ -107,7 +107,7 @@ title: Zac Smith
 description: Co-founder of Datum. Infrastructure obsessive and one half of Twins in the Loop.
 name: Zac Smith
 role: Co-founder of Datum. Infrastructure obsessive and one half of Twins in the Loop.
-photo: ../../assets/authors/zac.png
+photo: ../../assets/authors/zac.jpg
 linkedin: https://www.linkedin.com/in/zacsmith
 email: zac@datum.net
 ---

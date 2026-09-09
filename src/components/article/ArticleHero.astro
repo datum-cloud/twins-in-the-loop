@@ -22,7 +22,7 @@ const { title, published, authorName, authorRole, authorPhoto, url } = Astro.pro
     {title}
   </h1>
   <div class="mt-10 flex items-center gap-6">
-    <img src={authorPhoto.src} alt="" width="60" height="60" class="size-15 rounded-full object-cover" />
+    <img src={authorPhoto.src} alt="" width="60" height="60" class="size-15 rounded-sm object-cover" />
     <div class="min-w-0 flex-1">
       <p class="text-base font-semibold text-white">{authorName}</p>
       <p class="text-sm text-white/70">{authorRole}</p>
