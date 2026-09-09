@@ -56,7 +56,7 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 | `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                           |
 | `featured`    | No                                          | Default `false`. `true` puts the post in the homepage card grid instead of the list                                                      |
 | `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                        |
-| `cover`       | No                                          | Homepage card image, article image, and share image unless `og.image` is set                                                             |
+| `cover`       | No                                          | Homepage card image, article image, and share image unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`            |
 | `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                               |
 | `embedUrl`    | No                                          | Optional video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`; stored only, not rendered as an embed yet |
 | SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                           |
@@ -128,17 +128,17 @@ Zac is green, Jacob is purple. Those colors are coded to the ids `zac` and `jaco
 
 File: `src/content/site/settings.mdx`.
 
-| Field            | Effect                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------ |
-| `title`          | Site name. Homepage document title. Suffix on other pages (`Page · Twins in the Loop`)           |
-| `description`    | Homepage meta/share description. RSS channel description                                         |
-| `tagline`        | Stored for the site; the hero wordmark is the logo component                                     |
-| `footerBlurb`    | Footer paragraph (the layout appends “Learn more”)                                               |
-| `subscribeUrl`   | Footer “Subscribe on LinkedIn”                                                                   |
-| `datumUrl`       | Header and footer Datum.net links                                                                |
-| `copyright`      | Footer `© {year} {copyright}`                                                                    |
-| `defaultOgImage` | Fallback share image when a page has no `og.image` or cover. Path from `public/`, e.g. `/og.png` |
-| `socials`        | Footer icons. `name` must be `github`, `discord`, `youtube`, `linkedin`, or `x`                  |
+| Field            | Effect                                                                                                            |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `title`          | Site name. Homepage document title. Suffix on other pages (`Page · Twins in the Loop`)                            |
+| `description`    | Homepage meta/share description. RSS channel description                                                          |
+| `tagline`        | Stored for the site; the hero wordmark is the logo component                                                      |
+| `footerBlurb`    | Footer paragraph (the layout appends “Learn more”)                                                                |
+| `subscribeUrl`   | Footer “Subscribe on LinkedIn”                                                                                    |
+| `datumUrl`       | Header and footer Datum.net links                                                                                 |
+| `copyright`      | Footer `© {year} {copyright}`                                                                                     |
+| `defaultOgImage` | Fallback share image for non-article pages without `og.image`. Path from `public/`, e.g. `/images/og-default.jpg` |
+| `socials`        | Footer icons. `name` must be `github`, `discord`, `youtube`, `linkedin`, or `x`                                   |
 
 ```yaml
 socials:
@@ -146,17 +146,18 @@ socials:
     href: https://github.com/datum-cloud
 ```
 
-Replace `public/og.png` to change the default social card for the homepage and any page without its own image.
+Replace `public/images/og-default.jpg` to change the homepage and About social card. Replace `public/images/og-news.jpg` to change the default article social card.
 
 ## Images and icons
 
-| Asset            | Location                                                                        | How to change                                                            |
-| ---------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| Post covers      | `src/assets/covers/`                                                            | Add the file, then set `cover:` in the post                              |
-| Author photos    | `src/assets/authors/`                                                           | Replace the file or point `photo:` at a new one                          |
-| Default OG image | `public/og.png`                                                                 | Replace the file, or point `defaultOgImage` at another file in `public/` |
-| Favicon          | `public/favicon.ico`, `public/favicon-32x32.png`, `public/apple-touch-icon.png` | Replace those files. Source pack is `src/assets/favicons/`               |
-| UI icons         | `public/icons/`                                                                 | Used by the `Icon` component. Do not inline new SVGs in pages            |
+| Asset             | Location                                                                        | How to change                                                                         |
+| ----------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Post covers       | `src/assets/covers/`                                                            | Add the file, then set `cover:` in the post                                           |
+| Author photos     | `src/assets/authors/`                                                           | Replace the file or point `photo:` at a new one                                       |
+| Homepage OG image | `public/images/og-default.jpg`                                                  | Replace the file, or point `defaultOgImage` / `og.image` at another file in `public/` |
+| Article OG image  | `public/images/og-news.jpg`                                                     | Replace the file, or set `og.image` on a post                                         |
+| Favicon           | `public/favicon.ico`, `public/favicon-32x32.png`, `public/apple-touch-icon.png` | Replace those files. Source pack is `src/assets/favicons/`                            |
+| UI icons          | `public/icons/`                                                                 | Used by the `Icon` component. Do not inline new SVGs in pages                         |
 
 Cover paths in posts are relative to the MDX file:
 
@@ -171,8 +172,8 @@ og:
   image: ../../assets/covers/my-cover.png
 # or
 og:
-  image: /og.png
-defaultOgImage: /og.png
+  image: /images/og-default.jpg
+defaultOgImage: /images/og-default.jpg
 ```
 
 ## What you cannot change from MDX alone
