@@ -27,8 +27,6 @@
     "@astrojs/sitemap": "^3.7.4",
     "@expressive-code/plugin-collapsible-sections": "^0.44.2",
     "@expressive-code/plugin-line-numbers": "^0.44.2",
-    "@fontsource-variable/geist": "^5.3.0",
-    "@fontsource/ibm-plex-mono": "^5.3.0",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.3.1",
     "astro-expressive-code": "^0.44.2",

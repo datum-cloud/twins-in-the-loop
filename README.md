@@ -63,4 +63,4 @@ Content lives in `src/content`. Page copy should be edited there, not in Astro l
 
 See [docs/](./docs/README.md) for how to add posts, change About/authors/footer copy, update SEO, and [publish staging on GitHub Pages](./docs/github-pages.md).
 
-Alliance No.1 is the Figma UI font. Geist is the bundled fallback until Alliance files are licensed into `public/fonts`.
+Alliance No.1 is the UI font. DejaVu Sans Mono is used for author tags (`public/fonts/DejaVuSansMono-*.woff`).

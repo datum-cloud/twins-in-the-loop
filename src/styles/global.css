@@ -1,12 +1,9 @@
-@import '@fontsource-variable/geist';
-@import '@fontsource/ibm-plex-mono';
 @import 'tailwindcss';
 
 @theme {
-  --font-sans:
-    'Alliance No.1', 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Climate Crisis', 'Geist Variable', sans-serif;
-  --font-mono: 'IBM Plex Mono', 'DejaVu Sans Mono', ui-monospace, monospace;
+  --font-sans: 'Alliance No.1', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Climate Crisis', ui-sans-serif, sans-serif;
+  --font-mono: 'DejaVu Sans Mono', ui-monospace, monospace;
   --color-fjord: #0c1d31;
   --color-mist: #f6f6f5;
   --color-zac: #7aff82;
@@ -73,6 +70,46 @@
   src:
     url('/fonts/allianceno1-semibold-webfont.woff2') format('woff2'),
     url('/fonts/allianceno1-semibold-webfont.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    url('/fonts/DejaVuSansMono-webfont.woff') format('woff'),
+    url('/fonts/DejaVuSansMono-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src:
+    url('/fonts/DejaVuSansMono-Oblique-webfont.woff') format('woff'),
+    url('/fonts/DejaVuSansMono-Oblique-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src:
+    url('/fonts/DejaVuSansMono-Bold-webfont.woff') format('woff'),
+    url('/fonts/DejaVuSansMono-Bold-webfont.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'DejaVu Sans Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 700;
+  src:
+    url('/fonts/DejaVuSansMono-BoldOblique-webfont.woff') format('woff'),
+    url('/fonts/DejaVuSansMono-BoldOblique-webfont.ttf') format('truetype');
 }
 
 @font-face {
