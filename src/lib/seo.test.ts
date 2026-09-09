@@ -94,12 +94,20 @@ describe('resolveSeo', () => {
 });
 
 describe('articleOgImage', () => {
-  it('uses the article default when og.image is omitted', () => {
-    expect(articleOgImage(undefined)).toBe(ARTICLE_OG_IMAGE);
+  it('uses og.image first', () => {
+    expect(
+      articleOgImage('/share/custom.png', { src: '/covers/post.png' }),
+    ).toBe('/share/custom.png');
   });
 
-  it('keeps an explicit og.image', () => {
-    expect(articleOgImage('/share/custom.png')).toBe('/share/custom.png');
+  it('falls back to cover when og.image is omitted', () => {
+    expect(articleOgImage(undefined, { src: '/covers/post.png' })).toBe(
+      '/covers/post.png',
+    );
+  });
+
+  it('falls back to the article default when og.image and cover are omitted', () => {
+    expect(articleOgImage(undefined)).toBe(ARTICLE_OG_IMAGE);
   });
 });
 

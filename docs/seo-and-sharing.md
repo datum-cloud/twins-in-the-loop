@@ -81,12 +81,12 @@ og:
   type: website
 ```
 
-| Field            | Tag                                     | Fallback                                                            |
-| ---------------- | --------------------------------------- | ------------------------------------------------------------------- |
-| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`                            |
-| `og.description` | `og:description`, `twitter:description` | Page `description`                                                  |
-| `og.image`       | `og:image`, `twitter:image`             | Articles: `/images/og-news.jpg`. Other pages: site `defaultOgImage` |
-| `og.type`        | `og:type`                               | `website` (posts default to `article`)                              |
+| Field            | Tag                                     | Fallback                                                                          |
+| ---------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
+| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`                                          |
+| `og.description` | `og:description`, `twitter:description` | Page `description`                                                                |
+| `og.image`       | `og:image`, `twitter:image`             | Articles: `cover`, then `/images/og-news.jpg`. Other pages: site `defaultOgImage` |
+| `og.type`        | `og:type`                               | `website` (posts default to `article`)                                            |
 
 `og.title` is used as-is (no site suffix). Omit any `og` field to use its fallback.
 
@@ -106,7 +106,7 @@ Defaults:
 | Surface            | File                           | Wired from                                      |
 | ------------------ | ------------------------------ | ----------------------------------------------- |
 | Homepage and About | `public/images/og-default.jpg` | `og.image` and `defaultOgImage` in settings/MDX |
-| Article pages      | `public/images/og-news.jpg`    | `ARTICLE_OG_IMAGE` when `og.image` is omitted   |
+| Article pages      | `public/images/og-news.jpg`    | Last fallback after `og.image` and `cover`      |
 
 To change the **homepage / site-wide fallback**, replace `public/images/og-default.jpg` or set:
 
@@ -125,7 +125,7 @@ og:
 
 `embedUrl` is not an SEO field. It does not become `og:video` or a Twitter player card.
 
-Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article `cover` is the on-page image only; it is not the share card unless you copy that path into `og.image`.
+Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article share images use `og.image`, then `cover`, then `/images/og-news.jpg`.
 
 Crawlers cache social cards. After changing an image, use LinkedIn Post Inspector, Facebook Sharing Debugger, or X Card Validator to refresh.
 
@@ -185,7 +185,7 @@ From `src/content/posts/{slug}.mdx`:
 
 - `title` → tab and share-sheet title; `og.title` → `og:title` / `twitter:title` when set
 - `description` → meta and RSS; `og.description` → social description when set
-- `og.image` or `/images/og-news.jpg` → share image; `cover` stays on-page
+- Share image: `og.image`, then `cover`, then `/images/og-news.jpg`
 - `og.type` on posts defaults to `article` even if `og` is omitted
 - JSON-LD `BlogPosting` uses `title`, `published`, author `name`, and cover
 - `embedUrl` is unused for meta tags

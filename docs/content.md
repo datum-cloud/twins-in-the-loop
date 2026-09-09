@@ -56,7 +56,7 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 | `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                           |
 | `featured`    | No                                          | Default `false`. `true` puts the post in the homepage card grid instead of the list                                                      |
 | `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                        |
-| `cover`       | No                                          | Homepage card image and article image. Share cards use `og.image` or `/images/og-news.jpg`                                               |
+| `cover`       | No                                          | Homepage card image, article image, and share image unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`            |
 | `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                               |
 | `embedUrl`    | No                                          | Optional video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`; stored only, not rendered as an embed yet |
 | SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                           |

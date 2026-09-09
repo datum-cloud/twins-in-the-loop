@@ -3,7 +3,7 @@ import { isSiteIndexable, withBase } from './siteEnv';
 /** Homepage, About, and site-wide share-card fallback. */
 export const DEFAULT_OG_IMAGE = '/images/og-default.jpg';
 
-/** Article pages when `og.image` is omitted. */
+/** Article pages when `og.image` and `cover` are omitted. */
 export const ARTICLE_OG_IMAGE = '/images/og-news.jpg';
 
 export type OgType = 'website' | 'article';
@@ -63,8 +63,9 @@ export function ogImageSrc(
 
 export function articleOgImage(
   image: string | { src: string } | undefined,
+  cover?: string | { src: string } | undefined,
 ): string {
-  return ogImageSrc(image) ?? ARTICLE_OG_IMAGE;
+  return ogImageSrc(image) ?? ogImageSrc(cover) ?? ARTICLE_OG_IMAGE;
 }
 
 export function resolveSeo(
