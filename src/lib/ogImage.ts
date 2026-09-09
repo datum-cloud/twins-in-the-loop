@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import sharp from 'sharp';
 
 /** Matches `public/images/og-news.jpg` (16:9). */
@@ -6,8 +6,10 @@ export const OG_IMAGE_WIDTH = 1200;
 export const OG_IMAGE_HEIGHT = 675;
 export const OG_IMAGE_QUALITY = 90;
 
-export const OG_FRAME_PATH = fileURLToPath(
-  new URL('../assets/covers/frame.png', import.meta.url),
+/** Resolve from the repo root. `import.meta.url` breaks after Astro prerender relocates this module. */
+export const OG_FRAME_PATH = path.join(
+  process.cwd(),
+  'src/assets/covers/frame.png',
 );
 
 export interface ComposeOgImageInput {

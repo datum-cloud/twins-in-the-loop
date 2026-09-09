@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import {
@@ -52,7 +52,7 @@ describe('composeOgImage', () => {
 
   it('reads the default frame from the covers asset', () => {
     expect(OG_FRAME_PATH).toBe(
-      fileURLToPath(new URL('../assets/covers/frame.png', import.meta.url)),
+      path.join(process.cwd(), 'src/assets/covers/frame.png'),
     );
   });
 });
