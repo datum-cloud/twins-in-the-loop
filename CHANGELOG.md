@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.1.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.0.1...v1.1.0) (2026-09-09)
+
+
+### Features
+
+* add branded default Open Graph images ([bad5776](https://github.com/datum-cloud/twins-in-the-loop/commit/bad5776a8c9a9013b424a33c630919bed7cbd915))
+* add branded default Open Graph images ([#11](https://github.com/datum-cloud/twins-in-the-loop/issues/11)) ([3b3253a](https://github.com/datum-cloud/twins-in-the-loop/commit/3b3253acc4dac8c763d4a211137928aa23fc3e73))
+* generate framed article Open Graph images ([977a5fa](https://github.com/datum-cloud/twins-in-the-loop/commit/977a5facf323ea9516fd3db60df4ae2265355cbe))
+* generate framed article Open Graph images ([#14](https://github.com/datum-cloud/twins-in-the-loop/issues/14)) ([49b774b](https://github.com/datum-cloud/twins-in-the-loop/commit/49b774bc4be66cb158f1f8b5a99b4113a492b487))
+* optimize author photos with Astro Image ([c1fce0a](https://github.com/datum-cloud/twins-in-the-loop/commit/c1fce0a4d44b517d59505f335c1edd7a1ab628ff))
+* render homepage and article logos as optimized PNGs ([acf05d7](https://github.com/datum-cloud/twins-in-the-loop/commit/acf05d7bbfe2d91dfa76c5ef6cee2eddf4ac4b20))
+* use jpg author photos and square article avatars ([05149de](https://github.com/datum-cloud/twins-in-the-loop/commit/05149dead0b3d720b6ff67f20d1087bf92a029f6))
+
+
+### Bug Fixes
+
+* fall back article share images through cover ([4b45fdc](https://github.com/datum-cloud/twins-in-the-loop/commit/4b45fdc233a7fb3620c0923c1398e58cd1e0c898))
+* increase space between homepage filters and articles ([53c25b2](https://github.com/datum-cloud/twins-in-the-loop/commit/53c25b24b0364da22dbf56be97403221acf745f5))
+* resolve OG frame path from the repo root ([b15c016](https://github.com/datum-cloud/twins-in-the-loop/commit/b15c016a14e7e566d860f48e8bc606b101cfd97a))
+
 ## [1.0.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.0.0...v1.0.1) (2026-09-08)
 
 
