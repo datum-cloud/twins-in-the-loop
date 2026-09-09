@@ -61,11 +61,25 @@ export function ogImageSrc(
   return image.src;
 }
 
+export function framedOgImagePath(slug: string): string {
+  return `/og/${slug}.jpg`;
+}
+
 export function articleOgImage(
   image: string | { src: string } | undefined,
   cover?: string | { src: string } | undefined,
+  slug?: string,
 ): string {
-  return ogImageSrc(image) ?? ogImageSrc(cover) ?? ARTICLE_OG_IMAGE;
+  const explicit = ogImageSrc(image);
+  if (explicit) {
+    return explicit;
+  }
+
+  if (cover && slug) {
+    return framedOgImagePath(slug);
+  }
+
+  return ogImageSrc(cover) ?? ARTICLE_OG_IMAGE;
 }
 
 export function resolveSeo(

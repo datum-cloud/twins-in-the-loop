@@ -81,12 +81,12 @@ og:
   type: website
 ```
 
-| Field            | Tag                                     | Fallback                                                                          |
-| ---------------- | --------------------------------------- | --------------------------------------------------------------------------------- |
-| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`                                          |
-| `og.description` | `og:description`, `twitter:description` | Page `description`                                                                |
-| `og.image`       | `og:image`, `twitter:image`             | Articles: `cover`, then `/images/og-news.jpg`. Other pages: site `defaultOgImage` |
-| `og.type`        | `og:type`                               | `website` (posts default to `article`)                                            |
+| Field            | Tag                                     | Fallback                                                                                                   |
+| ---------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `og.title`       | `og:title`, `twitter:title`             | Page `title` plus ` · Twins in the Loop`                                                                   |
+| `og.description` | `og:description`, `twitter:description` | Page `description`                                                                                         |
+| `og.image`       | `og:image`, `twitter:image`             | Articles: framed cover at `/og/{slug}.jpg`, then `/images/og-news.jpg`. Other pages: site `defaultOgImage` |
+| `og.type`        | `og:type`                               | `website` (posts default to `article`)                                                                     |
 
 `og.title` is used as-is (no site suffix). Omit any `og` field to use its fallback.
 
@@ -99,14 +99,14 @@ Image paths:
 | Public subfolder | `image: /share/my-post.png`                              | `public/share/my-post.png`         |
 | Absolute         | `image: https://cdn.example.com/card.png`                | Remote URL                         |
 
-Recommended card size: 1200×630 PNG or JPEG.
+Recommended card size: 1200×675 JPEG (16:9), matching the generated article cards.
 
 Defaults:
 
-| Surface            | File                           | Wired from                                      |
-| ------------------ | ------------------------------ | ----------------------------------------------- |
-| Homepage and About | `public/images/og-default.jpg` | `og.image` and `defaultOgImage` in settings/MDX |
-| Article pages      | `public/images/og-news.jpg`    | Last fallback after `og.image` and `cover`      |
+| Surface            | File                                                        | Wired from                                            |
+| ------------------ | ----------------------------------------------------------- | ----------------------------------------------------- |
+| Homepage and About | `public/images/og-default.jpg`                              | `og.image` and `defaultOgImage` in settings/MDX       |
+| Article pages      | `/og/{slug}.jpg` from cover + `src/assets/covers/frame.png` | Last fallback after `og.image`: `/images/og-news.jpg` |
 
 To change the **homepage / site-wide fallback**, replace `public/images/og-default.jpg` or set:
 
@@ -115,7 +115,7 @@ To change the **homepage / site-wide fallback**, replace `public/images/og-defau
 defaultOgImage: /images/og-default.jpg
 ```
 
-To give **one article** a share image different from its cover:
+To give **one article** a share image that is not the framed cover:
 
 ```yaml
 cover: ../../assets/covers/ai-datacenter-neighbors.png
@@ -123,9 +123,11 @@ og:
   image: /share/ai-datacenter-neighbors-og.png
 ```
 
+Articles with a `cover` and no `og.image` generate a 1200×675 JPEG at `/og/{slug}.jpg`: the cover is cropped to fill the card, then `src/assets/covers/frame.png` is laid on top (brand bar + wordmark). Posts without a cover still use `/images/og-news.jpg`.
+
 `embedUrl` is not an SEO field. It does not become `og:video` or a Twitter player card.
 
-Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article share images use `og.image`, then `cover`, then `/images/og-news.jpg`.
+Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article share images use `og.image`, then the framed cover, then `/images/og-news.jpg`.
 
 Crawlers cache social cards. After changing an image, use LinkedIn Post Inspector, Facebook Sharing Debugger, or X Card Validator to refresh.
 
@@ -185,7 +187,7 @@ From `src/content/posts/{slug}.mdx`:
 
 - `title` → tab and share-sheet title; `og.title` → `og:title` / `twitter:title` when set
 - `description` → meta and RSS; `og.description` → social description when set
-- Share image: `og.image`, then `cover`, then `/images/og-news.jpg`
+- Share image: `og.image`, then framed cover `/og/{slug}.jpg`, then `/images/og-news.jpg`
 - `og.type` on posts defaults to `article` even if `og` is omitted
 - JSON-LD `BlogPosting` uses `title`, `published`, author `name`, and cover
 - `embedUrl` is unused for meta tags

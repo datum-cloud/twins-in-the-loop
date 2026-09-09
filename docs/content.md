@@ -44,22 +44,22 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 
 ### Post fields
 
-| Field         | Required                                    | Effect                                                                                                                                   |
-| ------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                          |
-| `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                 |
-| `excerpt`     | Yes                                         | Homepage card/list teaser. Also fills the TL;DR box if `tldr` is omitted                                                                 |
-| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                     |
-| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                |
-| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                              |
-| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                          |
-| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                           |
-| `featured`    | No                                          | Default `false`. `true` puts the post in the homepage card grid instead of the list                                                      |
-| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                        |
-| `cover`       | No                                          | Homepage card image, article image, and share image unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`            |
-| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                               |
-| `embedUrl`    | No                                          | Optional video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`; stored only, not rendered as an embed yet |
-| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                           |
+| Field         | Required                                    | Effect                                                                                                                                                      |
+| ------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                             |
+| `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                                    |
+| `excerpt`     | Yes                                         | Homepage card/list teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                    |
+| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                        |
+| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                   |
+| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                 |
+| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                             |
+| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                              |
+| `featured`    | No                                          | Default `false`. `true` puts the post in the homepage card grid instead of the list                                                                         |
+| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                           |
+| `cover`       | No                                          | Homepage card image and article image. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg` |
+| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                                                  |
+| `embedUrl`    | No                                          | Optional video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`; stored only, not rendered as an embed yet                    |
+| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                                              |
 
 ### Content type icons
 
@@ -150,14 +150,15 @@ Replace `public/images/og-default.jpg` to change the homepage and About social c
 
 ## Images and icons
 
-| Asset             | Location                                                                        | How to change                                                                         |
-| ----------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| Post covers       | `src/assets/covers/`                                                            | Add the file, then set `cover:` in the post                                           |
-| Author photos     | `src/assets/authors/`                                                           | Replace the file or point `photo:` at a new one                                       |
-| Homepage OG image | `public/images/og-default.jpg`                                                  | Replace the file, or point `defaultOgImage` / `og.image` at another file in `public/` |
-| Article OG image  | `public/images/og-news.jpg`                                                     | Replace the file, or set `og.image` on a post                                         |
-| Favicon           | `public/favicon.ico`, `public/favicon-32x32.png`, `public/apple-touch-icon.png` | Replace those files. Source pack is `src/assets/favicons/`                            |
-| UI icons          | `public/icons/`                                                                 | Used by the `Icon` component. Do not inline new SVGs in pages                         |
+| Asset             | Location                                                                        | How to change                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Post covers       | `src/assets/covers/`                                                            | Add the file, then set `cover:` in the post. Share cards overlay `frame.png` automatically                      |
+| OG frame          | `src/assets/covers/frame.png`                                                   | Brand bar composited over article covers at `/og/{slug}.jpg`                                                    |
+| Author photos     | `src/assets/authors/`                                                           | Replace the file or point `photo:` at a new one                                                                 |
+| Homepage OG image | `public/images/og-default.jpg`                                                  | Replace the file, or point `defaultOgImage` / `og.image` at another file in `public/`                           |
+| Article OG image  | `/og/{slug}.jpg` (generated) or `public/images/og-news.jpg`                     | Framed from `cover` + `frame.png`. Override with `og.image`, or replace `og-news.jpg` for posts without a cover |
+| Favicon           | `public/favicon.ico`, `public/favicon-32x32.png`, `public/apple-touch-icon.png` | Replace those files. Source pack is `src/assets/favicons/`                                                      |
+| UI icons          | `public/icons/`                                                                 | Used by the `Icon` component. Do not inline new SVGs in pages                                                   |
 
 Cover paths in posts are relative to the MDX file:
 
