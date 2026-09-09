@@ -15,6 +15,13 @@ export const LOGO_WIDE_SIZES = '(min-width: 868px) 868px, 92vw';
 export const LOGO_STACKED_WIDTHS = [140, 270] as const;
 export const LOGO_STACKED_SIZES = '140px';
 
+export const AUTHOR_AVATAR_WIDTHS = [60, 120, 180] as const;
+export const AUTHOR_AVATAR_SIZES = '60px';
+
+export const AUTHOR_PHOTO_WIDTHS = [400, 640, 800] as const;
+export const AUTHOR_PHOTO_SIZES =
+  '(min-width: 1680px) 480px, (min-width: 768px) 35vw, 92vw';
+
 export function responsiveImageWidths(
   sourceWidth: number,
   candidates: readonly number[],
@@ -39,4 +46,12 @@ export function logoWideWidths(sourceWidth: number): number[] {
 
 export function logoStackedWidths(sourceWidth: number): number[] {
   return responsiveImageWidths(sourceWidth, LOGO_STACKED_WIDTHS);
+}
+
+export function authorAvatarWidths(sourceWidth: number): number[] {
+  return responsiveImageWidths(sourceWidth, AUTHOR_AVATAR_WIDTHS);
+}
+
+export function authorPhotoWidths(sourceWidth: number): number[] {
+  return responsiveImageWidths(sourceWidth, AUTHOR_PHOTO_WIDTHS);
 }

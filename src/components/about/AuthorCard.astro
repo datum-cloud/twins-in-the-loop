@@ -1,6 +1,13 @@
 ---
 import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import type { AuthorId } from '../../lib/types';
+import {
+  AUTHOR_PHOTO_SIZES,
+  authorPhotoWidths,
+  OPTIMIZED_IMAGE_FORMAT,
+  OPTIMIZED_IMAGE_QUALITY,
+} from '../../lib/images';
 import Button from '../ui/Button.astro';
 
 interface Props {
@@ -18,7 +25,15 @@ const accent = author === 'zac' ? 'border-zac' : 'border-jacob bg-jacob-tag';
 
 <article class="flex flex-col gap-8">
   <div class:list={['aspect-square overflow-hidden border-b-8', accent]}>
-    <img src={photo.src} alt={name} class="size-full object-cover" />
+    <Image
+      src={photo}
+      alt={name}
+      widths={authorPhotoWidths(photo.width)}
+      sizes={AUTHOR_PHOTO_SIZES}
+      format={OPTIMIZED_IMAGE_FORMAT}
+      quality={OPTIMIZED_IMAGE_QUALITY}
+      class="size-full object-cover"
+    />
   </div>
   <div>
     <h3 class="text-xl font-semibold leading-7">{name}</h3>
