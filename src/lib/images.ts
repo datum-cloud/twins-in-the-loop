@@ -9,6 +9,12 @@ export const ARTICLE_COVER_WIDTHS = [640, 960, 1280, 1600] as const;
 export const ARTICLE_COVER_SIZES =
   '(min-width: 1680px) 960px, (min-width: 1024px) 66vw, 100vw';
 
+export const LOGO_IMAGE_FORMAT = 'png' as const;
+export const LOGO_WIDE_WIDTHS = [400, 640, 868, 1200, 1736] as const;
+export const LOGO_WIDE_SIZES = '(min-width: 868px) 868px, 92vw';
+export const LOGO_STACKED_WIDTHS = [140, 270] as const;
+export const LOGO_STACKED_SIZES = '140px';
+
 export function responsiveImageWidths(
   sourceWidth: number,
   candidates: readonly number[],
@@ -25,4 +31,12 @@ export function thumbnailWidths(sourceWidth: number): number[] {
 
 export function articleCoverWidths(sourceWidth: number): number[] {
   return responsiveImageWidths(sourceWidth, ARTICLE_COVER_WIDTHS);
+}
+
+export function logoWideWidths(sourceWidth: number): number[] {
+  return responsiveImageWidths(sourceWidth, LOGO_WIDE_WIDTHS);
+}
+
+export function logoStackedWidths(sourceWidth: number): number[] {
+  return responsiveImageWidths(sourceWidth, LOGO_STACKED_WIDTHS);
 }

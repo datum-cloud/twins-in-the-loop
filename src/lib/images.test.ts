@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
   articleCoverWidths,
+  logoStackedWidths,
+  logoWideWidths,
   responsiveImageWidths,
   thumbnailWidths,
 } from './images';
@@ -32,5 +34,17 @@ describe('thumbnailWidths', () => {
 describe('articleCoverWidths', () => {
   it('uses the article cover candidate list', () => {
     expect(articleCoverWidths(1920)).toEqual([640, 960, 1280, 1600]);
+  });
+});
+
+describe('logoWideWidths', () => {
+  it('uses the wide logo candidate list', () => {
+    expect(logoWideWidths(1736)).toEqual([400, 640, 868, 1200, 1736]);
+  });
+});
+
+describe('logoStackedWidths', () => {
+  it('uses the stacked logo candidate list', () => {
+    expect(logoStackedWidths(270)).toEqual([140, 270]);
   });
 });

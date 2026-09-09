@@ -1,7 +1,17 @@
 ---
-import logoStackedOnDark from '../../assets/logo/twins-in-the-loop-logo.svg?raw';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import logoStackedOnLight from '../../assets/logo/twins-in-the-loop-logo-alt.svg?raw';
-import logoWide from '../../assets/logo/twins-in-the-loop-logo-wide.svg?raw';
+import logoStackedPng from '../../assets/logo/twins-in-the-loop-logo-alt.png';
+import logoWidePng from '../../assets/logo/twins-in-the-loop-logo.png';
+import {
+  LOGO_IMAGE_FORMAT,
+  LOGO_STACKED_SIZES,
+  LOGO_WIDE_SIZES,
+  OPTIMIZED_IMAGE_QUALITY,
+  logoStackedWidths,
+  logoWideWidths,
+} from '../../lib/images';
 import { withBase } from '../../lib/siteEnv';
 
 interface Props {
@@ -18,19 +28,19 @@ const {
   href = withBase('/'),
 } = Astro.props;
 
-function logoMarkup(
+function rasterLogo(
   mark: 'wide' | 'stacked',
   theme: 'on-dark' | 'on-light',
-): string {
+): ImageMetadata | undefined {
   switch (mark) {
     case 'wide':
-      return logoWide;
+      return logoWidePng;
     case 'stacked':
       switch (theme) {
-        case 'on-light':
-          return logoStackedOnLight;
         case 'on-dark':
-          return logoStackedOnDark;
+          return logoStackedPng;
+        case 'on-light':
+          return undefined;
         default: {
           const _exhaustive: never = theme;
           return _exhaustive;
@@ -43,12 +53,12 @@ function logoMarkup(
   }
 }
 
-function sizeClass(mark: 'wide' | 'stacked'): string {
+function rasterClass(mark: 'wide' | 'stacked'): string {
   switch (mark) {
     case 'wide':
-      return 'h-auto w-full max-w-217 [&_svg]:h-auto [&_svg]:w-full';
+      return 'h-auto w-full max-w-217';
     case 'stacked':
-      return 'h-35 w-auto [&_svg]:h-full [&_svg]:w-auto';
+      return 'h-35 w-auto';
     default: {
       const _exhaustive: never = mark;
       return _exhaustive;
@@ -56,20 +66,57 @@ function sizeClass(mark: 'wide' | 'stacked'): string {
   }
 }
 
-const svg = logoMarkup(mark, theme);
+function rasterWidths(mark: 'wide' | 'stacked', sourceWidth: number): number[] {
+  switch (mark) {
+    case 'wide':
+      return logoWideWidths(sourceWidth);
+    case 'stacked':
+      return logoStackedWidths(sourceWidth);
+    default: {
+      const _exhaustive: never = mark;
+      return _exhaustive;
+    }
+  }
+}
+
+function rasterSizes(mark: 'wide' | 'stacked'): string {
+  switch (mark) {
+    case 'wide':
+      return LOGO_WIDE_SIZES;
+    case 'stacked':
+      return LOGO_STACKED_SIZES;
+    default: {
+      const _exhaustive: never = mark;
+      return _exhaustive;
+    }
+  }
+}
+
+const raster = rasterLogo(mark, theme);
 ---
 
 <a
   href={href}
-  class="inline-flex items-start no-underline hover:opacity-80 active:opacity-60"
+  class="inline-flex items-start no-underline transition-opacity duration-200 ease-in-out hover:opacity-90 active:opacity-80 motion-reduce:transition-none"
   aria-label="Twins in the Loop"
 >
-  <span
-    class:list={[
-      'inline-block max-w-full overflow-visible [&_svg]:isolation-auto [&_svg]:block [&_svg]:overflow-visible',
-      sizeClass(mark),
-    ]}
-    aria-hidden="true"
-    set:html={svg}
-  />
+  {
+    raster ? (
+      <Image
+        src={raster}
+        alt=""
+        widths={rasterWidths(mark, raster.width)}
+        sizes={rasterSizes(mark)}
+        format={LOGO_IMAGE_FORMAT}
+        quality={OPTIMIZED_IMAGE_QUALITY}
+        class={rasterClass(mark)}
+      />
+    ) : (
+      <span
+        class="inline-block h-35 w-auto max-w-full overflow-visible [&_svg]:isolation-auto [&_svg]:block [&_svg]:h-full [&_svg]:w-auto [&_svg]:overflow-visible"
+        aria-hidden="true"
+        set:html={logoStackedOnLight}
+      />
+    )
+  }
 </a>
