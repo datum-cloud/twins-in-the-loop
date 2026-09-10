@@ -4,7 +4,12 @@ export type AuthorId = (typeof AUTHOR_IDS)[number];
 export const CONTENT_TYPES = ['post', 'musing', 'video', 'podcast'] as const;
 export type ContentType = (typeof CONTENT_TYPES)[number];
 
-export const TOPIC_IDS = ['ai', 'data-centers', 'infrastructure', 'hardware'] as const;
+export const TOPIC_IDS = [
+  'ai',
+  'data-centers',
+  'infrastructure',
+  'hardware',
+] as const;
 export type TopicId = (typeof TOPIC_IDS)[number];
 
 export const AUTHOR_FILTERS = ['all', 'zac', 'jacob'] as const;
@@ -53,6 +58,34 @@ export const CONTENT_TYPE_ICONS: Record<ContentType, IconName> = {
   video: 'circle-play',
   podcast: 'audio-lines',
 };
+
+export const SOCIAL_NETWORK_IDS = [
+  'github',
+  'discord',
+  'youtube',
+  'linkedin',
+  'x',
+] as const;
+export type SocialNetworkId = (typeof SOCIAL_NETWORK_IDS)[number];
+
+export function socialLinkLabel(name: SocialNetworkId): string {
+  switch (name) {
+    case 'github':
+      return 'Datum on GitHub';
+    case 'discord':
+      return 'Datum on Discord';
+    case 'youtube':
+      return 'Datum on YouTube';
+    case 'linkedin':
+      return 'Datum on LinkedIn';
+    case 'x':
+      return 'Datum on X';
+    default: {
+      const _exhaustive: never = name;
+      return _exhaustive;
+    }
+  }
+}
 
 export function isAuthorId(value: string): value is AuthorId {
   return (AUTHOR_IDS as readonly string[]).includes(value);

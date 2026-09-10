@@ -1,9 +1,9 @@
 ---
-import type { IconName } from '../../lib/types';
+import { socialLinkLabel, type SocialNetworkId } from '../../lib/types';
 import Icon from '../ui/Icon.astro';
 
 interface Social {
-  name: IconName;
+  name: SocialNetworkId;
   href: string;
 }
 
@@ -14,15 +14,24 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul class="flex items-start gap-2.5 text-fjord">
+<ul class="text-fjord flex items-start gap-2.5">
   {
-    items.map((item) => (
-      <li>
-        <a href={item.href} target="_blank" rel="noreferrer noopener" class="inline-flex size-5 overflow-clip text-fjord hover:opacity-70 active:opacity-40">
-          <span class="sr-only">{item.name}</span>
-          <Icon name={item.name} size={20} />
-        </a>
-      </li>
-    ))
+    items.map((item) => {
+      const label = socialLinkLabel(item.name);
+
+      return (
+        <li>
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noreferrer noopener"
+            class="text-fjord inline-flex size-5 overflow-clip hover:opacity-70 active:opacity-40"
+          >
+            <span class="sr-only">{label}</span>
+            <Icon name={item.name} size={20} />
+          </a>
+        </li>
+      );
+    })
   }
 </ul>
