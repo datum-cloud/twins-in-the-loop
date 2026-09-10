@@ -40,10 +40,18 @@ const accent = author === 'zac' ? 'border-zac' : 'border-jacob bg-jacob-tag';
     <p class="text-lg leading-6.5">{role}</p>
   </div>
   <div class="flex flex-col items-start gap-2">
-    <Button href={linkedin} variant="outline" icon="linkedin" external
-      >LinkedIn</Button
+    <Button
+      href={linkedin}
+      variant="outline"
+      icon="linkedin"
+      external
+      aria-label={`${name} on LinkedIn`}>LinkedIn</Button
     >
-    <Button href={`mailto:${email}`} variant="outline" icon="mail">Email</Button
+    <Button
+      href={`mailto:${email}`}
+      variant="outline"
+      icon="mail"
+      aria-label={`Email ${name}`}>Email</Button
     >
   </div>
 </article>

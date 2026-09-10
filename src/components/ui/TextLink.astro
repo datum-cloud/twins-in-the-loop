@@ -1,22 +1,26 @@
 ---
+import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '../../lib/types';
 import Icon from './Icon.astro';
 
-interface Props {
+interface Props extends HTMLAttributes<'a'> {
   href: string;
   external?: boolean;
   icon?: IconName;
-  class?: string;
 }
 
-const { href, external = false, icon, class: className } = Astro.props;
+const { href, external = false, icon, class: className, ...rest } = Astro.props;
 ---
 
 <a
   href={href}
-  class:list={['inline-flex items-center gap-2 text-base hover:opacity-70 active:opacity-50', className]}
+  class:list={[
+    'inline-flex items-center gap-2 text-base hover:opacity-70 active:opacity-50',
+    className,
+  ]}
   target={external ? '_blank' : undefined}
   rel={external ? 'noreferrer noopener' : undefined}
+  {...rest}
 >
   <slot />
   {icon ? <Icon name={icon} size={16} /> : null}

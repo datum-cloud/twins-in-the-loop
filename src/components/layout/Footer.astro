@@ -4,10 +4,10 @@ import Container from '../ui/Container.astro';
 import Logo from '../ui/Logo.astro';
 import SocialLinks from './SocialLinks.astro';
 import { withBase } from '../../lib/siteEnv';
-import type { IconName } from '../../lib/types';
+import type { SocialNetworkId } from '../../lib/types';
 
 interface Social {
-  name: IconName;
+  name: SocialNetworkId;
   href: string;
 }
 
@@ -42,7 +42,7 @@ const blurbBody = blurb.startsWith(lead)
           <a
             href={withBase('/about')}
             class="font-normal underline decoration-solid hover:opacity-70 active:opacity-50"
-            >Learn more</a
+            >About Twins in the Loop</a
           >
         </p>
         <Button href={subscribeUrl} variant="solid" icon="linkedin" external>
@@ -61,6 +61,7 @@ const blurbBody = blurb.startsWith(lead)
             icon="external-link"
             external
             class="w-full"
+            aria-label="Visit Datum.net"
           >
             Datum.net
           </Button>

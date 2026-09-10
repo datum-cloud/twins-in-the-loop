@@ -20,11 +20,16 @@ const { current, datumUrl } = Astro.props;
       class="flex items-center gap-4 lg:col-span-6 lg:gap-10"
       aria-label="Primary"
     >
-      <Chip href={withBase('/')} active={current !== 'about'} inverse>Blog</Chip
+      <Chip
+        href={withBase('/')}
+        active={current !== 'about'}
+        inverse
+        aria-label="Twins in the Loop blog">Blog</Chip
       >
       <TextLink
         href={withBase('/about')}
         class={current === 'about' ? 'font-semibold text-white' : 'text-white'}
+        aria-label="About Twins in the Loop"
       >
         About
       </TextLink>
@@ -42,6 +47,7 @@ const { current, datumUrl } = Astro.props;
         icon="external-link"
         external
         class="whitespace-nowrap text-white"
+        aria-label="Visit Datum.net"
       >
         Datum.net
       </TextLink>

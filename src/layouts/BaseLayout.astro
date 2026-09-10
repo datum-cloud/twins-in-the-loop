@@ -5,10 +5,10 @@ import Header from '../components/layout/Header.astro';
 import Seo from '../components/seo/Seo.astro';
 import type { SeoInput, SiteSeoDefaults } from '../lib/seo';
 import { withBase } from '../lib/siteEnv';
-import type { IconName } from '../lib/types';
+import type { SocialNetworkId } from '../lib/types';
 
 interface Social {
-  name: IconName;
+  name: SocialNetworkId;
   href: string;
 }
 
