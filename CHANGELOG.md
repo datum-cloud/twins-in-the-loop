@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.1.0...v1.1.1) (2026-09-10)
+
+
+### Bug Fixes
+
+* give links descriptive names for crawlers and assistive tech ([60fda90](https://github.com/datum-cloud/twins-in-the-loop/commit/60fda907930c41693348d7304045e121735bdc54))
+* give links descriptive names for crawlers and assistive tech ([#15](https://github.com/datum-cloud/twins-in-the-loop/issues/15)) ([1095ccb](https://github.com/datum-cloud/twins-in-the-loop/commit/1095ccb0626ae1012eb4b5902908dd50b7eb92d2))
+
 ## [1.1.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.0.1...v1.1.0) (2026-09-09)
 
 
