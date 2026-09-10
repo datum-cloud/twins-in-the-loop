@@ -61,6 +61,6 @@ bun run build
 
 Content lives in `src/content`. Page copy should be edited there, not in Astro layouts.
 
-See [docs/](./docs/README.md) for how to add posts, change About/authors/footer copy, update SEO, and [publish staging on GitHub Pages](./docs/github-pages.md).
+See [docs/](./docs/README.md) for how to add posts, change About/authors/footer copy, update SEO, [publish staging on GitHub Pages](./docs/github-pages.md), and [deploy production on Vercel](./docs/vercel.md).
 
 Alliance No.1 is the UI font. DejaVu Sans Mono is used for author tags (`public/fonts/DejaVuSansMono-*.woff`).
