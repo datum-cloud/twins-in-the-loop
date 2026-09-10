@@ -138,7 +138,7 @@ In the repo: **Settings → Secrets and variables → Actions**:
 
 ### Workflow
 
-[`.github/workflows/deploy-vercel.yml`](../.github/workflows/deploy-vercel.yml) runs on Release Please tags (`v*`). It pulls Production env vars, builds with the pinned Vercel CLI, and deploys `--prebuilt --prod`.
+[`.github/workflows/deploy-vercel.yml`](../.github/workflows/deploy-vercel.yml) deploys Production. Release Please creates tags with `GITHUB_TOKEN`, which does **not** start other tag workflows, so [`.github/workflows/release-please.yml`](../.github/workflows/release-please.yml) calls this workflow in the same run when a release is created. You can also run **Actions → Deploy Vercel production → Run workflow** (picks the selected branch or tag).
 
 Set the GitHub Actions secrets above first. GitHub creates the `production` Environment on the first run; add required reviewers under **Settings → Environments → production** if you want a manual gate before the deploy job starts.
 
@@ -146,7 +146,7 @@ Set the GitHub Actions secrets above first. GitHub creates the `production` Envi
 
 1. Merge work to `main` → CI + Preview deploys; Release Please opens or updates the release PR.
 2. Merge the release PR → Release Please tags `vX.Y.Z` and creates the GitHub Release.
-3. The tag workflow deploys that commit to Vercel Production.
+3. The Release Please run calls Deploy Vercel production for that commit.
 
 Merging a content PR to `main` does **not** update `twinsintheloop.com` until the next release tag.
 
