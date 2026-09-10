@@ -44,6 +44,6 @@ Do not add the Pages URL in Google Search Console as a property you want indexed
 
 ## Production
 
-Production stays on `twinsintheloop.com`. That host must set `PUBLIC_SITE_ENV=production` at build time so pages can be indexed (and per-page `noindex` in MDX still applies).
+Production stays on `twinsintheloop.com`. That host must set `PUBLIC_SITE_ENV=production` at build time so pages can be indexed (and per-page `noindex` in MDX still applies). See [Deploy on Vercel](./vercel.md).
 
 `bun run dev` and a local `bun run build` without that flag are not indexable. CI sets `PUBLIC_SITE_ENV=production` only so the production-shaped build is checked.
