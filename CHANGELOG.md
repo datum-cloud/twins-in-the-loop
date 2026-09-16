@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.1...v1.2.2) (2026-09-16)
+
+
+### Bug Fixes
+
+* probe webhook with GET/HEAD and warm from Strapi origin ([0478487](https://github.com/datum-cloud/twins-in-the-loop/commit/04784878a58a4846f4381f589abcb76c8719dbe9))
+* probe webhook with GET/HEAD and warm from Strapi origin ([#24](https://github.com/datum-cloud/twins-in-the-loop/issues/24)) ([2b1af60](https://github.com/datum-cloud/twins-in-the-loop/commit/2b1af60633920cf6afe79d7035d7e93ffce581e8))
+
 ## [1.2.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.0...v1.2.1) (2026-09-16)
 
 
