@@ -22,6 +22,9 @@ export interface CacheOptions {
   tags: string[];
 }
 
+/** `origin` always hits Strapi and never returns last-known-good fallback. */
+export type CollectionRead = 'cache' | 'origin';
+
 /**
  * Fetch a published collection through the runtime cache.
  *
@@ -33,7 +36,8 @@ export async function fetchCollection<T>(
   name: string,
   options: FetchOptions,
   cacheOptions: CacheOptions,
-): Promise<T[]> {
+  read: CollectionRead = 'cache',
+): Promise<T[] | null> {
   const fetcher = async (): Promise<T[] | null> => {
     try {
       const { data } = await createClient()
@@ -44,16 +48,28 @@ export async function fetchCollection<T>(
           ...options,
           status: 'published',
         });
-      return data as T[];
+      return Array.isArray(data) ? (data as T[]) : null;
     } catch (error) {
       console.error(`[strapi] fetchCollection(${name}) failed:`, error);
       return null;
     }
   };
 
-  const result = await cache.getWithFallback<T[]>(cacheOptions.key, fetcher, {
-    tags: cacheOptions.tags,
-  });
-
-  return result ?? [];
+  switch (read) {
+    case 'origin': {
+      const fresh = await fetcher();
+      if (fresh !== null) {
+        await cache.set(cacheOptions.key, fresh, { tags: cacheOptions.tags });
+      }
+      return fresh;
+    }
+    case 'cache':
+      return cache.getWithFallback<T[]>(cacheOptions.key, fetcher, {
+        tags: cacheOptions.tags,
+      });
+    default: {
+      const exhaustive: never = read;
+      return exhaustive;
+    }
+  }
 }

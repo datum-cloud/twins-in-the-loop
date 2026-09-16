@@ -19,7 +19,7 @@ export async function fetchTopics(): Promise<Topic[]> {
     { key: TOPICS_LIST_KEY, tags: [POSTS_TAG] },
   );
 
-  return records
+  return (records ?? [])
     .filter((topic) => topic.slug && topic.name)
     .map(({ slug, name }) => ({ slug, name }));
 }
