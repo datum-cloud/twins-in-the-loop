@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.0...v1.2.1) (2026-09-16)
+
+
+### Bug Fixes
+
+* allow Vercel prebuild when Strapi env is [SENSITIVE] ([efc813f](https://github.com/datum-cloud/twins-in-the-loop/commit/efc813f14928152b8d9cf051f172501e99ed4a7d))
+* allow Vercel prebuild when Strapi env is [SENSITIVE] ([#22](https://github.com/datum-cloud/twins-in-the-loop/issues/22)) ([fa68a8b](https://github.com/datum-cloud/twins-in-the-loop/commit/fa68a8be97f42258121090f034ed01e6e5ce1d5d))
+
 ## [1.2.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.1.2...v1.2.0) (2026-09-16)
 
 
