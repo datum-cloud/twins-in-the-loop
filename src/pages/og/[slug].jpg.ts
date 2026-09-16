@@ -1,31 +1,25 @@
-import type { APIRoute, GetStaticPaths, ImageMetadata } from 'astro';
-import { getPublishedPosts } from '../../lib/content';
-import { composeOgImage, localImageFsPath } from '../../lib/ogImage';
+import type { APIRoute } from 'astro';
+import { composeOgImage } from '../../lib/ogImage';
+import { fetchPostBySlug } from '../../lib/strapi/posts';
 
-interface Props {
-  cover: ImageMetadata;
-}
+export const GET: APIRoute = async ({ params }) => {
+  const slug = params.slug;
+  if (!slug) {
+    return new Response('Not found', { status: 404 });
+  }
 
-export const getStaticPaths = (async () => {
-  const posts = await getPublishedPosts();
+  const post = await fetchPostBySlug(slug);
+  if (!post?.data.cover) {
+    return new Response('Not found', { status: 404 });
+  }
 
-  return posts.flatMap((post) => {
-    if (!post.data.cover) {
-      return [];
-    }
+  const response = await fetch(post.data.cover.src);
+  if (!response.ok) {
+    return new Response('Cover unavailable', { status: 502 });
+  }
 
-    return [
-      {
-        params: { slug: post.id },
-        props: { cover: post.data.cover },
-      },
-    ];
-  });
-}) satisfies GetStaticPaths;
-
-export const GET: APIRoute = async ({ props }) => {
-  const { cover } = props as Props;
-  const body = await composeOgImage({ cover: localImageFsPath(cover) });
+  const cover = Buffer.from(await response.arrayBuffer());
+  const body = await composeOgImage({ cover });
 
   return new Response(new Uint8Array(body), {
     headers: {

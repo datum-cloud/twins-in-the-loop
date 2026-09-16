@@ -1,5 +1,4 @@
 ---
-import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import {
   ARTICLE_COVER_SIZES,
@@ -7,17 +6,20 @@ import {
   OPTIMIZED_IMAGE_QUALITY,
   articleCoverWidths,
 } from '../../lib/images';
+import type { PostCover } from '../../lib/strapi/posts';
 
 interface Props {
-  cover: ImageMetadata;
+  cover: PostCover;
 }
 
 const { cover } = Astro.props;
 ---
 
 <Image
-  src={cover}
-  alt=""
+  src={cover.src}
+  alt={cover.alt}
+  width={cover.width}
+  height={cover.height}
   widths={articleCoverWidths(cover.width)}
   sizes={ARTICLE_COVER_SIZES}
   format={OPTIMIZED_IMAGE_FORMAT}
