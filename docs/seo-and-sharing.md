@@ -151,7 +151,7 @@ noindex: true
 
 That sets `robots` to `noindex, nofollow`. Draft posts (`draft: true`) are already omitted from the production build, sitemap, and RSS, so they do not need `noindex`.
 
-Indexing is allowed only when `PUBLIC_SITE_ENV=production`. Staging GitHub Pages and any other env force site-wide `noindex, nofollow` and a disallowing `robots.txt`, even if MDX sets `noindex: false`. See [GitHub Pages staging](./github-pages.md).
+Indexing is allowed only when `PUBLIC_SITE_ENV=production`. Vercel Preview deploys and any other env force site-wide `noindex, nofollow` and a disallowing `robots.txt`, even if a post sets `noindex: false`. See [Deploy on Vercel](./vercel.md).
 
 ## Keywords
 
@@ -205,7 +205,7 @@ Absolute URLs for canonical, sitemap, RSS, and OG images use:
 site: process.env.SITE ?? 'https://twinsintheloop.com';
 ```
 
-Override `SITE` and `BASE_PATH` for GitHub Pages staging. Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /images/og-default.jpg` becomes `https://twinsintheloop.com/images/og-default.jpg` when `SITE` is the production origin.
+Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /images/og-default.jpg` becomes `https://twinsintheloop.com/images/og-default.jpg` when `SITE` is the production origin.
 
 ## Favicon
 

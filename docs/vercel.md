@@ -1,6 +1,10 @@
 # Deploy on Vercel
 
-This site is a **static Astro 7** build. Vercel does not need `@astrojs/vercel` unless you add SSR later. Production is `twinsintheloop.com`. Preview deployments are staging: site-wide `noindex` and no sitemap.
+This site is a **server-rendered Astro 7** build using `@astrojs/vercel`. Blog posts are fetched from Strapi at request time and served through Vercel's Runtime Cache, so publishing in the CMS does not require a rebuild. Only `/about` and `/robots.txt` are prerendered.
+
+Production is `twinsintheloop.com`. Preview deployments are staging: site-wide `noindex` and no sitemap.
+
+> **Vercel is the only host.** GitHub Pages staging has been removed — Pages is static-only and cannot run the SSR routes or the webhook endpoint. Use Vercel Preview URLs for staging.
 
 Local `bun run build` commands live in the [README](../README.md#build). Copy [`.env.example`](../.env.example) for local overrides.
 
@@ -16,8 +20,10 @@ Local `bun run build` commands live in the [README](../README.md#build). Copy [`
    | Root Directory   | `.` (repo root) |
    | Install Command  | `bun install`   |
    | Build Command    | `bun run build` |
-   | Output Directory | `dist`          |
+   | Output Directory | _(leave empty)_ |
    | Node.js Version  | `22.x`          |
+
+   Leave **Output Directory** empty. `@astrojs/vercel` emits Build Output API v3 into `.vercel/output`, which Vercel detects automatically. Setting it to `dist` will break the deploy.
 
    `package.json` requires Node `>=22.12.0`. Set **Settings → General → Node.js Version** to 22.x if the first build fails on an older runtime.
 
@@ -28,7 +34,9 @@ Git integration: every push to a non-production branch and every pull request ge
 
 ## Environment variables
 
-These are **build-time** values (`astro.config.mjs` and SEO). Set them in **Settings → Environment Variables**. Assign each variable to the matching Vercel environment.
+Set these in **Settings → Environment Variables**, assigning each to the matching Vercel environment.
+
+The `PUBLIC_SITE_ENV` / `SITE` / `BASE_PATH` trio is read at build time. The `STRAPI_*` variables are read at **request time** by the SSR routes, so changing one takes effect on the next request without a rebuild.
 
 ### Production
 
@@ -48,11 +56,34 @@ These are **build-time** values (`astro.config.mjs` and SEO). Set them in **Sett
 | `SITE`            | `https://twinsintheloop.com` | Preview, Development |
 | `BASE_PATH`       | `/`                          | Preview, Development |
 
-Preview is always `noindex`. Keep `BASE_PATH=/` — Vercel serves the site at the hostname root, unlike GitHub Pages (`/<repo>/`).
+Preview is always `noindex`. Keep `BASE_PATH=/` — Vercel serves the site at the hostname root.
 
-After changing env vars, **Redeploy** the latest production (and a preview) so the static HTML is rebuilt. Changing variables alone does not update already-built pages.
+### Strapi (all environments)
 
-Do not put secrets in `PUBLIC_*` variables. This project only uses public build-time site config.
+| Name                    | Value                                   | Notes                                      |
+| ----------------------- | --------------------------------------- | ------------------------------------------ |
+| `STRAPI_URL`            | `https://<project>.strapiapp.com`       | CMS API origin                             |
+| `STRAPI_TOKEN`          | API token                               | Needs read on `twins-post` **and** `topic` |
+| `STRAPI_WEBHOOK_SECRET` | long random string                      | Must match the Strapi Admin webhook header |
+| `STRAPI_ASSETS_URL`     | `https://<project>.media.strapiapp.com` | Only if media is on a different host       |
+
+Mark `STRAPI_TOKEN` and `STRAPI_WEBHOOK_SECRET` as **Sensitive**. Never prefix them with `PUBLIC_` — that would inline them into client bundles.
+
+If `STRAPI_WEBHOOK_SECRET` is missing, `/api/strapi-webhook` returns **503** and refuses every request. That is deliberate: the underlying library skips signature verification entirely when no secret is set, which would leave the cache-purge endpoint open.
+
+After changing a build-time variable, **Redeploy** so prerendered pages pick it up.
+
+## Cache invalidation webhook
+
+In Strapi Admin → **Settings → Webhooks → Create new webhook**:
+
+| Field  | Value                                                                                              |
+| ------ | -------------------------------------------------------------------------------------------------- |
+| URL    | `https://twinsintheloop.com/api/strapi-webhook`                                                    |
+| Header | `Authorization: Bearer <STRAPI_WEBHOOK_SECRET>`                                                    |
+| Events | `entry.publish`, `entry.unpublish`, `entry.update`, `entry.delete` on **Twins Post** and **Topic** |
+
+A successful call returns `{"ok":true,"tags":["twins-posts", ...]}`. If `tags` comes back containing the singular `twins-post` instead of `twins-posts`, the tag map in `src/lib/strapi/revalidate.ts` is out of sync with the cache keys and nothing is actually being invalidated.
 
 ## Domain
 
@@ -157,10 +188,13 @@ Do not use a custom Ignored Build Step that tries to detect tags. Git Production
 1. Open the project in Vercel → **Deployments**.
 2. Confirm the latest Production deploy is **Ready**.
 3. Open `https://twinsintheloop.com` (or the production `*.vercel.app` URL).
-4. Confirm a Preview deploy from a branch: robots meta is `noindex, nofollow`, and there is no `/sitemap-index.xml`.
-5. On Production, confirm pages can be indexed (unless an MDX entry sets `noindex`) and the sitemap is present.
+4. Confirm a Preview deploy from a branch: robots meta is `noindex, nofollow`, and `/sitemap.xml` returns 404.
+5. On Production, confirm pages can be indexed (unless a post sets `noindex`) and `/sitemap.xml` lists every post.
+6. Confirm posts are coming from Strapi: publish a title change in the CMS and reload without redeploying.
 
-CSS 404s or missing `/about` usually mean **Output Directory** is not `dist`, or **Root Directory** is not the repo root.
+An empty post list with a working `/about` usually means `STRAPI_TOKEN` lacks read access to `twins-post` or `topic`. Check the function logs for `[strapi] fetchCollection(twins-posts) failed`.
+
+CSS 404s or missing `/about` usually mean **Output Directory** was set instead of left empty, or **Root Directory** is not the repo root.
 
 ## Install failures (`lefthook`)
 
@@ -178,12 +212,11 @@ bun install --frozen-lockfile --ignore-scripts
 
 Only use `--ignore-scripts` if the default install cannot complete. This project allows `esbuild` scripts in `package.json`; skipping all scripts can break native deps.
 
-## Production vs GitHub Pages staging
+## Environments
 
-| Host                          | Role                                                        | `PUBLIC_SITE_ENV` | `BASE_PATH` |
-| ----------------------------- | ----------------------------------------------------------- | ----------------- | ----------- |
-| Vercel + `twinsintheloop.com` | Production                                                  | `production`      | `/`         |
-| Vercel Preview URLs           | Review / staging (noindex)                                  | `staging`         | `/`         |
-| GitHub Pages                  | Optional staging (see [github-pages.md](./github-pages.md)) | `staging`         | `/<repo>`   |
+| Host                          | Role                       | `PUBLIC_SITE_ENV` | `BASE_PATH` |
+| ----------------------------- | -------------------------- | ----------------- | ----------- |
+| Vercel + `twinsintheloop.com` | Production                 | `production`      | `/`         |
+| Vercel Preview URLs           | Review / staging (noindex) | `staging`         | `/`         |
 
-You can keep Pages staging and Vercel production at the same time. Do not add Preview or Pages URLs in Search Console as properties you want indexed.
+Do not add Preview URLs in Search Console as properties you want indexed.

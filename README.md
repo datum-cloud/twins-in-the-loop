@@ -27,8 +27,8 @@ bun run dev
 | ----------------- | ---------------------------------------- | --------------------------------------------------------------------- |
 | `PUBLIC_SITE_ENV` | `production`                             | `staging` (or anything except `production`)                           |
 | Search            | Pages can be indexed; sitemap is emitted | Site-wide `noindex, nofollow`; `robots.txt` disallows `/`; no sitemap |
-| `SITE`            | `https://twinsintheloop.com`             | `https://<owner>.github.io` on GitHub Pages                           |
-| `BASE_PATH`       | `/`                                      | `/<repo>` for a project Pages URL                                     |
+| `SITE`            | `https://twinsintheloop.com`             | `https://twinsintheloop.com`                                          |
+| `BASE_PATH`       | `/`                                      | `/`                                                                   |
 
 Production (live domain):
 
@@ -36,19 +36,15 @@ Production (live domain):
 PUBLIC_SITE_ENV=production SITE=https://twinsintheloop.com BASE_PATH=/ bun run build
 ```
 
-Staging locally (noindex, site root — useful to inspect robots tags):
+Staging (noindex — useful to inspect robots tags):
 
 ```bash
 PUBLIC_SITE_ENV=staging SITE=https://twinsintheloop.com BASE_PATH=/ bun run build
 ```
 
-Staging as GitHub Pages will serve it (matches CI):
+Or copy `.env.example` to `.env`. [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs a production-shaped check; [`.github/workflows/deploy-vercel.yml`](./.github/workflows/deploy-vercel.yml) ships production on a release tag. Staging is a Vercel Preview URL — see [docs/vercel.md](./docs/vercel.md).
 
-```bash
-PUBLIC_SITE_ENV=staging SITE=https://<owner>.github.io BASE_PATH=/<repo> bun run build
-```
-
-Or copy `.env.example` to `.env` and uncomment the matching block. GitHub Actions sets these in [`.github/workflows/deploy-pages.yml`](./.github/workflows/deploy-pages.yml) (staging) and [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) (production-shaped check). See [docs/github-pages.md](./docs/github-pages.md) to publish staging.
+The `STRAPI_*` variables are read at request time, not build time. A build succeeds without them.
 
 ## Checks
 
@@ -59,8 +55,8 @@ bun run test
 bun run build
 ```
 
-Content lives in `src/content`. Page copy should be edited there, not in Astro layouts.
+Blog posts come from Strapi — see [docs/strapi.md](./docs/strapi.md). Other page copy lives in `src/content` and should be edited there, not in Astro layouts. (`src/content/posts/` is kept as reference only; no route reads it.)
 
-See [docs/](./docs/README.md) for how to add posts, change About/authors/footer copy, update SEO, [publish staging on GitHub Pages](./docs/github-pages.md), and [deploy production on Vercel](./docs/vercel.md).
+See [docs/](./docs/README.md) for how to add posts, change About/authors/footer copy, update SEO, and [deploy production on Vercel](./docs/vercel.md).
 
 Alliance No.1 is the UI font. DejaVu Sans Mono is used for author tags (`public/fonts/DejaVuSansMono-*.woff`).

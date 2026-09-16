@@ -1,14 +1,15 @@
 ---
 import { withBase } from '../../lib/siteEnv';
-import { TOPIC_LABELS, type TopicId } from '../../lib/types';
+import type { Topic } from '../../lib/strapi/topics';
+import type { TopicId } from '../../lib/types';
 import Chip from '../ui/Chip.astro';
 
 interface Props {
+  topics: Topic[];
   current?: TopicId;
 }
 
-const { current } = Astro.props;
-const topics: TopicId[] = ['data-centers', 'infrastructure', 'hardware', 'ai'];
+const { topics, current } = Astro.props;
 ---
 
 <div class="flex flex-wrap items-center gap-4">
@@ -18,11 +19,11 @@ const topics: TopicId[] = ['data-centers', 'infrastructure', 'hardware', 'ai'];
     {
       topics.map((topic) => (
         <Chip
-          href={withBase(`/?topic=${topic}`)}
-          active={current === topic}
-          data-topic={topic}
+          href={withBase(`/?topic=${topic.slug}`)}
+          active={current === topic.slug}
+          data-topic={topic.slug}
         >
-          {TOPIC_LABELS[topic]}
+          {topic.name}
         </Chip>
       ))
     }

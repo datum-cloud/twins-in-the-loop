@@ -1,6 +1,6 @@
 ---
-import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
+import type { PostCover } from '../../lib/strapi/posts';
 import type { AuthorId, ContentType, TopicId } from '../../lib/types';
 import { formatPostDate } from '../../lib/dates';
 import {
@@ -18,7 +18,7 @@ interface Props {
   published: Date;
   author: AuthorId;
   type: ContentType;
-  cover?: ImageMetadata;
+  cover?: PostCover;
   topics: TopicId[];
 }
 
@@ -53,8 +53,10 @@ switch (author) {
       {
         cover ? (
           <Image
-            src={cover}
-            alt=""
+            src={cover.src}
+            alt={cover.alt}
+            width={cover.width}
+            height={cover.height}
             widths={thumbnailWidths(cover.width)}
             sizes={CARD_THUMBNAIL_SIZES}
             format={OPTIMIZED_IMAGE_FORMAT}

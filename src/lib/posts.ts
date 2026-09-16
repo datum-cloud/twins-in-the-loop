@@ -1,5 +1,5 @@
 import type { AuthorFilter, AuthorId, TopicId } from './types';
-import { isAuthorFilter, isTopicId } from './types';
+import { isAuthorFilter } from './types';
 
 export interface FilterablePost {
   id: string;
@@ -15,17 +15,21 @@ export interface PostFilters {
 }
 
 export function parseFilters(search: string | URLSearchParams): PostFilters {
-  const params = typeof search === 'string' ? new URLSearchParams(search) : search;
+  const params =
+    typeof search === 'string' ? new URLSearchParams(search) : search;
   const topicRaw = params.get('topic') ?? '';
   const authorRaw = params.get('author') ?? 'all';
 
   return {
-    topic: isTopicId(topicRaw) ? topicRaw : undefined,
+    topic: topicRaw || undefined,
     author: isAuthorFilter(authorRaw) ? authorRaw : 'all',
   };
 }
 
-export function matchesFilters(post: FilterablePost, filters: PostFilters): boolean {
+export function matchesFilters(
+  post: FilterablePost,
+  filters: PostFilters,
+): boolean {
   if (filters.author !== 'all' && post.author !== filters.author) {
     return false;
   }
@@ -37,15 +41,24 @@ export function matchesFilters(post: FilterablePost, filters: PostFilters): bool
   return true;
 }
 
-export function filterPosts<T extends FilterablePost>(posts: T[], filters: PostFilters): T[] {
+export function filterPosts<T extends FilterablePost>(
+  posts: T[],
+  filters: PostFilters,
+): T[] {
   return posts.filter((post) => matchesFilters(post, filters));
 }
 
-export function sortByPublishedDesc<T extends { published: Date }>(posts: T[]): T[] {
-  return [...posts].sort((a, b) => b.published.getTime() - a.published.getTime());
+export function sortByPublishedDesc<T extends { published: Date }>(
+  posts: T[],
+): T[] {
+  return [...posts].sort(
+    (a, b) => b.published.getTime() - a.published.getTime(),
+  );
 }
 
-export function splitFeatured<T extends FilterablePost>(posts: T[]): {
+export function splitFeatured<T extends FilterablePost>(
+  posts: T[],
+): {
   featured: T[];
   rest: T[];
 } {
@@ -55,7 +68,9 @@ export function splitFeatured<T extends FilterablePost>(posts: T[]): {
   };
 }
 
-export function partitionByAuthor<T extends FilterablePost>(posts: T[]): {
+export function partitionByAuthor<T extends FilterablePost>(
+  posts: T[],
+): {
   zac: T[];
   jacob: T[];
 } {

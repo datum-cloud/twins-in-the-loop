@@ -1,31 +1,30 @@
-import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections';
-import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers';
 import mdx from '@astrojs/mdx';
-import sitemap from '@astrojs/sitemap';
+import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import expressiveCode from 'astro-expressive-code';
 
-const isProduction = process.env.PUBLIC_SITE_ENV === 'production';
+import { expressiveCodeOptions } from './src/lib/expressiveCodeOptions.ts';
+import { strapiMediaHostname } from './src/lib/strapi/mediaHost.ts';
 
 export default defineConfig({
   site: process.env.SITE ?? 'https://twinsintheloop.com',
   base: process.env.BASE_PATH || '/',
+  output: 'server',
+  adapter: vercel({ imageService: true }),
   server: {
     port: 7788,
   },
-  integrations: [
-    expressiveCode({
-      plugins: [pluginCollapsibleSections(), pluginLineNumbers()],
-      themes: ['github-dark', 'github-light'],
-      styleOverrides: {
-        borderRadius: '0',
-      },
-    }),
-    mdx(),
-    ...(isProduction ? [sitemap()] : []),
-  ],
+  image: {
+    domains: [strapiMediaHostname()],
+  },
+  // The same options drive `renderPostBody()` via `rehype-expressive-code`, so
+  // Strapi bodies and MDX pages render code blocks identically.
+  integrations: [expressiveCode(expressiveCodeOptions), mdx()],
   vite: {
     plugins: [tailwindcss()],
+    // The revalidate package pins zod@^3; bundling it avoids a dual-instance
+    // mismatch if this project ever adds zod at a different major.
+    ssr: { noExternal: ['zod'] },
   },
 });

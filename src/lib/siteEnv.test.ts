@@ -41,7 +41,7 @@ describe('robotsTxt', () => {
     expect(
       robotsTxt({ indexable: true, site: 'https://twinsintheloop.com' }),
     ).toBe(
-      'User-agent: *\nAllow: /\nSitemap: https://twinsintheloop.com/sitemap-index.xml\n',
+      'User-agent: *\nAllow: /\nSitemap: https://twinsintheloop.com/sitemap.xml\n',
     );
   });
 });

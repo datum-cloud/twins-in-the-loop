@@ -1,7 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
-import { AUTHOR_IDS, CONTENT_TYPES, TOPIC_IDS } from './lib/types';
+import { AUTHOR_IDS, CONTENT_TYPES } from './lib/types';
 
 const ogType = z.enum(['website', 'article']);
 
@@ -30,7 +30,9 @@ const posts = defineCollection({
         .object({
           title: z.string().optional(),
           description: z.string().optional(),
-          image: z.union([z.string().startsWith('/'), z.url(), image()]).optional(),
+          image: z
+            .union([z.string().startsWith('/'), z.url(), image()])
+            .optional(),
           type: ogType.default('article'),
         })
         .optional(),
@@ -38,7 +40,7 @@ const posts = defineCollection({
       updated: z.coerce.date().optional(),
       author: z.enum(AUTHOR_IDS),
       type: z.enum(CONTENT_TYPES),
-      topics: z.array(z.enum(TOPIC_IDS)).min(1),
+      topics: z.array(z.string()).min(1),
       excerpt: z.string(),
       cover: image().optional(),
       featured: z.boolean().default(false),
@@ -57,7 +59,9 @@ const pages = defineCollection({
         .object({
           title: z.string().optional(),
           description: z.string().optional(),
-          image: z.union([z.string().startsWith('/'), z.url(), image()]).optional(),
+          image: z
+            .union([z.string().startsWith('/'), z.url(), image()])
+            .optional(),
           type: ogType.default('website'),
         })
         .optional(),
@@ -74,7 +78,9 @@ const authors = defineCollection({
         .object({
           title: z.string().optional(),
           description: z.string().optional(),
-          image: z.union([z.string().startsWith('/'), z.url(), image()]).optional(),
+          image: z
+            .union([z.string().startsWith('/'), z.url(), image()])
+            .optional(),
           type: ogType.default('website'),
         })
         .optional(),

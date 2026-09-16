@@ -38,30 +38,57 @@ describe('parseFilters', () => {
   });
 
   it('reads valid topic and author query params', () => {
-    expect(parseFilters('topic=ai&author=zac')).toEqual({ topic: 'ai', author: 'zac' });
+    expect(parseFilters('topic=ai&author=zac')).toEqual({
+      topic: 'ai',
+      author: 'zac',
+    });
   });
 
-  it('ignores unknown values', () => {
-    expect(parseFilters('topic=space&author=both')).toEqual({ topic: undefined, author: 'all' });
+  it('falls back to "all" for an unknown author', () => {
+    expect(parseFilters('author=both')).toEqual({
+      topic: undefined,
+      author: 'all',
+    });
+  });
+
+  // Topics are defined in Strapi, so any slug is passed through; one that
+  // matches no post simply filters everything out.
+  it('passes an arbitrary topic slug through', () => {
+    expect(parseFilters('topic=quantum-brunch')).toEqual({
+      topic: 'quantum-brunch',
+      author: 'all',
+    });
+  });
+
+  it('treats an empty topic as no filter', () => {
+    expect(parseFilters('topic=&author=zac')).toEqual({
+      topic: undefined,
+      author: 'zac',
+    });
   });
 });
 
 describe('filterPosts', () => {
   it('filters by author', () => {
-    expect(filterPosts(posts, { author: 'jacob' }).map((post) => post.id)).toEqual(['b']);
+    expect(
+      filterPosts(posts, { author: 'jacob' }).map((post) => post.id),
+    ).toEqual(['b']);
   });
 
   it('filters by topic', () => {
-    expect(filterPosts(posts, { author: 'all', topic: 'ai' }).map((post) => post.id)).toEqual([
-      'a',
-      'c',
-    ]);
+    expect(
+      filterPosts(posts, { author: 'all', topic: 'ai' }).map((post) => post.id),
+    ).toEqual(['a', 'c']);
   });
 });
 
 describe('sortByPublishedDesc', () => {
   it('orders newest first', () => {
-    expect(sortByPublishedDesc(posts).map((post) => post.id)).toEqual(['a', 'b', 'c']);
+    expect(sortByPublishedDesc(posts).map((post) => post.id)).toEqual([
+      'a',
+      'b',
+      'c',
+    ]);
   });
 });
 

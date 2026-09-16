@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import { render } from 'astro:content';
 import { getEntry } from 'astro:content';
 import AuthorCard from '../components/about/AuthorCard.astro';
@@ -51,15 +53,21 @@ const siteSeo = {
   }}
 >
   <PageHero>
-    <h1 class="text-5xl font-semibold leading-14.5 tracking-heading text-white">{page.data.heading}</h1>
+    <h1 class="tracking-heading text-5xl leading-14.5 font-semibold text-white">
+      {page.data.heading}
+    </h1>
   </PageHero>
   <Container columns="12" class="py-20">
     <div class="col-span-full min-w-0 lg:col-span-8 lg:col-start-5">
       <Prose variant="intro">
         <Content />
       </Prose>
-      <h2 class="mt-12 text-4xl font-semibold tracking-section">Meet the twins</h2>
-      <div class="mt-8 grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20">
+      <h2 class="tracking-section mt-12 text-4xl font-semibold">
+        Meet the twins
+      </h2>
+      <div
+        class="mt-8 grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+      >
         {
           authors.map((author) => {
             if (!isAuthorId(author.id)) {

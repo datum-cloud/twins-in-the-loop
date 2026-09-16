@@ -1,22 +1,45 @@
 # Edit content
 
-The site is an MDX CMS. Change copy in `src/content/`, not in Astro pages.
+**Blog posts live in Strapi**, not in this repo. Everything else is still MDX in `src/content/`.
 
-| Collection | Folder                          | What it drives                                     |
-| ---------- | ------------------------------- | -------------------------------------------------- |
-| Posts      | `src/content/posts/*.mdx`       | Article pages at `/{filename}`                     |
-| Pages      | `src/content/pages/*.mdx`       | Static pages. `about.mdx` is `/about`              |
-| Authors    | `src/content/authors/*.mdx`     | About cards and article bylines                    |
-| Site       | `src/content/site/settings.mdx` | Homepage SEO, footer, socials, default share image |
+| Content | Where                           | What it drives                                     |
+| ------- | ------------------------------- | -------------------------------------------------- |
+| Posts   | Strapi → **Twins Post**         | Article pages at `/{slug}`, homepage, RSS, sitemap |
+| Topics  | Strapi → **Topic**              | Homepage filter chips                              |
+| Pages   | `src/content/pages/*.mdx`       | Static pages. `about.mdx` is `/about`              |
+| Authors | `src/content/authors/*.mdx`     | About cards and article bylines                    |
+| Site    | `src/content/site/settings.mdx` | Homepage SEO, footer, socials, default share image |
 
-Allowed field values are enforced in `src/content.config.ts`. Invalid frontmatter fails `bun run check` and `bun run build`.
+> `src/content/posts/*.mdx` is kept as **reference only**. No route reads it — editing those files changes nothing on the site.
+
+Allowed field values for the MDX collections are enforced in `src/content.config.ts`. Invalid frontmatter fails `bun run check` and `bun run build`.
 
 ## Add a blog post
 
-1. Put a cover image in `src/assets/covers/` if the post should have a card/hero image. PNG or JPEG. Aim for a landscape crop similar to existing covers.
-2. Create `src/content/posts/my-post-slug.mdx`.
-3. The **filename without `.mdx` is the URL**. `my-post-slug.mdx` becomes `https://twinsintheloop.com/my-post-slug`.
-4. Fill frontmatter, then write the body in Markdown (MDX).
+1. In Strapi, create a **Twins Post** entry.
+2. The **slug** is the URL: `my-post-slug` becomes `https://twinsintheloop.com/my-post-slug`.
+3. Write the body in a **Rich text** block under `blocks`. Markdown is supported, including fenced code blocks.
+4. Attach a **cover** image and pick one or more **topics**.
+5. **Publish**. The site picks it up within about a minute — no rebuild and no deploy.
+
+Two values must match the site's code, which is compile-time locked in `src/lib/types.ts`:
+
+- `author` — `zac` or `jacob`
+- `type` — `post`, `musing`, `video`, or `podcast`
+
+A post with an unrecognised `author` or `type` is **skipped entirely** and will not appear on the site. Each drives styling that has to exist in code (author colours, content-type icons), so adding a third author or a new content type needs a developer.
+
+## Add a topic
+
+Create a **Topic** entry in Strapi. That's all — no code change and no redeploy. The filter chips on the homepage are built from the Topic collection, labelled with the topic's `name`, and sorted alphabetically. Assign it to posts from the post's `topics` field.
+
+A topic with no posts still shows a chip that filters everything out, so delete unused ones.
+
+A cover only renders if Strapi knows its width and height, which it records automatically on upload. Posts without a cover show a solid panel instead, and `/og/{slug}.jpg` returns 404 so the share card falls back to `/images/og-news.jpg`.
+
+### If a published change doesn't appear
+
+The site caches Strapi responses for 24 hours and relies on a webhook to purge that cache on publish. If an edit isn't showing up, the webhook is the first thing to check — see [vercel.md](./vercel.md#cache-invalidation-webhook).
 
 ```yaml
 ---

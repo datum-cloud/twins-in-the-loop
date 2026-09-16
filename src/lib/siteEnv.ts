@@ -30,7 +30,7 @@ export function robotsTxt(options: {
   }
 
   const sitemap = new URL(
-    'sitemap-index.xml',
+    'sitemap.xml',
     options.site ?? 'https://twinsintheloop.com',
   ).toString();
 

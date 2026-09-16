@@ -4,13 +4,12 @@ export type AuthorId = (typeof AUTHOR_IDS)[number];
 export const CONTENT_TYPES = ['post', 'musing', 'video', 'podcast'] as const;
 export type ContentType = (typeof CONTENT_TYPES)[number];
 
-export const TOPIC_IDS = [
-  'ai',
-  'data-centers',
-  'infrastructure',
-  'hardware',
-] as const;
-export type TopicId = (typeof TOPIC_IDS)[number];
+/**
+ * Topics are defined in Strapi, not here. Nothing renders per-topic styling or
+ * assets, so a new topic needs no code change — unlike `AuthorId` (drives
+ * `shadow-*` classes) and `ContentType` (drives icon names), which stay locked.
+ */
+export type TopicId = string;
 
 export const AUTHOR_FILTERS = ['all', 'zac', 'jacob'] as const;
 export type AuthorFilter = (typeof AUTHOR_FILTERS)[number];
@@ -33,13 +32,6 @@ export const ICON_NAMES = [
   'link',
 ] as const;
 export type IconName = (typeof ICON_NAMES)[number];
-
-export const TOPIC_LABELS: Record<TopicId, string> = {
-  ai: 'AI',
-  'data-centers': 'Data Centers',
-  infrastructure: 'Infrastructure',
-  hardware: 'Hardware',
-};
 
 export const AUTHOR_LABELS: Record<AuthorId, string> = {
   zac: 'Zac',
@@ -89,10 +81,6 @@ export function socialLinkLabel(name: SocialNetworkId): string {
 
 export function isAuthorId(value: string): value is AuthorId {
   return (AUTHOR_IDS as readonly string[]).includes(value);
-}
-
-export function isTopicId(value: string): value is TopicId {
-  return (TOPIC_IDS as readonly string[]).includes(value);
 }
 
 export function isAuthorFilter(value: string): value is AuthorFilter {
