@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.1.2...v1.2.0) (2026-09-16)
+
+
+### Features
+
+* add Strapi cache purge and document the webhook URL ([d814fa2](https://github.com/datum-cloud/twins-in-the-loop/commit/d814fa2604d3841a89bc01c4aa88f078b0f70c43))
+* serve posts and topics from Strapi on Vercel SSR ([b2fa46c](https://github.com/datum-cloud/twins-in-the-loop/commit/b2fa46c58b649cb417631abc1e9245490c967b63))
+* serve posts and topics from Strapi on Vercel SSR ([#20](https://github.com/datum-cloud/twins-in-the-loop/issues/20)) ([6fb6f9a](https://github.com/datum-cloud/twins-in-the-loop/commit/6fb6f9a39ace3015f5f88d33496f250c4192013a))
+
 ## [1.1.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.1.1...v1.1.2) (2026-09-10)
 
 
