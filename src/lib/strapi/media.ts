@@ -1,14 +1,8 @@
+import { readStrapiEnv } from './env';
 import { strapiUrl } from './revalidate';
 
-const readEnv = (name: string): string | undefined => {
-  const value = import.meta.env[name] ?? process.env[name];
-  return typeof value === 'string' && value.trim().length > 0
-    ? value.trim()
-    : undefined;
-};
-
 /** Strapi Cloud serves uploads from a CDN host; local dev serves them relative to the API. */
-const mediaBase = (readEnv('STRAPI_ASSETS_URL') ?? strapiUrl).replace(
+const mediaBase = (readStrapiEnv('STRAPI_ASSETS_URL') ?? strapiUrl).replace(
   /\/$/,
   '',
 );

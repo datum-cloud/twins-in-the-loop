@@ -166,6 +166,10 @@ const listOptions: FetchOptions = {
   populate: POPULATE,
 };
 
+export async function getPublishedPosts(): Promise<Post[]> {
+  return fetchPosts();
+}
+
 export async function fetchPosts(): Promise<Post[]> {
   const records = await fetchCollection<StrapiPostRecord>(
     'twins-posts',

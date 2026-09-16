@@ -1,6 +1,4 @@
 import { getCollection, getEntry } from 'astro:content';
-import { fetchPosts } from './strapi/posts';
-import { fetchTopics } from './strapi/topics';
 import { AUTHOR_IDS, type AuthorId } from './types';
 
 export async function getSiteSettings() {
@@ -10,19 +8,6 @@ export async function getSiteSettings() {
   }
 
   return entry.data;
-}
-
-/**
- * Posts come from Strapi. `src/content/posts/` is kept as reference material
- * and is deliberately no longer read by any route.
- */
-export async function getPublishedPosts() {
-  return fetchPosts();
-}
-
-/** Topic filter chips. Defined in Strapi; adding one needs no code change. */
-export async function getTopics() {
-  return fetchTopics();
 }
 
 export async function getAuthors() {

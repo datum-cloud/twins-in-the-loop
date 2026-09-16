@@ -1,5 +1,5 @@
 import type { APIContext } from 'astro';
-import { getPublishedPosts } from '../lib/content';
+import { getPublishedPosts } from '../lib/strapi/posts';
 import { setCdnCacheHeaders } from '../lib/httpCache';
 import { isSiteIndexable, withBase } from '../lib/siteEnv';
 
