@@ -23,3 +23,7 @@ export async function fetchTopics(): Promise<Topic[]> {
     .filter((topic) => topic.slug && topic.name)
     .map(({ slug, name }) => ({ slug, name }));
 }
+
+export async function getTopics(): Promise<Topic[]> {
+  return fetchTopics();
+}

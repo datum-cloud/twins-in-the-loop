@@ -24,7 +24,7 @@ The site is `output: 'server'` on `@astrojs/vercel`. Only `/about` and `/robots.
 | Markdown → HTML                | `src/lib/markdown.ts`             |
 | Webhook receiver               | `src/pages/api/strapi-webhook.ts` |
 
-`src/lib/content.ts` is the single seam. `getPublishedPosts()` is the only thing that changed when posts moved to Strapi — `index.astro`, `rss.xml.ts`, `sitemap.xml.ts`, and every `components/article/*` consume the same shape as before.
+`src/lib/content.ts` is the MDX seam (site settings, authors). Posts and topics come from `src/lib/strapi/posts.ts` and `topics.ts` so prerendered routes like `/about` never import the CMS client. `index.astro`, `rss.xml.ts`, `sitemap.xml.ts`, and every `components/article/*` consume the same post shape as before.
 
 ## Why it is built this way
 

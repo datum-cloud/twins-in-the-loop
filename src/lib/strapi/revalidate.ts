@@ -5,6 +5,7 @@ import {
 } from '@datum-cloud/strapi-revalidate';
 
 import { VercelRuntimeCacheDriver } from './cacheDriver';
+import { readStrapiEnv, strapiOrigin } from './env';
 import { purgeStrapiCaches } from './purge';
 
 export const POSTS_TAG = 'twins-posts';
@@ -29,16 +30,9 @@ const TAG_MAP: Record<string, string[]> = {
   'api::topic.topic': [POSTS_TAG],
 };
 
-const readEnv = (name: string): string | undefined => {
-  const value = import.meta.env[name] ?? process.env[name];
-  return typeof value === 'string' && value.trim().length > 0
-    ? value.trim()
-    : undefined;
-};
-
-export const strapiUrl = readEnv('STRAPI_URL') ?? 'http://localhost:1337';
-export const strapiToken = readEnv('STRAPI_TOKEN');
-export const webhookSecret = readEnv('STRAPI_WEBHOOK_SECRET');
+export const strapiUrl = strapiOrigin();
+export const strapiToken = readStrapiEnv('STRAPI_TOKEN');
+export const webhookSecret = readStrapiEnv('STRAPI_WEBHOOK_SECRET');
 
 export const config = revalidateConfigSchema.parse({
   url: strapiUrl,
