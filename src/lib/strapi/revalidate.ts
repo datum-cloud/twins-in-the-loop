@@ -5,6 +5,7 @@ import {
 } from '@datum-cloud/strapi-revalidate';
 
 import { VercelRuntimeCacheDriver } from './cacheDriver';
+import { purgeStrapiCaches } from './purge';
 
 export const POSTS_TAG = 'twins-posts';
 export const POSTS_LIST_KEY = 'twins-posts-list';
@@ -63,4 +64,15 @@ export const cache = new CacheManager({
  */
 export async function deleteFallback(key: string): Promise<void> {
   await fallbackDriver.delete(key);
+}
+
+/** Expire the Strapi collection tag and drop every fallback entry. */
+export async function purgeStrapiCache(): Promise<void> {
+  await purgeStrapiCaches(
+    {
+      invalidate: (tag) => cache.invalidate(tag),
+      clearFallback: () => fallbackDriver.clear(),
+    },
+    POSTS_TAG,
+  );
 }

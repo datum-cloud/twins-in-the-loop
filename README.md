@@ -46,6 +46,28 @@ Or copy `.env.example` to `.env`. [`.github/workflows/ci.yml`](./.github/workflo
 
 The `STRAPI_*` variables are read at request time, not build time. A build succeeds without them.
 
+## Strapi cache webhook
+
+Publishing in Strapi does not rebuild the site. Register a webhook so the runtime cache is purged and re-warmed.
+
+In Strapi Admin → **Settings → Webhooks → Create new webhook**:
+
+| Field  | Value                                                                                              |
+| ------ | -------------------------------------------------------------------------------------------------- |
+| URL    | `https://twinsintheloop.com/api/strapi-webhook`                                                    |
+| Header | `Authorization: Bearer <STRAPI_WEBHOOK_SECRET>`                                                    |
+| Events | `entry.publish`, `entry.unpublish`, `entry.update`, `entry.delete` on **Twins Post** and **Topic** |
+
+The secret must match `STRAPI_WEBHOOK_SECRET` on Vercel (and in `.env` locally). A successful call returns `{"ok":true,"tags":["twins-posts", ...]}` — the tag must be the plural `twins-posts`. If the secret is unset, the endpoint returns **503**.
+
+Strapi Cloud cannot reach `localhost`. For local cache, with `bun run dev` already running:
+
+```bash
+bun run cache:clear
+```
+
+Details: [docs/vercel.md](./docs/vercel.md#cache-invalidation-webhook), [docs/strapi.md](./docs/strapi.md).
+
 ## Checks
 
 ```bash
