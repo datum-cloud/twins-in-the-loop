@@ -5,37 +5,24 @@ import {
 import type { APIRoute } from 'astro';
 
 import {
-  POSTS_LIST_KEY,
   cache,
   config,
   deleteFallback,
   postKey,
 } from '../../lib/strapi/revalidate';
-import { fetchPostBySlug, fetchPosts } from '../../lib/strapi/posts';
+import {
+  fetchPostBySlug,
+  loadPublishedPostRecords,
+} from '../../lib/strapi/posts';
+import { warmAfterRevalidate } from '../../lib/strapi/warm';
 
-/** Events meaning "this entry no longer exists" — don't try to re-warm the slug. */
-const DELETE_EVENTS = new Set(['entry.delete', 'entry.unpublish']);
-
-async function warmAfterRevalidate(event: WebhookEvent): Promise<void> {
-  await fetchPosts();
-  if ((await cache.get(POSTS_LIST_KEY)) === null) {
-    throw new Error('Cache warm failed: primary cache miss for the post list');
-  }
-
-  if (!event.slug) return;
-
-  if (DELETE_EVENTS.has(event.event)) {
-    // The fetch layer can't distinguish "Strapi returned no rows" from "Strapi
-    // was unreachable", so without this the deleted post keeps being served
-    // from the fallback cache indefinitely.
-    await deleteFallback(postKey(event.slug));
-    return;
-  }
-
-  const post = await fetchPostBySlug(event.slug);
-  if (!post) {
-    throw new Error(`Cache warm failed: could not load post "${event.slug}"`);
-  }
+async function onRevalidate(event: WebhookEvent): Promise<void> {
+  await warmAfterRevalidate(event, {
+    loadPostList: () => loadPublishedPostRecords('origin'),
+    loadPostBySlug: (slug) => fetchPostBySlug(slug, 'origin'),
+    deleteFallback,
+    postKey,
+  });
 }
 
 const handle = createWebhookHandler({
@@ -44,11 +31,20 @@ const handle = createWebhookHandler({
     webhook: {
       ...config.webhook,
       failOnWarmError: true,
-      onRevalidate: warmAfterRevalidate,
+      onRevalidate,
     },
   },
   cache,
 });
+
+/** Strapi (and browsers) probe the URL with GET/HEAD; only POST revalidates. */
+export const HEAD: APIRoute = () => new Response(null, { status: 204 });
+
+export const GET: APIRoute = () =>
+  new Response(JSON.stringify({ ok: true, methods: ['POST'] }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
 
 export const POST: APIRoute = async ({ request }) => {
   // Fail closed. The package skips verification entirely when no secret is

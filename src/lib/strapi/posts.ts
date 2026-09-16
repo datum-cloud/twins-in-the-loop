@@ -6,7 +6,11 @@ import {
   isAuthorId,
   isContentType,
 } from '../types';
-import { type FetchOptions, fetchCollection } from './client';
+import {
+  type CollectionRead,
+  type FetchOptions,
+  fetchCollection,
+} from './client';
 import { strapiMediaUrl } from './media';
 import { POSTS_LIST_KEY, POSTS_TAG, postKey, postTag } from './revalidate';
 
@@ -170,26 +174,35 @@ export async function getPublishedPosts(): Promise<Post[]> {
   return fetchPosts();
 }
 
-export async function fetchPosts(): Promise<Post[]> {
-  const records = await fetchCollection<StrapiPostRecord>(
+export async function loadPublishedPostRecords(
+  read: CollectionRead = 'cache',
+): Promise<StrapiPostRecord[] | null> {
+  return fetchCollection<StrapiPostRecord>(
     'twins-posts',
     listOptions,
     {
       key: POSTS_LIST_KEY,
       tags: [POSTS_TAG],
     },
+    read,
   );
-
-  return normalizeAll(records);
 }
 
-export async function fetchPostBySlug(slug: string): Promise<Post | null> {
+export async function fetchPosts(): Promise<Post[]> {
+  return normalizeAll((await loadPublishedPostRecords()) ?? []);
+}
+
+export async function fetchPostBySlug(
+  slug: string,
+  read: CollectionRead = 'cache',
+): Promise<Post | null> {
   const records = await fetchCollection<StrapiPostRecord>(
     'twins-posts',
     { filters: { slug: { $eq: slug } }, populate: POPULATE },
     { key: postKey(slug), tags: [POSTS_TAG, postTag(slug)] },
+    read,
   );
 
-  const record = records[0];
+  const record = records?.[0];
   return record ? normalizePost(record) : null;
 }
