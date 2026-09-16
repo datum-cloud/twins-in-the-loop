@@ -4,7 +4,12 @@ import {
 } from '@datum-cloud/strapi-revalidate';
 import type { APIRoute } from 'astro';
 
-import { cache, config, deleteFallback, postKey } from '../../lib/strapi/revalidate';
+import {
+  cache,
+  config,
+  deleteFallback,
+  postKey,
+} from '../../lib/strapi/revalidate';
 import {
   fetchPostBySlug,
   loadPublishedPostRecords,

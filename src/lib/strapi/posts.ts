@@ -6,7 +6,11 @@ import {
   isAuthorId,
   isContentType,
 } from '../types';
-import { type CollectionRead, type FetchOptions, fetchCollection } from './client';
+import {
+  type CollectionRead,
+  type FetchOptions,
+  fetchCollection,
+} from './client';
 import { strapiMediaUrl } from './media';
 import { POSTS_LIST_KEY, POSTS_TAG, postKey, postTag } from './revalidate';
 
@@ -173,10 +177,15 @@ export async function getPublishedPosts(): Promise<Post[]> {
 export async function loadPublishedPostRecords(
   read: CollectionRead = 'cache',
 ): Promise<StrapiPostRecord[] | null> {
-  return fetchCollection<StrapiPostRecord>('twins-posts', listOptions, {
-    key: POSTS_LIST_KEY,
-    tags: [POSTS_TAG],
-  }, read);
+  return fetchCollection<StrapiPostRecord>(
+    'twins-posts',
+    listOptions,
+    {
+      key: POSTS_LIST_KEY,
+      tags: [POSTS_TAG],
+    },
+    read,
+  );
 }
 
 export async function fetchPosts(): Promise<Post[]> {

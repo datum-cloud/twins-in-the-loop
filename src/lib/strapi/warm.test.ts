@@ -12,7 +12,9 @@ const publish: WebhookEvent = {
   tags: ['twins-posts'],
 };
 
-function io(overrides: Partial<Parameters<typeof warmAfterRevalidate>[1]> = {}) {
+function io(
+  overrides: Partial<Parameters<typeof warmAfterRevalidate>[1]> = {},
+) {
   return {
     loadPostList: vi.fn(async () => [{ slug: 'on-device-ai' }]),
     loadPostBySlug: vi.fn(async () => ({ id: 'on-device-ai' })),
