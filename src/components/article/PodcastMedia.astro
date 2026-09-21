@@ -1,0 +1,44 @@
+---
+import { Image } from 'astro:assets';
+import type { Embed } from '../../lib/embed';
+import {
+  EPISODE_ART_SIZES,
+  OPTIMIZED_IMAGE_FORMAT,
+  OPTIMIZED_IMAGE_QUALITY,
+  episodeArtWidths,
+} from '../../lib/images';
+import type { PostCover } from '../../lib/strapi/posts';
+import MediaEmbed from './MediaEmbed.astro';
+
+interface Props {
+  embed: Embed;
+  title: string;
+  cover?: PostCover;
+}
+
+const { embed, title, cover } = Astro.props;
+---
+
+<div class="mb-10 flex flex-col gap-6 sm:flex-row sm:items-start">
+  {
+    cover ? (
+      <Image
+        src={cover.src}
+        alt={cover.alt}
+        width={cover.width}
+        height={cover.height}
+        widths={episodeArtWidths(cover.width)}
+        sizes={EPISODE_ART_SIZES}
+        format={OPTIMIZED_IMAGE_FORMAT}
+        quality={OPTIMIZED_IMAGE_QUALITY}
+        class="border-fjord aspect-square w-full border-2 object-cover sm:w-72 sm:shrink-0"
+      />
+    ) : null
+  }
+  <MediaEmbed
+    embed={embed}
+    title={title}
+    action="Listen"
+    class="min-w-0 flex-1"
+  />
+</div>

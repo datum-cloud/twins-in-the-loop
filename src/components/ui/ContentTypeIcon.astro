@@ -5,9 +5,11 @@ import Icon from './Icon.astro';
 interface Props {
   type: ContentType;
   size?: number;
+  alt?: string;
+  class?: string;
 }
 
-const { type, size = 20 } = Astro.props;
+const { type, size = 20, alt, class: className } = Astro.props;
 
 function iconFor(contentType: ContentType) {
   switch (contentType) {
@@ -24,4 +26,4 @@ function iconFor(contentType: ContentType) {
 }
 ---
 
-<Icon name={iconFor(type)} size={size} />
+<Icon name={iconFor(type)} size={size} alt={alt} class={className} />

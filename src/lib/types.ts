@@ -44,12 +44,37 @@ export const AUTHOR_FILTER_LABELS: Record<AuthorFilter, string> = {
   jacob: 'Jacob only',
 };
 
+/** Shown next to the date in the article hero, except on plain posts. */
+export const CONTENT_TYPE_LABELS: Record<ContentType, string> = {
+  post: 'Article',
+  musing: 'Musing',
+  video: 'Video',
+  podcast: 'Podcast',
+};
+
 export const CONTENT_TYPE_ICONS: Record<ContentType, IconName> = {
   post: 'notepad-text',
   musing: 'message-square-quote',
   video: 'circle-play',
   podcast: 'audio-lines',
 };
+
+export function relatedHeading(type: ContentType): string {
+  switch (type) {
+    case 'post':
+      return 'More articles:';
+    case 'musing':
+      return 'More musings:';
+    case 'video':
+      return 'More videos:';
+    case 'podcast':
+      return 'More episodes:';
+    default: {
+      const _exhaustive: never = type;
+      return _exhaustive;
+    }
+  }
+}
 
 export const SOCIAL_NETWORK_IDS = [
   'github',

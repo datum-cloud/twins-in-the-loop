@@ -1,0 +1,61 @@
+---
+import type { Embed } from '../../lib/embed';
+import Button from '../ui/Button.astro';
+
+interface Props {
+  embed: Embed;
+  /** Names the frame for screen readers, and labels the outbound fallback. */
+  title: string;
+  action: 'Watch' | 'Listen';
+  class?: string;
+}
+
+const { embed, title, action, class: className } = Astro.props;
+
+const IFRAME_ALLOW =
+  'accelerometer; autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+
+let shell: string;
+switch (embed.kind) {
+  case 'iframe':
+    shell =
+      embed.shape === 'video'
+        ? 'border-fjord bg-fjord aspect-video w-full border-2'
+        : 'h-45 w-full bg-transparent';
+    break;
+  case 'audio':
+    shell = 'border-fjord bg-mist w-full border-2 p-5';
+    break;
+  case 'external':
+    shell = 'flex';
+    break;
+  default: {
+    const _exhaustive: never = embed;
+    shell = _exhaustive;
+  }
+}
+---
+
+<div class:list={[shell, className]}>
+  {
+    embed.kind === 'iframe' ? (
+      <iframe
+        src={embed.src}
+        title={title}
+        loading="lazy"
+        allow={IFRAME_ALLOW}
+        allowfullscreen
+        referrerpolicy="strict-origin-when-cross-origin"
+        class="size-full border-0"
+      />
+    ) : embed.kind === 'audio' ? (
+      <audio src={embed.src} controls preload="metadata" class="w-full">
+        <a href={embed.src}>Download the audio</a>
+      </audio>
+    ) : (
+      <Button href={embed.href} variant="outline" icon="external-link" external>
+        {action} on {embed.hostLabel}
+      </Button>
+    )
+  }
+</div>

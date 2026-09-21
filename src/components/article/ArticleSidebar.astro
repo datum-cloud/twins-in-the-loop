@@ -1,20 +1,60 @@
 ---
+import Icon from '../ui/Icon.astro';
 import ShareActions from './ShareActions.astro';
+
+type Variant = 'tldr' | 'quote';
 
 interface Props {
   tldr: string;
   url: string;
   title: string;
   author: 'zac' | 'jacob';
+  /** Musings are too short for a summary, so they lead with a pull-quote. */
+  variant?: Variant;
 }
 
-const { tldr, url, title, author } = Astro.props;
+const { tldr, url, title, author, variant = 'tldr' } = Astro.props;
 const accent = author === 'zac' ? 'border-zac' : 'border-jacob';
+
+let heading: string;
+let bodyClass: string;
+switch (variant) {
+  case 'tldr':
+    heading = 'TL;DR';
+    bodyClass = 'text-lg leading-6.5';
+    break;
+  case 'quote':
+    heading = 'In short';
+    bodyClass = 'text-xl leading-7.5 italic';
+    break;
+  default: {
+    const _exhaustive: never = variant;
+    heading = _exhaustive;
+    bodyClass = _exhaustive;
+  }
+}
 ---
 
-<aside class:list={['col-span-full w-full max-w-92 self-start border-t-10 bg-mist p-10 lg:col-span-4', accent]}>
-  <p class="text-2xl font-semibold text-fjord">TL;DR</p>
-  <p class="mt-4 text-lg leading-6.5 text-fjord">{tldr}</p>
+<aside
+  class:list={[
+    'bg-mist col-span-full w-full max-w-92 self-start border-t-10 p-10 lg:col-span-4',
+    accent,
+  ]}
+>
+  {
+    variant === 'quote' ? (
+      <Icon name="message-square-quote" size={28} class="text-fjord" />
+    ) : null
+  }
+  <p
+    class:list={[
+      'text-fjord text-2xl font-semibold',
+      variant === 'quote' && 'mt-4',
+    ]}
+  >
+    {heading}
+  </p>
+  <p class:list={['text-fjord mt-4', bodyClass]}>{tldr}</p>
   <div class="mt-8">
     <ShareActions url={url} title={title} />
   </div>

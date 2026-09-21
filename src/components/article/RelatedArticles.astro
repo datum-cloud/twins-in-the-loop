@@ -1,5 +1,5 @@
 ---
-import type { AuthorId } from '../../lib/types';
+import type { AuthorId, ContentType } from '../../lib/types';
 import ArticleRow from './ArticleRow.astro';
 
 interface RelatedPost {
@@ -7,17 +7,19 @@ interface RelatedPost {
   title: string;
   published: Date;
   author: AuthorId;
+  type: ContentType;
 }
 
 interface Props {
   posts: RelatedPost[];
+  heading?: string;
 }
 
-const { posts } = Astro.props;
+const { posts, heading = 'More articles:' } = Astro.props;
 ---
 
 <section class="mt-16">
-  <h2 class="text-fjord text-2xl font-semibold">More articles:</h2>
+  <h2 class="text-fjord text-2xl font-semibold">{heading}</h2>
   <div class="border-fjord mt-6 border-t-2">
     {posts.map((post) => <ArticleRow {...post} neutral />)}
   </div>

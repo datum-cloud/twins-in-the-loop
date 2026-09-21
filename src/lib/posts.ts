@@ -1,4 +1,4 @@
-import type { AuthorFilter, AuthorId, TopicId } from './types';
+import type { AuthorFilter, AuthorId, ContentType, TopicId } from './types';
 import { isAuthorFilter } from './types';
 
 export interface FilterablePost {
@@ -66,6 +66,21 @@ export function splitFeatured<T extends FilterablePost>(
     featured: posts.filter((post) => post.featured),
     rest: posts.filter((post) => !post.featured),
   };
+}
+
+/**
+ * Follow-on reading for an article page: same content type first, then the
+ * rest, so a podcast page leads with other episodes but never runs short.
+ */
+export function relatedPosts<T extends { id: string; type: ContentType }>(
+  posts: T[],
+  current: { id: string; type: ContentType },
+  limit: number,
+): T[] {
+  const others = posts.filter((post) => post.id !== current.id);
+  const sameType = others.filter((post) => post.type === current.type);
+  const rest = others.filter((post) => post.type !== current.type);
+  return [...sameType, ...rest].slice(0, limit);
 }
 
 export function partitionByAuthor<T extends FilterablePost>(

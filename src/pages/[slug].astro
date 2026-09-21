@@ -2,16 +2,21 @@
 import ArticleCover from '../components/article/ArticleCover.astro';
 import ArticleHero from '../components/article/ArticleHero.astro';
 import ArticleSidebar from '../components/article/ArticleSidebar.astro';
+import MediaEmbed from '../components/article/MediaEmbed.astro';
+import PodcastMedia from '../components/article/PodcastMedia.astro';
 import RelatedArticles from '../components/article/RelatedArticles.astro';
 import Container from '../components/ui/Container.astro';
 import Prose from '../components/ui/Prose.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAuthors, getSiteSettings } from '../lib/content';
+import { type Embed, parseEmbedUrl } from '../lib/embed';
 import { getPublishedPosts } from '../lib/strapi/posts';
 import { setCdnCacheHeaders } from '../lib/httpCache';
 import { renderPostBody } from '../lib/markdown';
+import { relatedPosts } from '../lib/posts';
 import { articleOgImage } from '../lib/seo';
 import { withBase } from '../lib/siteEnv';
+import { relatedHeading } from '../lib/types';
 
 setCdnCacheHeaders(Astro.response.headers);
 
@@ -22,16 +27,52 @@ if (!post) {
   return Astro.rewrite('/404');
 }
 
-const related = posts
-  .filter((entry) => entry.id !== post.id)
-  .slice(0, 4)
-  .map((entry) => ({
-    href: withBase(`/${entry.id}`),
-    title: entry.data.title,
-    published: entry.data.published,
-    author: entry.data.author,
-    topics: entry.data.topics,
-  }));
+const related = relatedPosts(
+  posts.map((entry) => ({
+    id: entry.id,
+    type: entry.data.type,
+    data: entry.data,
+  })),
+  { id: post.id, type: post.data.type },
+  4,
+).map((entry) => ({
+  href: withBase(`/${entry.id}`),
+  title: entry.data.title,
+  published: entry.data.published,
+  author: entry.data.author,
+  type: entry.data.type,
+  topics: entry.data.topics,
+}));
+
+const embed = parseEmbedUrl(post.data.embedUrl);
+
+// A working player already shows the poster frame, so the cover would repeat it.
+let showCover = Boolean(post.data.cover);
+let videoEmbed: Embed | undefined;
+let podcastEmbed: Embed | undefined;
+
+switch (post.data.type) {
+  case 'post':
+  case 'musing':
+    break;
+  case 'video':
+    videoEmbed = embed;
+    if (embed && embed.kind !== 'external') {
+      showCover = false;
+    }
+    break;
+  case 'podcast':
+    // PodcastMedia places the cover next to the player itself.
+    podcastEmbed = embed;
+    if (embed) {
+      showCover = false;
+    }
+    break;
+  default: {
+    const _exhaustive: never = post.data.type;
+    throw new Error(`Unhandled content type ${_exhaustive}`);
+  }
+}
 
 const site = await getSiteSettings();
 const authors = await getAuthors();
@@ -49,6 +90,55 @@ const siteSeo = {
   defaultOgImage: site.defaultOgImage,
 };
 const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
+
+const commonJsonLd = {
+  '@context': 'https://schema.org',
+  name: post.data.title,
+  description: post.data.description,
+  url: canonical,
+  author: {
+    '@type': 'Person',
+    name: author.data.name,
+  },
+  image: post.data.cover?.src,
+};
+
+let jsonLd: Record<string, unknown>;
+switch (post.data.type) {
+  case 'post':
+  case 'musing':
+    jsonLd = {
+      ...commonJsonLd,
+      '@type': 'BlogPosting',
+      headline: post.data.title,
+      datePublished: post.data.published.toISOString(),
+      dateModified: post.data.updated?.toISOString(),
+    };
+    break;
+  case 'video':
+    jsonLd = {
+      ...commonJsonLd,
+      '@type': 'VideoObject',
+      uploadDate: post.data.published.toISOString(),
+      thumbnailUrl: post.data.cover?.src,
+      embedUrl: post.data.embedUrl,
+    };
+    break;
+  case 'podcast':
+    jsonLd = {
+      ...commonJsonLd,
+      '@type': 'PodcastEpisode',
+      datePublished: post.data.published.toISOString(),
+      associatedMedia: post.data.embedUrl
+        ? { '@type': 'MediaObject', contentUrl: post.data.embedUrl }
+        : undefined,
+    };
+    break;
+  default: {
+    const _exhaustive: never = post.data.type;
+    throw new Error(`Unhandled content type ${_exhaustive}`);
+  }
+}
 ---
 
 <BaseLayout
@@ -74,18 +164,7 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
     copyrightName: site.copyright,
     socials: site.socials,
   }}
-  jsonLd={{
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: post.data.title,
-    datePublished: post.data.published.toISOString(),
-    author: {
-      '@type': 'Person',
-      name: author.data.name,
-    },
-    image: post.data.cover?.src,
-    dateModified: post.data.updated?.toISOString(),
-  }}
+  jsonLd={jsonLd}
 >
   <ArticleHero
     title={post.data.title}
@@ -94,6 +173,7 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
     authorRole={author.data.role}
     authorPhoto={author.data.photo}
     url={canonical}
+    type={post.data.type === 'post' ? undefined : post.data.type}
   />
   <Container columns="12" class="py-20">
     <ArticleSidebar
@@ -101,13 +181,40 @@ const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
       url={canonical}
       title={post.data.title}
       author={post.data.author}
+      variant={post.data.type === 'musing' ? 'quote' : 'tldr'}
     />
     <article class="col-span-full min-w-0 lg:col-span-8">
-      {post.data.cover ? <ArticleCover cover={post.data.cover} /> : null}
+      {
+        showCover && post.data.cover ? (
+          <ArticleCover cover={post.data.cover} />
+        ) : null
+      }
+      {
+        podcastEmbed ? (
+          <PodcastMedia
+            embed={podcastEmbed}
+            title={post.data.title}
+            cover={post.data.cover}
+          />
+        ) : null
+      }
+      {
+        videoEmbed ? (
+          <MediaEmbed
+            embed={videoEmbed}
+            title={post.data.title}
+            action="Watch"
+            class="mb-10"
+          />
+        ) : null
+      }
       <Prose>
         <Fragment set:html={body} />
       </Prose>
-      <RelatedArticles posts={related} />
+      <RelatedArticles
+        posts={related}
+        heading={relatedHeading(post.data.type)}
+      />
     </article>
   </Container>
 </BaseLayout>
