@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.2...v1.3.0) (2026-09-21)
+
+
+### Features
+
+* render musing, video, and podcast article pages ([c61c1da](https://github.com/datum-cloud/twins-in-the-loop/commit/c61c1daf546b49039f2c67b7c0f9f51b9d39cc6b))
+* render musing, video, and podcast article pages ([#26](https://github.com/datum-cloud/twins-in-the-loop/issues/26)) ([2725cc7](https://github.com/datum-cloud/twins-in-the-loop/commit/2725cc738feccb09829f8308be9e78b53ab238b3))
+
 ## [1.2.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.1...v1.2.2) (2026-09-16)
 
 
