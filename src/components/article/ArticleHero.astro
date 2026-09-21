@@ -8,6 +8,8 @@ import {
   OPTIMIZED_IMAGE_FORMAT,
   OPTIMIZED_IMAGE_QUALITY,
 } from '../../lib/images';
+import { CONTENT_TYPE_LABELS, type ContentType } from '../../lib/types';
+import ContentTypeIcon from '../ui/ContentTypeIcon.astro';
 import PageHero from '../layout/PageHero.astro';
 import ShareActions from './ShareActions.astro';
 
@@ -18,14 +20,26 @@ interface Props {
   authorRole: string;
   authorPhoto: ImageMetadata;
   url: string;
+  /** Omitted on plain posts, where the label would say nothing new. */
+  type?: ContentType;
 }
 
-const { title, published, authorName, authorRole, authorPhoto, url } =
+const { title, published, authorName, authorRole, authorPhoto, url, type } =
   Astro.props;
 ---
 
 <PageHero>
-  <p class="text-sm text-white/70">{formatPostDate(published)}</p>
+  <div class="flex items-center gap-4 text-sm text-white/70">
+    <p>{formatPostDate(published)}</p>
+    {
+      type ? (
+        <p class="flex items-center gap-2 font-mono uppercase">
+          <ContentTypeIcon type={type} size={16} />
+          {CONTENT_TYPE_LABELS[type]}
+        </p>
+      ) : null
+    }
+  </div>
   <h1
     class="tracking-heading mt-4 text-5xl leading-14.5 font-semibold text-white"
   >

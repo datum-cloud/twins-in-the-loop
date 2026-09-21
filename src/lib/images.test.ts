@@ -3,6 +3,7 @@ import {
   articleCoverWidths,
   authorAvatarWidths,
   authorPhotoWidths,
+  episodeArtWidths,
   logoStackedWidths,
   logoWideWidths,
   responsiveImageWidths,
@@ -36,6 +37,12 @@ describe('thumbnailWidths', () => {
 describe('articleCoverWidths', () => {
   it('uses the article cover candidate list', () => {
     expect(articleCoverWidths(1920)).toEqual([640, 960, 1280, 1600]);
+  });
+});
+
+describe('episodeArtWidths', () => {
+  it('uses the episode art candidate list', () => {
+    expect(episodeArtWidths(1000)).toEqual([288, 576]);
   });
 });
 

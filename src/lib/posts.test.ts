@@ -3,6 +3,7 @@ import {
   filterPosts,
   parseFilters,
   partitionByAuthor,
+  relatedPosts,
   sortByPublishedDesc,
   splitFeatured,
 } from './posts';
@@ -103,5 +104,28 @@ describe('splitFeatured and partitionByAuthor', () => {
     const { zac, jacob } = partitionByAuthor(posts);
     expect(zac.map((post) => post.id)).toEqual(['a', 'c']);
     expect(jacob.map((post) => post.id)).toEqual(['b']);
+  });
+});
+
+describe('relatedPosts', () => {
+  const typed = [
+    { id: 'a', type: 'podcast' as const },
+    { id: 'b', type: 'post' as const },
+    { id: 'c', type: 'podcast' as const },
+    { id: 'd', type: 'video' as const },
+  ];
+
+  it('leads with the same content type, then fills from the rest', () => {
+    expect(
+      relatedPosts(typed, { id: 'a', type: 'podcast' }, 3).map(
+        (post) => post.id,
+      ),
+    ).toEqual(['c', 'b', 'd']);
+  });
+
+  it('drops the current post and respects the limit', () => {
+    expect(
+      relatedPosts(typed, { id: 'b', type: 'post' }, 2).map((post) => post.id),
+    ).toEqual(['a', 'c']);
   });
 });

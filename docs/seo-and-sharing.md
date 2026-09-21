@@ -125,7 +125,7 @@ og:
 
 Articles with a `cover` and no `og.image` generate a 1200×675 JPEG at `/og/{slug}.jpg`: the cover is cropped to fill the card, then `src/assets/covers/frame.png` is laid on top (brand bar + wordmark). Posts without a cover still use `/images/og-news.jpg`.
 
-`embedUrl` is not an SEO field. It does not become `og:video` or a Twitter player card.
+`embedUrl` is not a share-card field. It renders a player on the page and feeds JSON-LD, but it does not become `og:video` or a Twitter player card.
 
 Homepage and About have no cover, so they use `og.image` or `defaultOgImage` (`/images/og-default.jpg`). Article share images use `og.image`, then the framed cover, then `/images/og-news.jpg`.
 
@@ -189,7 +189,7 @@ From `src/content/posts/{slug}.mdx`:
 - `description` → meta and RSS; `og.description` → social description when set
 - Share image: `og.image`, then framed cover `/og/{slug}.jpg`, then `/images/og-news.jpg`
 - `og.type` on posts defaults to `article` even if `og` is omitted
-- JSON-LD `BlogPosting` uses `title`, `published`, author `name`, and cover
+- JSON-LD follows `type`: `post` and `musing` are `BlogPosting`, `video` is `VideoObject` (with `embedUrl`), `podcast` is `PodcastEpisode`. All of them use `title`, `description`, `published`, author `name`, and cover
 - `embedUrl` is unused for meta tags
 
 ### RSS `/rss.xml`

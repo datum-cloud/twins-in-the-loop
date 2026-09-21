@@ -1,12 +1,19 @@
 ---
-import type { AuthorId, TopicId } from '../../lib/types';
+import {
+  CONTENT_TYPE_LABELS,
+  type AuthorId,
+  type ContentType,
+  type TopicId,
+} from '../../lib/types';
 import { formatListDate } from '../../lib/dates';
+import ContentTypeIcon from '../ui/ContentTypeIcon.astro';
 
 interface Props {
   href: string;
   title: string;
   published: Date;
   author: AuthorId;
+  type: ContentType;
   topics?: TopicId[];
   neutral?: boolean;
 }
@@ -16,6 +23,7 @@ const {
   title,
   published,
   author,
+  type,
   topics = [],
   neutral = false,
 } = Astro.props;
@@ -35,7 +43,15 @@ const border = neutral
   data-author={author}
   data-topics={topics.join(' ')}
 >
-  <span class="text-xl leading-7 font-semibold">{title}</span>
+  <span class="flex min-w-0 items-start gap-3">
+    <ContentTypeIcon
+      type={type}
+      size={20}
+      class="mt-0.5 shrink-0"
+      alt={CONTENT_TYPE_LABELS[type]}
+    />
+    <span class="text-xl leading-7 font-semibold">{title}</span>
+  </span>
   <time
     class="text-fjord/40 shrink-0 text-sm"
     datetime={published.toISOString()}
