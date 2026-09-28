@@ -2,6 +2,8 @@
 
 Datum Compute runs the site as a container on Datum Cloud, **alongside** Vercel. Vercel stays the production host for `twinsintheloop.com`; the Datum copy is a manually deployed staging target served on a Datum-managed `*.datumproxy.net` URL, `noindex` and without a sitemap.
 
+> **Known platform problem.** Instances currently have no outbound network access, so Strapi content does not load. Also create the Secret with `datumctl` (option A below): the console form can store values wrongly and break the instance. See the [Datum Compute report](./datum-compute-report.md) before deploying.
+
 | Thing            | Value                                                               |
 | ---------------- | ------------------------------------------------------------------- |
 | Datum project    | `project-2h27h` (org `personal-org-86e0525b`)                       |
@@ -33,7 +35,7 @@ The [`Dockerfile`](../Dockerfile) builds with `bun run build:container` on a `no
    datumctl services status compute.datumapis.com --project=project-2h27h
    ```
 
-2. **Create the Strapi Secret** in Datum Cloud. The workload reads it from the cloud by name, so either option works. Each key becomes an env var of the same name.
+2. **Create the Strapi Secret** in Datum Cloud. The workload reads it from the cloud by name. Each key becomes an env var of the same name.
 
    | Key                     | Required                        |
    | ----------------------- | ------------------------------- |
@@ -42,21 +44,28 @@ The [`Dockerfile`](../Dockerfile) builds with `bun run build:container` on a `no
    | `STRAPI_WEBHOOK_SECRET` | yes, or the webhook returns 503 |
    | `STRAPI_ASSETS_URL`     | no                              |
 
-   **A. Console.** Open [cloud.datum.net → project-2h27h → Secrets](https://cloud.datum.net/project/project-2h27h/secrets) → **New Secret**. Untick **Auto-generate**, set **Resource Name** to `twins-strapi-secrets` (it cannot be renamed later), keep **Type** `Opaque`, and add the keys above. To rotate a value, edit the Secret there.
-
-   **B. Manifest.** Copy [`datum/secret.example.yaml`](../datum/secret.example.yaml) to `datum/secret.yaml` (gitignored), fill in the values, then:
+   **A. Manifest via `datumctl` (recommended).** Copy [`datum/secret.example.yaml`](../datum/secret.example.yaml) to `datum/secret.yaml` (gitignored) and fill in the plain values under `stringData`. The API server does the base64 encoding. Then:
 
    ```bash
-   datumctl create -f datum/secret.yaml --project=project-2h27h
+   datumctl apply -f datum/secret.yaml --project=project-2h27h
    ```
 
-   To rotate values, use `datumctl apply -f datum/secret.yaml --project=project-2h27h`.
+   Re-run the same command to rotate values.
 
-   Either way, check it (values are not printed) and restart the workload after changing values:
+   **B. Console (avoid for tokens).** [cloud.datum.net → project-2h27h → Secrets](https://cloud.datum.net/project/project-2h27h/secrets) → **New Secret**, untick **Auto-generate**, **Resource Name** `twins-strapi-secrets`, **Type** `Opaque`.
+
+   > The form skips base64 encoding for values that already look like base64, such as the hex `STRAPI_TOKEN` and `STRAPI_WEBHOOK_SECRET`. The workload then gets binary bytes, and the instance fails with `ConfigurationError`. See [the bug write-up](./datum-compute-secret-bug.md). If you used the console, check that every value decodes to readable text:
+   >
+   > ```bash
+   > datumctl get secret twins-strapi-secrets --project=project-2h27h -o json \
+   >   | jq -r '.data | to_entries[] | .key + " printable=" + ((.value | @base64d) | test("^[[:print:]]+$") | tostring)'
+   > ```
+
+   After creating or changing the Secret, check it exists (values are not printed) and restart the workload:
 
    ```bash
    datumctl get secret twins-strapi-secrets --project=project-2h27h
-   datumctl compute restart twins-in-the-loop --project=project-2h27h
+   datumctl compute restart twins-secret --project=project-2h27h
    ```
 
    A Secret with another name works too: `SECRET_NAME=<name> ./datum/deploy.sh`. `deploy.sh` stops before deploying if the Secret is missing or lacks `STRAPI_URL`/`STRAPI_TOKEN`.
@@ -110,4 +119,6 @@ datumctl compute deploy twins-in-the-loop --project=project-2h27h --network=twin
 IMAGE=ghcr.io/datum-cloud/twins-in-the-loop:latest ./datum/deploy.sh
 ```
 
-**Posts missing or 5xx on post pages.** The Secret is missing or wrong. Check `datumctl get secret twins-strapi-secrets --project=project-2h27h` exists and holds `STRAPI_URL` and `STRAPI_TOKEN`.
+**Instance stuck in `ConfigurationError` after adding the Secret.** A Secret value is not valid text, usually because it was created in the console. Run the `printable=` check above, re-create the Secret with `datumctl apply`, then destroy and redeploy the workload: a broken instance is not replaced by a later deploy (datum-cloud/compute#297).
+
+**Posts missing.** First open `/api/diag` on the workload URL. If DNS lookups time out, the instance has no outbound network access (see the [report](./datum-compute-report.md)). Otherwise check the Secret exists and holds `STRAPI_URL` and `STRAPI_TOKEN`.
