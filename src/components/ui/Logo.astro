@@ -1,6 +1,7 @@
 ---
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
+import logoBadge from '../../assets/logo/twins-in-the-loop-badge.svg?raw';
 import logoStackedOnLight from '../../assets/logo/twins-in-the-loop-logo-alt.svg?raw';
 import logoStackedPng from '../../assets/logo/twins-in-the-loop-logo-alt.png';
 import logoWidePng from '../../assets/logo/twins-in-the-loop-logo.png';
@@ -16,7 +17,7 @@ import { withBase } from '../../lib/siteEnv';
 
 interface Props {
   theme?: 'on-dark' | 'on-light';
-  mark?: 'wide' | 'stacked';
+  mark?: 'wide' | 'stacked' | 'badge';
   size?: 'sm' | 'lg';
   stacked?: boolean;
   href?: string;
@@ -25,8 +26,13 @@ interface Props {
 const {
   theme = 'on-dark',
   mark = 'stacked',
+  size = 'lg',
   href = withBase('/'),
 } = Astro.props;
+
+// Badge sizes come from the Figma refresh: 348px hero, 206px footer/page hero.
+const badgeClass =
+  size === 'lg' ? 'size-60 md:size-87' : 'size-40 md:size-51.5';
 
 function rasterLogo(
   mark: 'wide' | 'stacked',
@@ -92,7 +98,7 @@ function rasterSizes(mark: 'wide' | 'stacked'): string {
   }
 }
 
-const raster = rasterLogo(mark, theme);
+const raster = mark === 'badge' ? undefined : rasterLogo(mark, theme);
 ---
 
 <a
@@ -101,7 +107,16 @@ const raster = rasterLogo(mark, theme);
 >
   <span class="sr-only">Twins in the Loop home</span>
   {
-    raster ? (
+    mark === 'badge' ? (
+      <span
+        class:list={[
+          'inline-block text-white [&_svg]:block [&_svg]:size-full',
+          badgeClass,
+        ]}
+        aria-hidden="true"
+        set:html={logoBadge}
+      />
+    ) : raster ? (
       <Image
         src={raster}
         alt=""

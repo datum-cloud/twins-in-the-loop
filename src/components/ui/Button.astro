@@ -3,7 +3,7 @@ import type { HTMLAttributes } from 'astro/types';
 import type { IconName } from '../../lib/types';
 import Icon from './Icon.astro';
 
-type Variant = 'solid' | 'outline' | 'icon';
+type Variant = 'solid' | 'outline' | 'outline-inverse' | 'icon';
 
 interface Props extends HTMLAttributes<'a'> {
   href: string;
@@ -26,6 +26,8 @@ const classes = {
     'inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-md border border-fjord bg-fjord px-7 text-xs leading-4 font-semibold text-white hover:bg-white hover:text-fjord active:translate-y-px motion-reduce:active:translate-y-0',
   outline:
     'inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-md border border-fjord bg-transparent px-7 text-xs leading-4 font-semibold text-fjord hover:bg-fjord hover:text-white active:translate-y-px motion-reduce:active:translate-y-0',
+  'outline-inverse':
+    'inline-flex h-13 shrink-0 items-center justify-center gap-2 rounded-md border border-white bg-transparent px-7 text-xs leading-4 font-semibold text-white hover:bg-white hover:text-slate-night active:translate-y-px motion-reduce:active:translate-y-0',
   icon: 'inline-flex size-13 items-center justify-center rounded-md border border-current hover:bg-current/10 active:translate-y-px active:bg-current/20 motion-reduce:active:translate-y-0',
 } as const;
 ---

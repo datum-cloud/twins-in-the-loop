@@ -63,18 +63,18 @@ const siteSeo = {
   }}
 >
   <SiteHero />
-  <Container columns="12" class="py-20" data-filter-root>
-    <div class="col-span-full flex flex-col gap-16">
-      <div
-        class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between"
-      >
-        <TopicFilter topics={topics} />
-        <AuthorFilter current="all" />
-      </div>
-      <div class="flex flex-col gap-10 md:gap-14 lg:gap-20 xl:gap-24">
+  <Container columns="12" class="pt-10 pb-20 lg:pb-40" data-filter-root>
+    <div class="col-span-full flex flex-col gap-10 lg:gap-16">
+      <div class="border-divider flex flex-col gap-7.5 border-b pb-7.5">
         <div
-          class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+          class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
+          <TopicFilter topics={topics} />
+          <AuthorFilter current="all" />
+        </div>
+      </div>
+      <div class="flex flex-col gap-10 md:gap-14 lg:gap-20">
+        <div class="grid gap-10 md:grid-cols-2 md:gap-8 lg:gap-12 2xl:gap-20">
           {
             featured.map((post) => (
               <ArticleCard
@@ -91,10 +91,10 @@ const siteSeo = {
           }
         </div>
         <div
-          class="grid gap-6 md:grid-cols-2 md:gap-8 lg:gap-12 xl:gap-16 2xl:gap-20"
+          class="grid items-start gap-10 md:grid-cols-2 md:gap-8 lg:gap-12 2xl:gap-20"
           data-columns-grid
         >
-          <div class="border-zac border-t-2" data-author-column="zac">
+          <div class="flex flex-col gap-2" data-author-column="zac">
             {
               columns.zac.map((post) => (
                 <ArticleRow
@@ -108,7 +108,7 @@ const siteSeo = {
               ))
             }
           </div>
-          <div class="border-jacob border-t-2" data-author-column="jacob">
+          <div class="flex flex-col gap-2" data-author-column="jacob">
             {
               columns.jacob.map((post) => (
                 <ArticleRow
@@ -157,9 +157,9 @@ const siteSeo = {
       new CustomEvent('select:sync', { detail: author }),
     );
     chips.forEach((chip) => {
-      const chipTopic = chip.dataset.topic;
-      const active = topic ? chipTopic === topic : chipTopic === 'all';
+      const active = chip.dataset.topic === topic;
       setChipActive(chip, active);
+      chip.setAttribute('aria-pressed', String(active));
     });
     document.querySelectorAll<HTMLElement>('[data-author]').forEach((node) => {
       const matchAuthor = author === 'all' || node.dataset.author === author;
@@ -199,7 +199,8 @@ const siteSeo = {
     chip.addEventListener('click', (event) => {
       event.preventDefault();
       const value = chip.dataset.topic;
-      replaceFilter('topic', !value || value === 'all' ? null : value);
+      const current = new URLSearchParams(window.location.search).get('topic');
+      replaceFilter('topic', !value || value === current ? null : value);
     });
   });
 
