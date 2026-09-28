@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.3.0...v1.4.0) (2026-09-28)
+
+
+### Features
+
+* refresh site design ([186642d](https://github.com/datum-cloud/twins-in-the-loop/commit/186642da8064d32b741a6d70876bf4f23e047252))
+* refresh site design ([#29](https://github.com/datum-cloud/twins-in-the-loop/issues/29)) ([ec59fd8](https://github.com/datum-cloud/twins-in-the-loop/commit/ec59fd816f7290cad33968c5edc85b3f273191d8))
+
 ## [1.3.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.2.2...v1.3.0) (2026-09-21)
 
 
