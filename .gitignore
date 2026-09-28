@@ -29,3 +29,6 @@ workload.yaml
 
 # test output
 coverage/
+
+# project rules, re-included over a global .cursor/ ignore
+!.cursor/

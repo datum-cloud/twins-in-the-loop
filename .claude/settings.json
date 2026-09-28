@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__datum-mcp__projects",
+      "mcp__datum-mcp__organizations",
+      "mcp__datum-mcp__gateways",
+      "mcp__datum-mcp__httpproxies"
+    ]
+  }
+}

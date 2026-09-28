@@ -1,0 +1,17 @@
+---
+description: Project conventions for the Twins in the Loop Astro site
+alwaysApply: true
+---
+
+# Twins in the Loop
+
+- Single Astro 7 app with Tailwind 4. Bun is the package manager. Do not add Turborepo.
+- Pages stay thin composers (about 50 lines). New UI goes in `src/components/**` first.
+- Reuse `Button`, `Chip`, `Logo`, `AuthorTag`, `Icon`, and `ArticleRow` instead of duplicating markup.
+- Figma is the visual source of truth. Map colors and type into `src/styles/global.css` `@theme`.
+- Semantic HTML and accessible nav/filters. No inline imports.
+- Exhaustive `switch` on `type` / `author` unions with a `never` default.
+- Do not hardcode page copy in `.astro` files. Copy lives in MDX collections.
+- Reusable helpers belong in `src/lib/*.ts` with colocated `*.test.ts`, not in `.astro` frontmatter.
+- Optimize local images with Astro `<Image>` and `src/lib/images.ts`.
+---
