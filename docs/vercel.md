@@ -4,7 +4,7 @@ This site is a **server-rendered Astro 7** build using `@astrojs/vercel`. Blog p
 
 Production is `twinsintheloop.com`. Preview deployments are staging: site-wide `noindex` and no sitemap.
 
-> **Vercel is the only host.** GitHub Pages staging has been removed — Pages is static-only and cannot run the SSR routes or the webhook endpoint. Use Vercel Preview URLs for staging.
+> **Vercel is the production host.** GitHub Pages staging has been removed — Pages is static-only and cannot run the SSR routes or the webhook endpoint. Use Vercel Preview URLs for staging. A secondary, manually deployed copy can run on Datum Compute — see [Deploy on Datum Compute](./datum-compute.md).
 
 Local `bun run build` commands live in the [README](../README.md#build). Copy [`.env.example`](../.env.example) for local overrides.
 

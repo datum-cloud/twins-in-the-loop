@@ -1,0 +1,27 @@
+# Astro needs a real Node >=22.12; Bun's Node shim reports an older version.
+FROM node:22-slim AS build
+COPY --from=oven/bun:1.2.16 /usr/local/bin/bun /usr/local/bin/bun
+WORKDIR /app
+# Inlined by Astro at build time, so they are build args rather than runtime env.
+ARG PUBLIC_SITE_ENV=staging
+ARG SITE=https://twinsintheloop.com
+ARG BASE_PATH=/
+ENV PUBLIC_SITE_ENV=$PUBLIC_SITE_ENV SITE=$SITE BASE_PATH=$BASE_PATH
+COPY package.json bun.lock ./
+# The `prepare` script runs `lefthook install`, which fails without a .git dir.
+RUN bun install --frozen-lockfile --ignore-scripts
+COPY . .
+RUN bun run build:container
+
+FROM node:22-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production
+# Datum Compute networks are IPv6-only; binding 0.0.0.0 opens an IPv4-only
+# socket and the workload becomes unreachable despite healthy logs.
+ENV HOST="::"
+ENV PORT=4321
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+EXPOSE 4321
+CMD ["node", "./dist/server/entry.mjs"]
