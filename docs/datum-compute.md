@@ -33,13 +33,33 @@ The [`Dockerfile`](../Dockerfile) builds with `bun run build:container` on a `no
    datumctl services status compute.datumapis.com --project=project-2h27h
    ```
 
-2. **Create the Strapi Secret.** Copy [`datum/secret.example.yaml`](../datum/secret.example.yaml) to `datum/secret.yaml` (gitignored), fill in the values, then:
+2. **Create the Strapi Secret** in Datum Cloud. The workload reads it from the cloud by name, so either option works. Each key becomes an env var of the same name.
+
+   | Key                     | Required                        |
+   | ----------------------- | ------------------------------- |
+   | `STRAPI_URL`            | yes                             |
+   | `STRAPI_TOKEN`          | yes                             |
+   | `STRAPI_WEBHOOK_SECRET` | yes, or the webhook returns 503 |
+   | `STRAPI_ASSETS_URL`     | no                              |
+
+   **A. Console.** Open [cloud.datum.net → project-2h27h → Secrets](https://cloud.datum.net/project/project-2h27h/secrets) → **New Secret**. Untick **Auto-generate**, set **Resource Name** to `twins-strapi-secrets` (it cannot be renamed later), keep **Type** `Opaque`, and add the keys above. To rotate a value, edit the Secret there.
+
+   **B. Manifest.** Copy [`datum/secret.example.yaml`](../datum/secret.example.yaml) to `datum/secret.yaml` (gitignored), fill in the values, then:
 
    ```bash
    datumctl create -f datum/secret.yaml --project=project-2h27h
    ```
 
-   Use `datumctl apply -f datum/secret.yaml --project=project-2h27h` to rotate values later, then restart the workload (`datumctl compute restart twins-in-the-loop --project=project-2h27h`).
+   To rotate values, use `datumctl apply -f datum/secret.yaml --project=project-2h27h`.
+
+   Either way, check it (values are not printed) and restart the workload after changing values:
+
+   ```bash
+   datumctl get secret twins-strapi-secrets --project=project-2h27h
+   datumctl compute restart twins-in-the-loop --project=project-2h27h
+   ```
+
+   A Secret with another name works too: `SECRET_NAME=<name> ./datum/deploy.sh`. `deploy.sh` stops before deploying if the Secret is missing or lacks `STRAPI_URL`/`STRAPI_TOKEN`.
 
 3. **Create a service account for CI** with edit access to `project-2h27h`, download its credentials JSON, and save the whole file as the GitHub Actions secret `DATUM_SA_CREDENTIALS`.
 

@@ -9,6 +9,18 @@ LOCATION="${LOCATION:-us-central-1}"
 SECRET_NAME="${SECRET_NAME:-twins-strapi-secrets}"
 PORT=4321
 
+# The Secret lives in Datum Cloud (console or `datumctl create`); fail before
+# deploying rather than rolling out instances that cannot reach Strapi.
+missing="$(datumctl get secret "$SECRET_NAME" --project="$PROJECT" -o json 2>/dev/null |
+  jq -r '[("STRAPI_URL", "STRAPI_TOKEN") as $k | select((.data[$k] // "") == "") | $k] | join(", ")')" || {
+  echo "Secret '$SECRET_NAME' not found in $PROJECT. Create it in the Datum Cloud console (Secrets) or with datum/secret.yaml." >&2
+  exit 1
+}
+if [ -n "$missing" ]; then
+  echo "Secret '$SECRET_NAME' is missing required keys: $missing" >&2
+  exit 1
+fi
+
 exists() {
   datumctl compute workloads --project="$PROJECT" -o json |
     jq -e --arg n "$WORKLOAD" 'any(.[]; .name == $n)' >/dev/null
