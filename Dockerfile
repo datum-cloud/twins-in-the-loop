@@ -14,6 +14,7 @@ COPY . .
 RUN bun run build:container
 
 FROM node:22-slim AS runtime
+LABEL org.opencontainers.image.source=https://github.com/datum-cloud/twins-in-the-loop
 WORKDIR /app
 ENV NODE_ENV=production
 # Datum Compute networks are IPv6-only; binding 0.0.0.0 opens an IPv4-only
