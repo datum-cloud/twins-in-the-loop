@@ -14,7 +14,7 @@ interface Props {
 const { items } = Astro.props;
 ---
 
-<ul class="text-fjord flex items-start gap-2.5">
+<ul class="flex items-start gap-2.5 text-current">
   {
     items.map((item) => {
       const label = socialLinkLabel(item.name);
@@ -25,7 +25,7 @@ const { items } = Astro.props;
             href={item.href}
             target="_blank"
             rel="noreferrer noopener"
-            class="text-fjord inline-flex size-5 overflow-clip hover:opacity-70 active:opacity-40"
+            class="inline-flex size-5 overflow-clip hover:opacity-70 active:opacity-40"
           >
             <span class="sr-only">{label}</span>
             <Icon name={item.name} size={20} />

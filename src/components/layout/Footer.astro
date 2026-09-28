@@ -28,36 +28,42 @@ const blurbBody = blurb.startsWith(lead)
   : ` ${blurb}`;
 ---
 
-<footer id="stay-in-the-loop" class="bg-zac">
-  <Container columns="12" class="py-20">
+<footer id="stay-in-the-loop" class="bg-slate-night text-white">
+  <Container columns="12" class="items-center gap-y-12 py-20">
     <div class="col-span-full lg:col-span-4">
-      <Logo theme="on-light" size="sm" stacked />
+      <Logo mark="badge" size="sm" />
     </div>
     <div
       class="md:grid-cols-footer col-span-full grid gap-16 md:items-stretch lg:col-span-8"
     >
       <div class="flex flex-col items-start justify-center gap-8">
-        <p class="text-fjord text-lg leading-6.5 font-normal">
+        <p class="text-lg leading-6.5 font-normal text-white">
           <span class="font-semibold">{lead}</span>{blurbBody}{' '}
           <a
             href={withBase('/about')}
             class="font-normal underline decoration-solid hover:opacity-70 active:opacity-50"
-            >About Twins in the Loop</a
+            >Learn more</a
           >
         </p>
-        <Button href={subscribeUrl} variant="solid" icon="linkedin" external>
-          Subscribe on LinkedIn
+        <Button
+          href={subscribeUrl}
+          variant="outline-inverse"
+          icon="mail"
+          external
+          aria-label="Subscribe to the Datum newsletter (opens in a new tab)"
+        >
+          Subscribe to the Datum newsletter
         </Button>
       </div>
-      <div class="bg-fjord hidden w-px self-stretch md:block"></div>
+      <div class="hidden w-px self-stretch bg-white md:block"></div>
       <div class="flex flex-col justify-between gap-8">
         <div class="flex w-full flex-col items-start gap-2">
-          <p class="text-fjord max-w-39 text-xs leading-4 font-normal">
+          <p class="max-w-39 text-xs leading-4 font-normal text-white">
             Learn more about what the twins are doing with Datum
           </p>
           <Button
             href={datumUrl}
-            variant="outline"
+            variant="outline-inverse"
             icon="external-link"
             external
             class="w-full"
@@ -67,12 +73,11 @@ const blurbBody = blurb.startsWith(lead)
           </Button>
         </div>
         <div class="flex flex-col items-start gap-1">
-          <p class="text-fjord text-xs leading-4 font-normal">Find Datum on:</p>
+          <p class="text-xs leading-4 font-normal text-white">Find Datum on:</p>
           <SocialLinks items={socials} />
         </div>
-        <p class="text-fjord/40 text-xs leading-4 font-normal">
-          © {year}
-          {copyrightName}
+        <p class="text-xs leading-4 font-normal text-white/40">
+          {`© ${year} ${copyrightName}`}
         </p>
       </div>
     </div>

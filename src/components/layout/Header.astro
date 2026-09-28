@@ -12,12 +12,12 @@ interface Props {
 const { current, datumUrl } = Astro.props;
 ---
 
-<header class="bg-fjord border-b border-white">
+<header class="bg-slate-night">
   <Container
     class="flex flex-row flex-wrap items-center justify-between gap-x-4 gap-y-3 py-4 sm:flex-nowrap sm:gap-6 sm:py-5 lg:grid lg:grid-cols-12 lg:gap-7"
   >
     <nav
-      class="flex items-center gap-4 lg:col-span-6 lg:gap-10"
+      class="flex items-center gap-2 lg:col-span-6 lg:gap-8"
       aria-label="Primary"
     >
       <Chip
@@ -26,13 +26,12 @@ const { current, datumUrl } = Astro.props;
         inverse
         aria-label="Twins in the Loop blog">Blog</Chip
       >
-      <TextLink
+      <Chip
         href={withBase('/about')}
-        class={current === 'about' ? 'font-semibold text-white' : 'text-white'}
-        aria-label="About Twins in the Loop"
+        active={current === 'about'}
+        inverse
+        aria-label="About Twins in the Loop">About</Chip
       >
-        About
-      </TextLink>
     </nav>
     <div class="flex items-center gap-4 sm:justify-end lg:col-span-6 lg:gap-10">
       <TextLink

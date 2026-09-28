@@ -1,4 +1,5 @@
 ---
+import twinsMark from '../../assets/logo/mark-on-light.svg?raw';
 import Icon from './Icon.astro';
 
 type Accent = 'all' | 'zac' | 'jacob';
@@ -40,49 +41,39 @@ function accentKind(accent: Accent | undefined) {
 ---
 
 <div
-  class:list={['relative z-20 inline-flex shrink-0 items-center gap-4', className]}
+  class:list={[
+    'relative z-20 inline-flex shrink-0 items-center gap-4',
+    className,
+  ]}
   data-select
   data-filter-select={name}
   data-value={current?.value}
+  data-select-label={label}
 >
-  <span class="text-base font-semibold text-fjord" id={`${name}-label`}>{label}</span>
+  <span class="sr-only" id={`${name}-label`}>{label}</span>
   <div class="relative">
     <button
       type="button"
-      class="inline-flex h-7 shrink-0 cursor-pointer items-center gap-1 whitespace-nowrap rounded-2xs border border-fjord bg-white px-2 text-base text-fjord hover:bg-mist active:bg-fjord active:text-white"
+      class="rounded-2xs border-fjord text-fjord hover:bg-mist active:bg-slate-night inline-flex h-7 shrink-0 cursor-pointer items-center gap-1 border bg-white px-2 text-base leading-6 whitespace-nowrap active:text-white"
       aria-haspopup="listbox"
       aria-expanded="false"
-      aria-label={`Show articles by: ${current?.label}`}
+      aria-label={`${label} ${current?.label}`}
       aria-controls={listId}
       data-select-trigger
     >
       <span
-        class="inline-flex shrink-0 items-center"
-        data-select-dots="all"
+        class="inline-flex h-3.5 w-5.25 shrink-0 [&_svg]:size-full"
+        aria-hidden="true"
+        data-select-mark
         hidden={accentKind(current?.accent) !== 'both'}
-        aria-hidden="true"
+        set:html={twinsMark}
+      />
+      <span class="whitespace-nowrap" data-select-current>{current?.label}</span
       >
-        <span class="size-2.5 rounded-full bg-zac"></span>
-        <span class="-ml-1 size-2.5 rounded-full bg-jacob"></span>
-      </span>
       <span
-        class="inline-flex shrink-0 items-center"
-        data-select-dots="zac"
-        hidden={accentKind(current?.accent) !== 'zac'}
-        aria-hidden="true"
+        data-select-chevron
+        class="inline-flex shrink-0 transition-transform"
       >
-        <span class="size-2.5 rounded-full bg-zac"></span>
-      </span>
-      <span
-        class="inline-flex shrink-0 items-center"
-        data-select-dots="jacob"
-        hidden={accentKind(current?.accent) !== 'jacob'}
-        aria-hidden="true"
-      >
-        <span class="size-2.5 rounded-full bg-jacob"></span>
-      </span>
-      <span class="whitespace-nowrap" data-select-current>{current?.label}</span>
-      <span data-select-chevron class="inline-flex shrink-0 transition-transform">
         <Icon name="chevron-down" size={16} />
       </span>
     </button>
@@ -90,7 +81,7 @@ function accentKind(accent: Accent | undefined) {
       id={listId}
       role="listbox"
       aria-labelledby={`${name}-label`}
-      class="absolute right-0 top-full mt-1.5 hidden min-w-47 border-2 border-fjord bg-white py-1 shadow-hard"
+      class="border-fjord/15 shadow-menu rounded-2xs absolute top-full right-0 mt-1.5 hidden min-w-47 overflow-hidden border bg-white py-1"
       data-select-menu
     >
       {
@@ -106,24 +97,22 @@ function accentKind(accent: Accent | undefined) {
                 aria-selected={selected}
                 class:list={[
                   'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-left text-base',
-                  selected ? 'bg-fjord text-white' : 'text-fjord hover:bg-mist active:bg-mist',
+                  selected
+                    ? 'bg-slate-night text-white'
+                    : 'text-fjord hover:bg-mist active:bg-mist',
                 ]}
                 data-select-option
                 data-value={option.value}
                 data-label={option.label}
+                data-mark={kind === 'both' ? 'true' : undefined}
               >
-                {
-                  kind === 'both' ? (
-                    <span class="inline-flex items-center" aria-hidden="true">
-                      <span class="size-2.5 rounded-full bg-zac" />
-                      <span class="-ml-1 size-2.5 rounded-full bg-jacob" />
-                    </span>
-                  ) : kind === 'zac' ? (
-                    <span class="size-2.5 rounded-full bg-zac" aria-hidden="true" />
-                  ) : kind === 'jacob' ? (
-                    <span class="size-2.5 rounded-full bg-jacob" aria-hidden="true" />
-                  ) : null
-                }
+                {kind === 'both' ? (
+                  <span
+                    class="inline-flex h-3.5 w-5.25 shrink-0 [&_svg]:size-full"
+                    aria-hidden="true"
+                    set:html={twinsMark}
+                  />
+                ) : null}
                 {option.label}
               </button>
             </li>
@@ -136,11 +125,16 @@ function accentKind(accent: Accent | undefined) {
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-select]').forEach((root) => {
-    const trigger = root.querySelector<HTMLButtonElement>('[data-select-trigger]');
+    const trigger = root.querySelector<HTMLButtonElement>(
+      '[data-select-trigger]',
+    );
     const menu = root.querySelector<HTMLElement>('[data-select-menu]');
     const current = root.querySelector<HTMLElement>('[data-select-current]');
     const chevron = root.querySelector<HTMLElement>('[data-select-chevron]');
-    const options = root.querySelectorAll<HTMLButtonElement>('[data-select-option]');
+    const mark = root.querySelector<HTMLElement>('[data-select-mark]');
+    const options = root.querySelectorAll<HTMLButtonElement>(
+      '[data-select-option]',
+    );
 
     if (!trigger || !menu) {
       return;
@@ -164,20 +158,25 @@ function accentKind(accent: Accent | undefined) {
       options.forEach((option) => {
         const selected = option.dataset.value === value;
         option.setAttribute('aria-selected', String(selected));
-        option.classList.toggle('bg-fjord', selected);
+        option.classList.toggle('bg-slate-night', selected);
         option.classList.toggle('text-white', selected);
         option.classList.toggle('hover:bg-mist', !selected);
         option.classList.toggle('text-fjord', !selected);
+        if (selected && mark) {
+          mark.hidden = option.dataset.mark !== 'true';
+        }
         if (selected && current) {
           current.textContent = option.dataset.label ?? value;
-          triggerButton.setAttribute('aria-label', `Show articles by: ${option.dataset.label ?? value}`);
+          triggerButton.setAttribute(
+            'aria-label',
+            `${root.dataset.selectLabel ?? ''} ${option.dataset.label ?? value}`.trim(),
+          );
         }
       });
-      root.querySelectorAll<HTMLElement>('[data-select-dots]').forEach((dot) => {
-        dot.hidden = dot.dataset.selectDots !== value;
-      });
       if (emit) {
-        root.dispatchEvent(new CustomEvent('select:change', { detail: value, bubbles: true }));
+        root.dispatchEvent(
+          new CustomEvent('select:change', { detail: value, bubbles: true }),
+        );
       }
     }
 

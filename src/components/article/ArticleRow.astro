@@ -1,12 +1,6 @@
 ---
-import {
-  CONTENT_TYPE_LABELS,
-  type AuthorId,
-  type ContentType,
-  type TopicId,
-} from '../../lib/types';
+import type { AuthorId, ContentType, TopicId } from '../../lib/types';
 import { formatListDate } from '../../lib/dates';
-import ContentTypeIcon from '../ui/ContentTypeIcon.astro';
 
 interface Props {
   href: string;
@@ -15,45 +9,23 @@ interface Props {
   author: AuthorId;
   type: ContentType;
   topics?: TopicId[];
-  neutral?: boolean;
 }
 
-const {
-  href,
-  title,
-  published,
-  author,
-  type,
-  topics = [],
-  neutral = false,
-} = Astro.props;
-const border = neutral
-  ? 'border-fjord'
-  : author === 'zac'
-    ? 'border-zac'
-    : 'border-jacob';
+const { href, title, published, author, topics = [] } = Astro.props;
 ---
 
 <a
   href={href}
-  class:list={[
-    'text-fjord hover:bg-mist/70 active:bg-mist flex items-center justify-between gap-6 border-b-2 py-8 no-underline',
-    border,
-  ]}
+  class="bg-mist text-fjord group hover:bg-mist-hover active:bg-mist-active flex flex-col gap-2 px-5 py-6 no-underline md:px-10 md:py-8"
   data-author={author}
   data-topics={topics.join(' ')}
 >
-  <span class="flex min-w-0 items-start gap-3">
-    <ContentTypeIcon
-      type={type}
-      size={20}
-      class="mt-0.5 shrink-0"
-      alt={CONTENT_TYPE_LABELS[type]}
-    />
-    <span class="text-xl leading-7 font-semibold">{title}</span>
-  </span>
+  <span
+    class="text-xl leading-7 font-semibold group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4"
+    >{title}</span
+  >
   <time
-    class="text-fjord/40 shrink-0 text-sm"
+    class="text-fjord/40 text-sm leading-5.25 font-medium"
     datetime={published.toISOString()}
   >
     {formatListDate(published)}

@@ -39,7 +39,7 @@ export const AUTHOR_LABELS: Record<AuthorId, string> = {
 };
 
 export const AUTHOR_FILTER_LABELS: Record<AuthorFilter, string> = {
-  all: 'Zac & Jacob',
+  all: 'Twin mode',
   zac: 'Zac only',
   jacob: 'Jacob only',
 };
