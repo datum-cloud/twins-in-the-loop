@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.4.0...v1.5.0) (2026-09-28)
+
+
+### Features
+
+* flatten the homepage grid and caption article images ([f40a7ec](https://github.com/datum-cloud/twins-in-the-loop/commit/f40a7ec063e46af6f657a45bfa1dd86a5b0e037e))
+* flatten the homepage grid and caption article images ([#31](https://github.com/datum-cloud/twins-in-the-loop/issues/31)) ([70df3c3](https://github.com/datum-cloud/twins-in-the-loop/commit/70df3c31368ac2daecfd7deb296af22775b66d07))
+
 ## [1.4.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.3.0...v1.4.0) (2026-09-28)
 
 
