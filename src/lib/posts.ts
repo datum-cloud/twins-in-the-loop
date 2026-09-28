@@ -5,7 +5,6 @@ export interface FilterablePost {
   id: string;
   author: AuthorId;
   topics: TopicId[];
-  featured: boolean;
   published: Date;
 }
 
@@ -56,18 +55,6 @@ export function sortByPublishedDesc<T extends { published: Date }>(
   );
 }
 
-export function splitFeatured<T extends FilterablePost>(
-  posts: T[],
-): {
-  featured: T[];
-  rest: T[];
-} {
-  return {
-    featured: posts.filter((post) => post.featured),
-    rest: posts.filter((post) => !post.featured),
-  };
-}
-
 /**
  * Follow-on reading for an article page: same content type first, then the
  * rest, so a podcast page leads with other episodes but never runs short.
@@ -81,16 +68,4 @@ export function relatedPosts<T extends { id: string; type: ContentType }>(
   const sameType = others.filter((post) => post.type === current.type);
   const rest = others.filter((post) => post.type !== current.type);
   return [...sameType, ...rest].slice(0, limit);
-}
-
-export function partitionByAuthor<T extends FilterablePost>(
-  posts: T[],
-): {
-  zac: T[];
-  jacob: T[];
-} {
-  return {
-    zac: posts.filter((post) => post.author === 'zac'),
-    jacob: posts.filter((post) => post.author === 'jacob'),
-  };
 }

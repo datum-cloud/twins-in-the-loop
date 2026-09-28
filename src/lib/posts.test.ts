@@ -2,10 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   filterPosts,
   parseFilters,
-  partitionByAuthor,
   relatedPosts,
   sortByPublishedDesc,
-  splitFeatured,
 } from './posts';
 import type { FilterablePost } from './posts';
 
@@ -14,21 +12,18 @@ const posts: FilterablePost[] = [
     id: 'a',
     author: 'zac',
     topics: ['ai'],
-    featured: true,
     published: new Date('2026-08-28T00:00:00.000Z'),
   },
   {
     id: 'b',
     author: 'jacob',
     topics: ['hardware'],
-    featured: false,
     published: new Date('2026-08-10T00:00:00.000Z'),
   },
   {
     id: 'c',
     author: 'zac',
     topics: ['hardware', 'ai'],
-    featured: false,
     published: new Date('2026-07-08T00:00:00.000Z'),
   },
 ];
@@ -90,20 +85,6 @@ describe('sortByPublishedDesc', () => {
       'b',
       'c',
     ]);
-  });
-});
-
-describe('splitFeatured and partitionByAuthor', () => {
-  it('splits featured cards from list rows', () => {
-    const { featured, rest } = splitFeatured(posts);
-    expect(featured.map((post) => post.id)).toEqual(['a']);
-    expect(rest.map((post) => post.id)).toEqual(['b', 'c']);
-  });
-
-  it('partitions authors', () => {
-    const { zac, jacob } = partitionByAuthor(posts);
-    expect(zac.map((post) => post.id)).toEqual(['a', 'c']);
-    expect(jacob.map((post) => post.id)).toEqual(['b']);
   });
 });
 

@@ -8,9 +8,25 @@ const { variant = 'body', class: className } = Astro.props;
 const classes =
   variant === 'intro'
     ? 'text-xl leading-8.5 [&_a]:underline [&_a]:hover:opacity-70 [&_a]:active:opacity-50 [&_p+p]:mt-5'
-    : 'text-lg leading-7 [&_a]:underline [&_a]:hover:opacity-70 [&_a]:active:opacity-50 [&_h2]:mt-10 [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:font-semibold [&_p+p]:mt-5 [&_img]:my-10 [&_pre]:my-8';
+    : [
+        'text-lg leading-7',
+        '[&_a]:underline [&_a]:hover:opacity-70 [&_a]:active:opacity-50',
+        '[&_h2]:mt-10 [&_h2]:mb-5 [&_h2]:text-2xl [&_h2]:font-semibold',
+        '[&_p+p]:mt-5',
+        '[&_ul]:my-5 [&_ul]:list-disc [&_ul]:pl-6',
+        '[&_ol]:my-5 [&_ol]:list-decimal [&_ol]:pl-6',
+        '[&_li+li]:mt-3',
+        '[&_li>ul]:my-2 [&_li>ol]:my-2',
+        '[&_img]:my-10',
+        'flow-root [&_figure]:my-10 [&_figure]:text-center',
+        "[&_figure[data-align='left']]:float-left [&_figure[data-align='left']]:my-4 [&_figure[data-align='left']]:max-w-1/2 [&_figure[data-align='left']]:pr-8 [&_figure[data-align='left']]:text-left",
+        "[&_figure[data-align='right']]:float-right [&_figure[data-align='right']]:my-4 [&_figure[data-align='right']]:max-w-1/2 [&_figure[data-align='right']]:pl-8 [&_figure[data-align='right']]:text-right",
+        '[&_figure_img]:my-0 [&_figure_img]:w-full',
+        '[&_figcaption]:mt-3 [&_figcaption]:text-sm [&_figcaption]:leading-5 [&_figcaption]:text-utility [&_figcaption]:italic',
+        '[&_pre]:my-8',
+      ].join(' ');
 ---
 
-<div class:list={['max-w-none text-fjord', classes, className]}>
+<div class:list={['text-fjord max-w-none', classes, className]}>
   <slot />
 </div>
