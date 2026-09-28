@@ -7,6 +7,7 @@ import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
 import { expressiveCodeOptions } from './expressiveCodeOptions';
+import { transformMarkdownFigures } from './markdownFigure';
 import { resolveMarkdownMediaUrls } from './strapi/media';
 
 /**
@@ -16,6 +17,9 @@ import { resolveMarkdownMediaUrls } from './strapi/media';
  *
  * Raw HTML in a body is passed through unsanitised, matching the other Datum
  * sites. Editors are trusted; add `rehype-sanitize` here if that ever changes.
+ *
+ * Image syntax is rewritten to figures first, matching datum.net, so a
+ * caption in the alt text renders under the image.
  */
 export async function renderPostBody(markdown: string): Promise<string> {
   if (!markdown.trim()) return '';
@@ -27,7 +31,7 @@ export async function renderPostBody(markdown: string): Promise<string> {
     .use(rehypeRaw)
     .use(rehypeExpressiveCode, expressiveCodeOptions)
     .use(rehypeStringify, { allowDangerousHtml: true })
-    .process(resolveMarkdownMediaUrls(markdown));
+    .process(transformMarkdownFigures(resolveMarkdownMediaUrls(markdown)));
 
   return String(file);
 }

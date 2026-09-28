@@ -71,13 +71,13 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 | ------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                                          |
 | `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                                                 |
-| `excerpt`     | Yes                                         | Homepage card/list teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                                 |
+| `excerpt`     | Yes                                         | Homepage card teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                                      |
 | `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                                     |
 | `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                                |
 | `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                              |
-| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards and list rows                                                                                            |
+| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                          |
 | `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                           |
-| `featured`    | No                                          | Default `false`. `true` puts the post in the homepage card grid instead of the list                                                                                      |
+| `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                |
 | `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                        |
 | `cover`       | No                                          | Homepage card image and article image. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`              |
 | `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                                                               |
@@ -124,8 +124,8 @@ When a player renders, the cover is not repeated above it on video pages — the
 
 ### Homepage placement
 
-- `featured: true` → large image card.
-- `featured: false` → text row under Zac or Jacob, based on `author`, with the content-type icon beside the title.
+Every published post is a thumbnail card in one grid, newest first. Author does not split the grid into columns.
+
 - Topic chips filter by `topics`. Author dropdown filters by `author`. Query params: `?topic=ai`, `?author=zac`.
 
 ### Edit or unpublish a post

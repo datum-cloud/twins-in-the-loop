@@ -1,6 +1,5 @@
 ---
 import ArticleCard from '../components/article/ArticleCard.astro';
-import ArticleRow from '../components/article/ArticleRow.astro';
 import AuthorFilter from '../components/article/AuthorFilter.astro';
 import TopicFilter from '../components/article/TopicFilter.astro';
 import Container from '../components/ui/Container.astro';
@@ -10,23 +9,12 @@ import { getSiteSettings } from '../lib/content';
 import { getPublishedPosts } from '../lib/strapi/posts';
 import { getTopics } from '../lib/strapi/topics';
 import { setCdnCacheHeaders } from '../lib/httpCache';
-import { partitionByAuthor, splitFeatured } from '../lib/posts';
 import { withBase } from '../lib/siteEnv';
 
 setCdnCacheHeaders(Astro.response.headers);
 
 const site = await getSiteSettings();
 const [posts, topics] = await Promise.all([getPublishedPosts(), getTopics()]);
-const visible = posts.map((post) => ({
-  id: post.id,
-  author: post.data.author,
-  topics: post.data.topics,
-  featured: post.data.featured,
-  published: post.data.published,
-  entry: post,
-}));
-const { featured, rest } = splitFeatured(visible);
-const columns = partitionByAuthor(rest);
 
 const siteSeo = {
   title: site.title,
@@ -69,59 +57,30 @@ const siteSeo = {
         <div
           class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between"
         >
-          <TopicFilter topics={topics} />
-          <AuthorFilter current="all" />
+          <div class="hidden">
+            <TopicFilter topics={topics} />
+          </div>
+          <div class="ml-auto">
+            <AuthorFilter current="all" />
+          </div>
         </div>
       </div>
       <div class="flex flex-col gap-10 md:gap-14 lg:gap-20">
         <div class="grid gap-10 md:grid-cols-2 md:gap-8 lg:gap-12 2xl:gap-20">
           {
-            featured.map((post) => (
+            posts.map((post) => (
               <ArticleCard
-                href={withBase(`/${post.entry.id}`)}
-                title={post.entry.data.title}
-                excerpt={post.entry.data.excerpt}
-                published={post.entry.data.published}
-                author={post.entry.data.author}
-                type={post.entry.data.type}
-                cover={post.entry.data.cover}
-                topics={post.entry.data.topics}
+                href={withBase(`/${post.id}`)}
+                title={post.data.title}
+                excerpt={post.data.excerpt}
+                published={post.data.published}
+                author={post.data.author}
+                type={post.data.type}
+                cover={post.data.cover}
+                topics={post.data.topics}
               />
             ))
           }
-        </div>
-        <div
-          class="grid items-start gap-10 md:grid-cols-2 md:gap-8 lg:gap-12 2xl:gap-20"
-          data-columns-grid
-        >
-          <div class="flex flex-col gap-2" data-author-column="zac">
-            {
-              columns.zac.map((post) => (
-                <ArticleRow
-                  href={withBase(`/${post.entry.id}`)}
-                  title={post.entry.data.title}
-                  published={post.entry.data.published}
-                  author={post.entry.data.author}
-                  type={post.entry.data.type}
-                  topics={post.entry.data.topics}
-                />
-              ))
-            }
-          </div>
-          <div class="flex flex-col gap-2" data-author-column="jacob">
-            {
-              columns.jacob.map((post) => (
-                <ArticleRow
-                  href={withBase(`/${post.entry.id}`)}
-                  title={post.entry.data.title}
-                  published={post.entry.data.published}
-                  author={post.entry.data.author}
-                  type={post.entry.data.type}
-                  topics={post.entry.data.topics}
-                />
-              ))
-            }
-          </div>
         </div>
       </div>
     </div>
@@ -133,12 +92,6 @@ const siteSeo = {
     '[data-filter-select="author"]',
   );
   const chips = document.querySelectorAll<HTMLElement>('[data-topic]');
-  const columnsGrid = document.querySelector<HTMLElement>(
-    '[data-columns-grid]',
-  );
-  const authorColumns = document.querySelectorAll<HTMLElement>(
-    '[data-author-column]',
-  );
 
   function setChipActive(chip: HTMLElement, active: boolean) {
     chip.classList.toggle('bg-fjord', active);
@@ -167,16 +120,6 @@ const siteSeo = {
       const matchTopic = !topic || topics.includes(topic);
       node.classList.toggle('hidden', !(matchAuthor && matchTopic));
     });
-
-    const singleAuthor = author !== 'all';
-    authorColumns.forEach((column) => {
-      column.classList.toggle(
-        'hidden',
-        singleAuthor && column.dataset.authorColumn !== author,
-      );
-    });
-    columnsGrid?.classList.toggle('md:grid-cols-1', singleAuthor);
-    columnsGrid?.classList.toggle('md:grid-cols-2', !singleAuthor);
   }
 
   function replaceFilter(key: string, value: string | null) {
