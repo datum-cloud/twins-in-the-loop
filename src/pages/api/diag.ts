@@ -4,6 +4,8 @@ import type { APIRoute } from 'astro';
 
 export const prerender = false;
 
+const TIMEOUT_MS = 5000;
+
 type Probe = {
   target: string;
   ok: boolean;
@@ -12,13 +14,30 @@ type Probe = {
   error?: string;
 };
 
+// dns.lookup has no timeout of its own, and a hung resolver would otherwise
+// hold the whole response past the edge proxy's deadline.
+function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error(`${label} timed out after ${TIMEOUT_MS}ms`)),
+        TIMEOUT_MS,
+      ),
+    ),
+  ]);
+}
+
 async function probe(target: string): Promise<Probe> {
   const start = Date.now();
   try {
-    const res = await fetch(target, {
-      signal: AbortSignal.timeout(8000),
-      redirect: 'manual',
-    });
+    const res = await withTimeout(
+      fetch(target, {
+        signal: AbortSignal.timeout(TIMEOUT_MS),
+        redirect: 'manual',
+      }),
+      'fetch',
+    );
     return { target, ok: true, status: res.status, ms: Date.now() - start };
   } catch (err) {
     const e = err as Error & { cause?: { code?: string; message?: string } };
@@ -35,7 +54,7 @@ async function probe(target: string): Promise<Probe> {
 async function resolve(host: string) {
   const start = Date.now();
   try {
-    const addrs = await lookup(host, { all: true });
+    const addrs = await withTimeout(lookup(host, { all: true }), 'lookup');
     return {
       host,
       ms: Date.now() - start,
