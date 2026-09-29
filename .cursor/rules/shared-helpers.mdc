@@ -1,0 +1,19 @@
+---
+description: Keep reusable helpers in src/lib instead of Astro frontmatter
+globs: src/**/*.{ts,astro}
+alwaysApply: false
+---
+
+# Shared helpers
+
+- Put reusable logic in `src/lib/*.ts`. Keep `.astro` files as UI composers.
+- Colocate Vitest coverage as `src/lib/<module>.test.ts`.
+- For local images, use Astro `<Image>` and import widths/sizes/format from `src/lib/images.ts`. Add a named helper there instead of copying `thumbnailWidths`.
+
+```ts
+// ❌ BAD — helper trapped in a component
+function thumbnailWidths(sourceWidth: number): number[] { /* ... */ }
+
+// ✅ GOOD
+import { CARD_THUMBNAIL_SIZES, thumbnailWidths } from '../../lib/images';
+```

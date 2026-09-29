@@ -40,8 +40,8 @@ export const AUTHOR_LABELS: Record<AuthorId, string> = {
 
 export const AUTHOR_FILTER_LABELS: Record<AuthorFilter, string> = {
   all: 'Twin mode',
-  zac: 'Zac only',
-  jacob: 'Jacob only',
+  zac: 'Zac mode',
+  jacob: 'Jacob mode',
 };
 
 /** Shown next to the date in the article hero, except on plain posts. */

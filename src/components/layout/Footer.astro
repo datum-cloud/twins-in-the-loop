@@ -14,14 +14,22 @@ interface Social {
 interface Props {
   lead: string;
   blurb: string;
+  subscribeBlurb: string;
   subscribeUrl: string;
   datumUrl: string;
   copyrightName: string;
   socials: Social[];
 }
 
-const { lead, blurb, subscribeUrl, datumUrl, copyrightName, socials } =
-  Astro.props;
+const {
+  lead,
+  blurb,
+  subscribeBlurb,
+  subscribeUrl,
+  datumUrl,
+  copyrightName,
+  socials,
+} = Astro.props;
 const year = new Date().getFullYear();
 const blurbBody = blurb.startsWith(lead)
   ? blurb.slice(lead.length)
@@ -45,15 +53,22 @@ const blurbBody = blurb.startsWith(lead)
             >Learn more</a
           >
         </p>
-        <Button
-          href={subscribeUrl}
-          variant="outline-inverse"
-          icon="mail"
-          external
-          aria-label="Subscribe to the Datum newsletter (opens in a new tab)"
+        <div
+          class="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-6"
         >
-          Subscribe to the Datum newsletter
-        </Button>
+          <p class="text-sm leading-5 font-normal text-white/60">
+            {subscribeBlurb}
+          </p>
+          <Button
+            href={subscribeUrl}
+            variant="outline-inverse"
+            icon="mail"
+            external
+            aria-label="Stay in the loop (opens in a new tab)"
+          >
+            Stay in the loop
+          </Button>
+        </div>
       </div>
       <div class="hidden w-px self-stretch bg-white md:block"></div>
       <div class="flex flex-col justify-between gap-8">

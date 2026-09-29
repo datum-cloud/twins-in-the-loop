@@ -98,6 +98,7 @@ const site = defineCollection({
     ...seoFields,
     tagline: z.string(),
     footerBlurb: z.string(),
+    subscribeBlurb: z.string(),
     subscribeUrl: z.url(),
     datumUrl: z.url(),
     copyright: z.string(),
