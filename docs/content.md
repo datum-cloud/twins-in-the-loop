@@ -186,7 +186,8 @@ File: `src/content/site/settings.mdx`.
 | `description`    | Homepage meta/share description. RSS channel description                                                          |
 | `tagline`        | Stored for the site; the hero wordmark is the logo component                                                      |
 | `footerBlurb`    | Footer paragraph (the layout appends “Learn more”)                                                                |
-| `subscribeUrl`   | Footer “Subscribe on LinkedIn”                                                                                    |
+| `subscribeBlurb` | Newsletter line shown to the left of “Stay in the loop”                                                           |
+| `subscribeUrl`   | Footer “Stay in the loop” button                                                                                  |
 | `datumUrl`       | Header and footer Datum.net links                                                                                 |
 | `copyright`      | Footer `© {year} {copyright}`                                                                                     |
 | `defaultOgImage` | Fallback share image for non-article pages without `og.image`. Path from `public/`, e.g. `/images/og-default.jpg` |
