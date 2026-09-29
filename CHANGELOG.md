@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.0...v1.5.1) (2026-09-29)
+
+
+### Bug Fixes
+
+* update author filters and the newsletter call to action ([9f9cba9](https://github.com/datum-cloud/twins-in-the-loop/commit/9f9cba97c230e886b33fde373fe7db31d706adad))
+
 ## [1.5.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.4.0...v1.5.0) (2026-09-28)
 
 
