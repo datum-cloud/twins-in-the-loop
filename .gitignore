@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 .env.local
+datum/secret.yaml
+# written by `datumctl compute deploy`; holds --env values in cleartext
+workload.yaml
 
 # macOS-specific files
 .DS_Store
@@ -26,3 +29,6 @@ pnpm-debug.log*
 
 # test output
 coverage/
+
+# project rules, re-included over a global .cursor/ ignore
+!.cursor/

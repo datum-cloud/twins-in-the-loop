@@ -1,0 +1,14 @@
+---
+description: MDX content collections are the CMS
+globs: src/content/**/*.mdx
+alwaysApply: false
+---
+
+# MDX content
+
+- Human-facing copy belongs in `src/content/{posts,pages,authors,site}`.
+- Keep shared SEO frontmatter (`title`, `description`, `canonical`, `ogImage`, `ogType`, `noindex`, `keywords`).
+- Posts also need `published`, `author` (`zac` | `jacob`), `type` (`post` | `musing` | `video` | `podcast`), `topics`, `excerpt`.
+- Slug comes from the filename. Drafts use `draft: true` and are excluded in production.
+- Do not invent topics or authors outside the Zod schemas in `src/content.config.ts`.
+---
