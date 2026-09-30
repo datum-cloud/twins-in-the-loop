@@ -36,7 +36,7 @@ Example:
 ```yaml
 title: "Arm's Next Chapter: What Custom Silicon Means for Cloud-Native Apps"
 description: 'Custom silicon is reshaping how cloud-native apps are built, deployed, and priced.'
-canonical: https://twinsintheloop.com/arms-next-chapter
+canonical: https://www.twins-in-the-loop.com/arms-next-chapter
 og:
   title: Custom silicon is reshaping cloud-native apps
   description: What Arm's next chapter means for how cloud-native apps are built, deployed, and priced.
@@ -136,10 +136,10 @@ Crawlers cache social cards. After changing an image, use LinkedIn Post Inspecto
 
 Omit `canonical` unless you need to point elsewhere (syndication, trailing-slash policy, domain move).
 
-When omitted, the site builds `https://twinsintheloop.com{path}` from `site` in `astro.config.mjs`.
+When omitted, the site builds `https://www.twins-in-the-loop.com{path}` from `site` in `astro.config.mjs`.
 
 ```yaml
-canonical: https://twinsintheloop.com/ai-and-datacenter-conversations
+canonical: https://www.twins-in-the-loop.com/ai-and-datacenter-conversations
 ```
 
 Must be an absolute URL (`https://…`). A relative path will fail the schema.
@@ -203,10 +203,10 @@ Absolute URLs for canonical, sitemap, RSS, and OG images use:
 
 ```js
 // astro.config.mjs
-site: process.env.SITE ?? 'https://twinsintheloop.com';
+site: process.env.SITE ?? 'https://www.twins-in-the-loop.com';
 ```
 
-Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /images/og-default.jpg` becomes `https://twinsintheloop.com/images/og-default.jpg` when `SITE` is the production origin.
+Production hosts must set `PUBLIC_SITE_ENV=production`. `defaultOgImage: /images/og-default.jpg` becomes `https://www.twins-in-the-loop.com/images/og-default.jpg` when `SITE` is the production origin.
 
 ## Favicon
 

@@ -31,7 +31,7 @@ export function robotsTxt(options: {
 
   const sitemap = new URL(
     'sitemap.xml',
-    options.site ?? 'https://twinsintheloop.com',
+    options.site ?? 'https://www.twins-in-the-loop.com',
   ).toString();
 
   return `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${sitemap}\n`;

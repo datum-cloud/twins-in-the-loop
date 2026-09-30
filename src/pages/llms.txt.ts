@@ -10,7 +10,8 @@ export async function GET(context: APIContext) {
     return new Response('Not found', { status: 404 });
   }
 
-  const siteUrl = context.site?.toString() ?? 'https://twinsintheloop.com';
+  const siteUrl =
+    context.site?.toString() ?? 'https://www.twins-in-the-loop.com';
   const [site, posts] = await Promise.all([
     getSiteSettings(),
     getPublishedPosts(),

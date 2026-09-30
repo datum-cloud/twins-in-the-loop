@@ -8,7 +8,7 @@ import { expressiveCodeOptions } from './src/lib/expressiveCodeOptions.ts';
 import { strapiMediaHostname } from './src/lib/strapi/mediaHost.ts';
 
 export default defineConfig({
-  site: process.env.SITE ?? 'https://twinsintheloop.com',
+  site: process.env.SITE ?? 'https://www.twins-in-the-loop.com',
   base: process.env.BASE_PATH || '/',
   output: 'server',
   adapter: vercel({ imageService: true }),

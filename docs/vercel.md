@@ -2,7 +2,7 @@
 
 This site is a **server-rendered Astro 7** build using `@astrojs/vercel`. Blog posts are fetched from Strapi at request time and served through Vercel's Runtime Cache, so publishing in the CMS does not require a rebuild. Only `/about` and `/robots.txt` are prerendered.
 
-Production is `twinsintheloop.com`. Preview deployments are staging: site-wide `noindex` and no sitemap.
+Production is `www.twins-in-the-loop.com`. Preview deployments are staging: site-wide `noindex` and no sitemap.
 
 > **Vercel is the only host.** GitHub Pages staging has been removed — Pages is static-only and cannot run the SSR routes or the webhook endpoint. Use Vercel Preview URLs for staging.
 
@@ -40,21 +40,21 @@ The `PUBLIC_SITE_ENV` / `SITE` / `BASE_PATH` trio is read at build time. The `ST
 
 ### Production
 
-| Name              | Value                        | Environments |
-| ----------------- | ---------------------------- | ------------ |
-| `PUBLIC_SITE_ENV` | `production`                 | Production   |
-| `SITE`            | `https://twinsintheloop.com` | Production   |
-| `BASE_PATH`       | `/`                          | Production   |
+| Name              | Value                               | Environments |
+| ----------------- | ----------------------------------- | ------------ |
+| `PUBLIC_SITE_ENV` | `production`                        | Production   |
+| `SITE`            | `https://www.twins-in-the-loop.com` | Production   |
+| `BASE_PATH`       | `/`                                 | Production   |
 
 `PUBLIC_SITE_ENV=production` allows indexing and emits the sitemap. Per-page `noindex` in MDX still applies.
 
 ### Preview (and Development, if you use `vercel dev`)
 
-| Name              | Value                        | Environments         |
-| ----------------- | ---------------------------- | -------------------- |
-| `PUBLIC_SITE_ENV` | `staging`                    | Preview, Development |
-| `SITE`            | `https://twinsintheloop.com` | Preview, Development |
-| `BASE_PATH`       | `/`                          | Preview, Development |
+| Name              | Value                               | Environments         |
+| ----------------- | ----------------------------------- | -------------------- |
+| `PUBLIC_SITE_ENV` | `staging`                           | Preview, Development |
+| `SITE`            | `https://www.twins-in-the-loop.com` | Preview, Development |
+| `BASE_PATH`       | `/`                                 | Preview, Development |
 
 Preview is always `noindex`. Keep `BASE_PATH=/` — Vercel serves the site at the hostname root.
 
@@ -79,7 +79,7 @@ In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
 | Field  | Value                                                                                              |
 | ------ | -------------------------------------------------------------------------------------------------- |
-| URL    | `https://twinsintheloop.com/api/strapi-webhook`                                                    |
+| URL    | `https://www.twins-in-the-loop.com/api/strapi-webhook`                                             |
 | Header | `Authorization: Bearer <STRAPI_WEBHOOK_SECRET>`                                                    |
 | Events | `entry.publish`, `entry.unpublish`, `entry.update`, `entry.delete` on **Twins Post** and **Topic** |
 
@@ -87,9 +87,9 @@ A successful call returns `{"ok":true,"tags":["twins-posts", ...]}`. If `tags` c
 
 ## Domain
 
-1. **Settings → Domains** → add `twinsintheloop.com` (and `www` if you use it).
+1. **Settings → Domains** → add `www.twins-in-the-loop.com`.
 2. Point DNS as Vercel shows (usually Apex + `www` CNAME, or Datum/Cloud DNS records to Vercel).
-3. Set the production domain as the primary. `SITE` must match the canonical origin you want in metadata (`https://twinsintheloop.com`).
+3. Set the production domain as the primary. `SITE` must match the canonical origin you want in metadata (`https://www.twins-in-the-loop.com`).
 
 Until the custom domain is attached, Production still works on `*.vercel.app`. Update `SITE` only if that apex URL is what you want in canonicals.
 
@@ -179,7 +179,7 @@ Set the GitHub Actions secrets above first. GitHub creates the `production` Envi
 2. Merge the release PR → Release Please tags `vX.Y.Z` and creates the GitHub Release.
 3. The Release Please run calls Deploy Vercel production for that commit.
 
-Merging a content PR to `main` does **not** update `twinsintheloop.com` until the next release tag.
+Merging a content PR to `main` does **not** update `www.twins-in-the-loop.com` until the next release tag.
 
 Do not use a custom Ignored Build Step that tries to detect tags. Git Production deploys are branch pushes (`main`), not tag events. Use option A or B above plus this workflow.
 
@@ -187,7 +187,7 @@ Do not use a custom Ignored Build Step that tries to detect tags. Git Production
 
 1. Open the project in Vercel → **Deployments**.
 2. Confirm the latest Production deploy is **Ready**.
-3. Open `https://twinsintheloop.com` (or the production `*.vercel.app` URL).
+3. Open `https://www.twins-in-the-loop.com` (or the production `*.vercel.app` URL).
 4. Confirm a Preview deploy from a branch: robots meta is `noindex, nofollow`, and `/sitemap.xml` returns 404.
 5. On Production, confirm pages can be indexed (unless a post sets `noindex`) and `/sitemap.xml` lists every post.
 6. Confirm posts are coming from Strapi: publish a title change in the CMS and reload without redeploying.
@@ -214,9 +214,9 @@ Only use `--ignore-scripts` if the default install cannot complete. This project
 
 ## Environments
 
-| Host                          | Role                       | `PUBLIC_SITE_ENV` | `BASE_PATH` |
-| ----------------------------- | -------------------------- | ----------------- | ----------- |
-| Vercel + `twinsintheloop.com` | Production                 | `production`      | `/`         |
-| Vercel Preview URLs           | Review / staging (noindex) | `staging`         | `/`         |
+| Host                                 | Role                       | `PUBLIC_SITE_ENV` | `BASE_PATH` |
+| ------------------------------------ | -------------------------- | ----------------- | ----------- |
+| Vercel + `www.twins-in-the-loop.com` | Production                 | `production`      | `/`         |
+| Vercel Preview URLs                  | Review / staging (noindex) | `staging`         | `/`         |
 
 Do not add Preview URLs in Search Console as properties you want indexed.

@@ -27,19 +27,19 @@ bun run dev
 | ----------------- | ---------------------------------------- | --------------------------------------------------------------------- |
 | `PUBLIC_SITE_ENV` | `production`                             | `staging` (or anything except `production`)                           |
 | Search            | Pages can be indexed; sitemap is emitted | Site-wide `noindex, nofollow`; `robots.txt` disallows `/`; no sitemap |
-| `SITE`            | `https://twinsintheloop.com`             | `https://twinsintheloop.com`                                          |
+| `SITE`            | `https://www.twins-in-the-loop.com`      | `https://www.twins-in-the-loop.com`                                   |
 | `BASE_PATH`       | `/`                                      | `/`                                                                   |
 
 Production (live domain):
 
 ```bash
-PUBLIC_SITE_ENV=production SITE=https://twinsintheloop.com BASE_PATH=/ bun run build
+PUBLIC_SITE_ENV=production SITE=https://www.twins-in-the-loop.com BASE_PATH=/ bun run build
 ```
 
 Staging (noindex — useful to inspect robots tags):
 
 ```bash
-PUBLIC_SITE_ENV=staging SITE=https://twinsintheloop.com BASE_PATH=/ bun run build
+PUBLIC_SITE_ENV=staging SITE=https://www.twins-in-the-loop.com BASE_PATH=/ bun run build
 ```
 
 Or copy `.env.example` to `.env`. [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs a production-shaped check; [`.github/workflows/deploy-vercel.yml`](./.github/workflows/deploy-vercel.yml) ships production on a release tag. Staging is a Vercel Preview URL — see [docs/vercel.md](./docs/vercel.md).
@@ -54,7 +54,7 @@ In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
 | Field  | Value                                                                                              |
 | ------ | -------------------------------------------------------------------------------------------------- |
-| URL    | `https://twinsintheloop.com/api/strapi-webhook`                                                    |
+| URL    | `https://www.twins-in-the-loop.com/api/strapi-webhook`                                             |
 | Header | `Authorization: Bearer <STRAPI_WEBHOOK_SECRET>`                                                    |
 | Events | `entry.publish`, `entry.unpublish`, `entry.update`, `entry.delete` on **Twins Post** and **Topic** |
 

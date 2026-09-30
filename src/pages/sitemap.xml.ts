@@ -8,7 +8,8 @@ import { isSiteIndexable, withBase } from '../lib/siteEnv';
  * post pages are server-rendered, so it would silently emit none of them.
  */
 export async function GET(context: APIContext) {
-  const siteUrl = context.site?.toString() ?? 'https://twinsintheloop.com';
+  const siteUrl =
+    context.site?.toString() ?? 'https://www.twins-in-the-loop.com';
 
   if (!isSiteIndexable()) {
     return new Response('Not found', { status: 404 });
