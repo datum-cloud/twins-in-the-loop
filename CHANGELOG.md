@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.2...v1.6.0) (2026-09-30)
+
+
+### Features
+
+* show US dates and related-article authors ([71549dd](https://github.com/datum-cloud/twins-in-the-loop/commit/71549ddef8f3a62958392f045216a7e740157a98))
+* show US dates and related-article authors ([#37](https://github.com/datum-cloud/twins-in-the-loop/issues/37)) ([10c0a8a](https://github.com/datum-cloud/twins-in-the-loop/commit/10c0a8a6a9bf54ba6b2a4231cfa9e47bdcf55d46))
+
 ## [1.5.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.1...v1.5.2) (2026-09-30)
 
 
