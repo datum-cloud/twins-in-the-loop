@@ -1,17 +1,35 @@
 ---
-import type { AuthorId, ContentType, TopicId } from '../../lib/types';
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
 import { formatListDate } from '../../lib/dates';
+import {
+  AUTHOR_ROW_AVATAR_SIZES,
+  authorAvatarWidths,
+  OPTIMIZED_IMAGE_FORMAT,
+  OPTIMIZED_IMAGE_QUALITY,
+} from '../../lib/images';
+import type { AuthorId, ContentType, TopicId } from '../../lib/types';
 
 interface Props {
   href: string;
   title: string;
   published: Date;
   author: AuthorId;
+  authorName: string;
+  authorPhoto: ImageMetadata;
   type: ContentType;
   topics?: TopicId[];
 }
 
-const { href, title, published, author, topics = [] } = Astro.props;
+const {
+  href,
+  title,
+  published,
+  author,
+  authorName,
+  authorPhoto,
+  topics = [],
+} = Astro.props;
 ---
 
 <a
@@ -24,10 +42,25 @@ const { href, title, published, author, topics = [] } = Astro.props;
     class="text-xl leading-7 font-semibold group-hover:underline group-hover:decoration-1 group-hover:underline-offset-4"
     >{title}</span
   >
-  <time
-    class="text-fjord/40 text-sm leading-5.25 font-medium"
-    datetime={published.toISOString()}
-  >
-    {formatListDate(published)}
-  </time>
+  <span class="flex items-center gap-3">
+    <Image
+      src={authorPhoto}
+      alt=""
+      width={40}
+      height={40}
+      widths={authorAvatarWidths(authorPhoto.width)}
+      sizes={AUTHOR_ROW_AVATAR_SIZES}
+      format={OPTIMIZED_IMAGE_FORMAT}
+      quality={OPTIMIZED_IMAGE_QUALITY}
+      class="size-10 shrink-0 rounded-sm object-cover"
+    />
+    <span class="text-sm leading-5.25 font-medium">{authorName}</span>
+    <span class="text-fjord/40 text-sm leading-5.25" aria-hidden="true">·</span>
+    <time
+      class="text-fjord/40 text-sm leading-5.25 font-medium"
+      datetime={published.toISOString()}
+    >
+      {formatListDate(published)}
+    </time>
+  </span>
 </a>

@@ -31,6 +31,8 @@ if (!post) {
 
 setCdnCacheHeaders(Astro.response.headers);
 
+const authors = await getAuthors();
+
 const related = relatedPosts(
   posts.map((entry) => ({
     id: entry.id,
@@ -39,14 +41,23 @@ const related = relatedPosts(
   })),
   { id: post.id, type: post.data.type },
   4,
-).map((entry) => ({
-  href: withBase(`/${entry.id}`),
-  title: entry.data.title,
-  published: entry.data.published,
-  author: entry.data.author,
-  type: entry.data.type,
-  topics: entry.data.topics,
-}));
+).map((entry) => {
+  const relatedAuthor = authors.find((item) => item.id === entry.data.author);
+  if (!relatedAuthor) {
+    throw new Error(`Missing author ${entry.data.author}`);
+  }
+
+  return {
+    href: withBase(`/${entry.id}`),
+    title: entry.data.title,
+    published: entry.data.published,
+    author: entry.data.author,
+    authorName: relatedAuthor.data.name,
+    authorPhoto: relatedAuthor.data.photo,
+    type: entry.data.type,
+    topics: entry.data.topics,
+  };
+});
 
 const embed = parseEmbedUrl(post.data.embedUrl);
 
@@ -70,7 +81,6 @@ switch (post.data.type) {
 }
 
 const site = await getSiteSettings();
-const authors = await getAuthors();
 const author = authors.find((entry) => entry.id === post.data.author);
 if (!author) {
   throw new Error(`Missing author ${post.data.author}`);
