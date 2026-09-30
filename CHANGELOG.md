@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.6.0...v1.7.0) (2026-09-30)
+
+
+### Features
+
+* apply SEO best practices and add llms.txt ([32543d9](https://github.com/datum-cloud/twins-in-the-loop/commit/32543d9231d77f6568d46a42bdc27f4e012f4350))
+* apply SEO best practices and add llms.txt ([#39](https://github.com/datum-cloud/twins-in-the-loop/issues/39)) ([770ec5f](https://github.com/datum-cloud/twins-in-the-loop/commit/770ec5fecf7656abda71314b856701d3380bad9b))
+
 ## [1.6.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.2...v1.6.0) (2026-09-30)
 
 
