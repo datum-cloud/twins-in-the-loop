@@ -12,11 +12,13 @@ export async function GET(context: APIContext) {
     title: site.title,
     description: site.description,
     site: context.site ?? 'https://twinsintheloop.com',
+    customData: '<language>en-us</language>',
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.published,
       link: withBase(`/${post.id}`),
+      categories: post.data.topics,
     })),
   });
 }

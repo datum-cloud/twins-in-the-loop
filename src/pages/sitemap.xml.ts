@@ -15,9 +15,15 @@ export async function GET(context: APIContext) {
   }
 
   const posts = await getPublishedPosts();
+  const latest = posts
+    .map((post) => (post.data.updated ?? post.data.published).getTime())
+    .reduce((max, time) => Math.max(max, time), 0);
   const entries = [
-    { path: '/', lastmod: undefined as string | undefined },
-    { path: '/about', lastmod: undefined },
+    {
+      path: '/',
+      lastmod: latest ? new Date(latest).toISOString() : undefined,
+    },
+    { path: '/about', lastmod: undefined as string | undefined },
     ...posts.map((post) => ({
       path: `/${post.id}`,
       lastmod: (post.data.updated ?? post.data.published).toISOString(),
@@ -34,7 +40,9 @@ export async function GET(context: APIContext) {
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>`;
 
-  const headers = new Headers({ 'Content-Type': 'application/xml' });
+  const headers = new Headers({
+    'Content-Type': 'application/xml; charset=utf-8',
+  });
   setCdnCacheHeaders(headers);
 
   return new Response(xml, { headers });

@@ -6,16 +6,17 @@ The resolver lives in `src/lib/seo.ts`. Pages pass MDX fields through `BaseLayou
 
 ## What visitors and crawlers see
 
-| Surface                           | Source                                                                                                         |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                                 |
-| Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                                |
-| Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:url`, `og:type` |
-| X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                                |
-| RSS (`/rss.xml`)                  | Channel from site settings; items from post `title`, `description`, `published`                                |
-| Sitemap                           | Built at `/sitemap-index.xml` in production. Omitted when `PUBLIC_SITE_ENV` is not `production`                |
-| robots.txt                        | Production: allows `/` and points at the sitemap. Other envs: `Disallow: /`                                    |
-| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title`                                    |
+| Surface                           | Source                                                                                                                                             |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                                                                     |
+| Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                                                                    |
+| Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:url`, `og:type`                                     |
+| X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                                                                    |
+| RSS (`/rss.xml`)                  | Channel from site settings; items from post `title`, `description`, `published`, `topics`. Advertised via `<link rel="alternate">` on every page   |
+| Sitemap                           | Built at `/sitemap.xml` in production, with `lastmod` for posts and the homepage. Omitted when `PUBLIC_SITE_ENV` is not `production`               |
+| robots.txt                        | Production: allows `/`, blocks `/api/`, and points at the sitemap. Other envs: `Disallow: /`                                                       |
+| `/llms.txt`                       | Markdown index of the site and published posts for AI tools ([llmstxt.org](https://llmstxt.org)). 404 when not production; `noindex` posts omitted |
+| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title`                                                                        |
 
 ## Shared frontmatter (every collection)
 
@@ -171,7 +172,7 @@ From `src/content/site/settings.mdx`:
 
 - `title`, `description`, `canonical`, `og`, `noindex`, `keywords`
 - Share image fallback: `og.image` or `defaultOgImage` (`/images/og-default.jpg`)
-- JSON-LD `Blog` uses site `title` and `description`
+- JSON-LD `WebSite` and `Blog` use site `title` and `description`, with Datum as publisher
 
 ### About `/about`
 
@@ -189,7 +190,7 @@ From `src/content/posts/{slug}.mdx`:
 - `description` → meta and RSS; `og.description` → social description when set
 - Share image: `og.image`, then framed cover `/og/{slug}.jpg`, then `/images/og-news.jpg`
 - `og.type` on posts defaults to `article` even if `og` is omitted
-- JSON-LD follows `type`: `post` and `musing` are `BlogPosting`, `video` is `VideoObject` (with `embedUrl`), `podcast` is `PodcastEpisode`. All of them use `title`, `description`, `published`, author `name`, and cover
+- JSON-LD follows `type`: `post` and `musing` are `BlogPosting`, `video` is `VideoObject` (with `embedUrl`), `podcast` is `PodcastEpisode`. All of them use `title`, `description`, `published`, author `name`/LinkedIn URL, publisher, and the absolute share image. A `BreadcrumbList` is added too. Posts also emit `article:published_time`, `article:modified_time`, `article:author`, and `article:tag`; every page emits `og:site_name` and `og:locale`
 - `embedUrl` is unused for meta tags
 
 ### RSS `/rss.xml`

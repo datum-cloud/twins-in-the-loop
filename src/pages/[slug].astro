@@ -13,7 +13,8 @@ import { getPublishedPost } from '../lib/strapi/posts';
 import { setCdnCacheHeaders } from '../lib/httpCache';
 import { renderPostBody } from '../lib/markdown';
 import { relatedPosts } from '../lib/posts';
-import { articleOgImage } from '../lib/seo';
+import { absoluteUrl, articleOgImage } from '../lib/seo';
+import { articleJsonLd, breadcrumbJsonLd } from '../lib/jsonLd';
 import { withBase } from '../lib/siteEnv';
 import { relatedHeading } from '../lib/types';
 
@@ -96,54 +97,32 @@ const siteSeo = {
 };
 const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
 
-const commonJsonLd = {
-  '@context': 'https://schema.org',
-  name: post.data.title,
-  description: post.data.description,
-  url: canonical,
-  author: {
-    '@type': 'Person',
-    name: author.data.name,
-  },
-  image: post.data.cover?.src,
-};
+const shareImage = absoluteUrl(
+  articleOgImage(post.data.og?.image, post.data.cover, post.id),
+  siteSeo.siteUrl,
+);
+const publisher = { name: site.copyright, url: site.datumUrl };
 
-let jsonLd: Record<string, unknown>;
-switch (post.data.type) {
-  case 'post':
-  case 'musing':
-    jsonLd = {
-      ...commonJsonLd,
-      '@type': 'BlogPosting',
-      headline: post.data.title,
-      datePublished: post.data.published.toISOString(),
-      dateModified: post.data.updated?.toISOString(),
-    };
-    break;
-  case 'video':
-    jsonLd = {
-      ...commonJsonLd,
-      '@type': 'VideoObject',
-      uploadDate: post.data.published.toISOString(),
-      thumbnailUrl: post.data.cover?.src,
-      embedUrl: post.data.embedUrl,
-    };
-    break;
-  case 'podcast':
-    jsonLd = {
-      ...commonJsonLd,
-      '@type': 'PodcastEpisode',
-      datePublished: post.data.published.toISOString(),
-      associatedMedia: post.data.embedUrl
-        ? { '@type': 'MediaObject', contentUrl: post.data.embedUrl }
-        : undefined,
-    };
-    break;
-  default: {
-    const _exhaustive: never = post.data.type;
-    throw new Error(`Unhandled content type ${_exhaustive}`);
-  }
-}
+const jsonLd = [
+  articleJsonLd({
+    type: post.data.type,
+    title: post.data.title,
+    description: post.data.description,
+    url: canonical,
+    image: shareImage,
+    published: post.data.published,
+    updated: post.data.updated,
+    authorName: author.data.name,
+    authorUrl: author.data.linkedin,
+    publisher,
+    keywords: post.data.keywords,
+    embedUrl: post.data.embedUrl,
+  }),
+  breadcrumbJsonLd([
+    { name: site.title, url: new URL('/', siteSeo.siteUrl).toString() },
+    { name: post.data.title, url: canonical },
+  ]),
+];
 ---
 
 <BaseLayout
@@ -161,6 +140,12 @@ switch (post.data.type) {
   }}
   noindex={post.data.noindex}
   keywords={post.data.keywords}
+  article={{
+    publishedTime: post.data.published,
+    modifiedTime: post.data.updated,
+    author: author.data.name,
+    topics: post.data.topics,
+  }}
   footer={{
     lead: site.title,
     blurb: site.footerBlurb,

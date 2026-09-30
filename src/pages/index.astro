@@ -9,6 +9,7 @@ import { getSiteSettings } from '../lib/content';
 import { getPublishedPosts } from '../lib/strapi/posts';
 import { getTopics } from '../lib/strapi/topics';
 import { setCdnCacheHeaders } from '../lib/httpCache';
+import { blogJsonLd } from '../lib/jsonLd';
 import { withBase } from '../lib/siteEnv';
 
 setCdnCacheHeaders(Astro.response.headers);
@@ -43,13 +44,12 @@ const siteSeo = {
     copyrightName: site.copyright,
     socials: site.socials,
   }}
-  jsonLd={{
-    '@context': 'https://schema.org',
-    '@type': 'Blog',
+  jsonLd={blogJsonLd({
     name: site.title,
     description: site.description,
     url: siteSeo.siteUrl,
-  }}
+    publisher: { name: site.copyright, url: site.datumUrl },
+  })}
 >
   <SiteHero />
   <Container columns="12" class="pt-10 pb-20 lg:pb-40" data-filter-root>

@@ -34,5 +34,5 @@ export function robotsTxt(options: {
     options.site ?? 'https://twinsintheloop.com',
   ).toString();
 
-  return `User-agent: *\nAllow: /\nSitemap: ${sitemap}\n`;
+  return `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${sitemap}\n`;
 }

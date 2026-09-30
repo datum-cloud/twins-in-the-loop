@@ -23,6 +23,13 @@ export interface OgInput {
   type?: OgType;
 }
 
+export interface ArticleMeta {
+  publishedTime: Date;
+  modifiedTime?: Date;
+  author: string;
+  topics?: string[];
+}
+
 export interface SeoInput {
   title: string;
   description: string;
@@ -30,6 +37,7 @@ export interface SeoInput {
   og?: OgInput;
   noindex?: boolean;
   keywords?: string[];
+  article?: ArticleMeta;
 }
 
 export interface ResolvedSeo {
@@ -45,6 +53,7 @@ export interface ResolvedSeo {
   ogType: OgType;
   robots: string;
   keywords?: string[];
+  article?: ArticleMeta;
 }
 
 export interface SiteSeoDefaults {
@@ -135,6 +144,13 @@ export function articleOgImage(
   return ogImageSrc(cover) ?? ARTICLE_OG_IMAGE;
 }
 
+/** Absolute URLs pass through; site paths get the base and origin. */
+export function absoluteUrl(pathOrUrl: string, siteUrl: string): string {
+  return /^https?:\/\//.test(pathOrUrl)
+    ? pathOrUrl
+    : new URL(withBase(pathOrUrl), siteUrl).toString();
+}
+
 export function resolveSeo(
   input: SeoInput,
   site: SiteSeoDefaults,
@@ -144,9 +160,7 @@ export function resolveSeo(
   const canonical =
     input.canonical ?? new URL(withBase(path), site.siteUrl).toString();
   const ogSource = input.og?.image ?? site.defaultOgImage;
-  const ogImage = /^https?:\/\//.test(ogSource)
-    ? ogSource
-    : new URL(withBase(ogSource), site.siteUrl).toString();
+  const ogImage = absoluteUrl(ogSource, site.siteUrl);
   const indexable = options.indexable ?? isSiteIndexable();
   const dimensions = standardOgDimensions(ogImage);
 
@@ -163,6 +177,7 @@ export function resolveSeo(
     ogType: input.og?.type ?? 'website',
     robots: !indexable || input.noindex ? 'noindex, nofollow' : 'index, follow',
     keywords: input.keywords,
+    article: input.article,
   };
 }
 
