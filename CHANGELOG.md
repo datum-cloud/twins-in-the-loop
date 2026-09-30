@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.1...v1.5.2) (2026-09-30)
+
+
+### Bug Fixes
+
+* drop the article cover and size share cards for LinkedIn ([13da3c4](https://github.com/datum-cloud/twins-in-the-loop/commit/13da3c41c2126ccb93cd95e206219a914e847b33))
+* resolve a renamed slug instead of a stale 404 ([bd30b83](https://github.com/datum-cloud/twins-in-the-loop/commit/bd30b8381479adf41f3f4d681fe2de395ab93d33))
+
 ## [1.5.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.5.0...v1.5.1) (2026-09-29)
 
 
