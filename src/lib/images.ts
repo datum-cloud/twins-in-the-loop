@@ -5,10 +5,6 @@ export const CARD_THUMBNAIL_WIDTHS = [400, 640, 800, 1200] as const;
 export const CARD_THUMBNAIL_SIZES =
   '(min-width: 1680px) 800px, (min-width: 768px) 45vw, 100vw';
 
-export const ARTICLE_COVER_WIDTHS = [640, 960, 1280, 1600] as const;
-export const ARTICLE_COVER_SIZES =
-  '(min-width: 1680px) 960px, (min-width: 1024px) 66vw, 100vw';
-
 /** Square episode art next to a podcast player. */
 export const EPISODE_ART_WIDTHS = [288, 576] as const;
 export const EPISODE_ART_SIZES = '(min-width: 640px) 288px, 100vw';
@@ -38,10 +34,6 @@ export function responsiveImageWidths(
 
 export function thumbnailWidths(sourceWidth: number): number[] {
   return responsiveImageWidths(sourceWidth, CARD_THUMBNAIL_WIDTHS);
-}
-
-export function articleCoverWidths(sourceWidth: number): number[] {
-  return responsiveImageWidths(sourceWidth, ARTICLE_COVER_WIDTHS);
 }
 
 export function episodeArtWidths(sourceWidth: number): number[] {

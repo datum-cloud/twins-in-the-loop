@@ -1,5 +1,4 @@
 ---
-import ArticleCover from '../components/article/ArticleCover.astro';
 import ArticleHero from '../components/article/ArticleHero.astro';
 import ArticleSidebar from '../components/article/ArticleSidebar.astro';
 import MediaEmbed from '../components/article/MediaEmbed.astro';
@@ -51,8 +50,6 @@ const related = relatedPosts(
 
 const embed = parseEmbedUrl(post.data.embedUrl);
 
-// A working player already shows the poster frame, so the cover would repeat it.
-let showCover = Boolean(post.data.cover);
 let videoEmbed: Embed | undefined;
 let podcastEmbed: Embed | undefined;
 
@@ -62,16 +59,9 @@ switch (post.data.type) {
     break;
   case 'video':
     videoEmbed = embed;
-    if (embed && embed.kind !== 'external') {
-      showCover = false;
-    }
     break;
   case 'podcast':
-    // PodcastMedia places the cover next to the player itself.
     podcastEmbed = embed;
-    if (embed) {
-      showCover = false;
-    }
     break;
   default: {
     const _exhaustive: never = post.data.type;
@@ -190,11 +180,6 @@ switch (post.data.type) {
       variant={post.data.type === 'musing' ? 'quote' : 'tldr'}
     />
     <article class="col-span-full min-w-0 lg:col-span-8">
-      {
-        showCover && post.data.cover ? (
-          <ArticleCover cover={post.data.cover} />
-        ) : null
-      }
       {
         podcastEmbed ? (
           <PodcastMedia

@@ -47,7 +47,9 @@ describe('composeOgImage', () => {
 
     const raw = await image.removeAlpha().raw().toBuffer();
     expect(isClose(rgb(raw, 600, 40), [220, 40, 40])).toBe(true);
-    expect(isClose(rgb(raw, 100, 650), [56, 69, 85])).toBe(true);
+    expect(isClose(rgb(raw, 100, OG_IMAGE_HEIGHT - 25), [56, 69, 85])).toBe(
+      true,
+    );
   });
 
   it('reads the default frame from the covers asset', () => {

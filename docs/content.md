@@ -35,7 +35,7 @@ Create a **Topic** entry in Strapi. That's all — no code change and no redeplo
 
 A topic with no posts still shows a chip that filters everything out, so delete unused ones.
 
-A cover only renders if Strapi knows its width and height, which it records automatically on upload. Posts without a cover show a solid panel instead, and `/og/{slug}.jpg` returns 404 so the share card falls back to `/images/og-news.jpg`.
+A cover only renders if Strapi knows its width and height, which it records automatically on upload. Posts without a cover show a solid panel on the homepage instead, and `/og/{slug}.jpg` returns 404 so the share card falls back to `/images/og-news.jpg`. The article page does not show the cover.
 
 ### If a published change doesn't appear
 
@@ -67,22 +67,22 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 
 ### Post fields
 
-| Field         | Required                                    | Effect                                                                                                                                                                   |
-| ------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                                          |
-| `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                                                 |
-| `excerpt`     | Yes                                         | Homepage card teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                                      |
-| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                                     |
-| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                                |
-| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                              |
-| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                          |
-| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                           |
-| `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                |
-| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                        |
-| `cover`       | No                                          | Homepage card image and article image. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`              |
-| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                                                               |
-| `embedUrl`    | No                                          | Video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`. Rendered as a player — see [Video and podcast players](#video-and-podcast-players) |
-| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                                                           |
+| Field         | Required                                    | Effect                                                                                                                                                                                           |
+| ------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                                                                  |
+| `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                                                                         |
+| `excerpt`     | Yes                                         | Homepage card teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                                                              |
+| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                                                             |
+| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                                                        |
+| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                                                      |
+| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                                                  |
+| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                                                   |
+| `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                                        |
+| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                                                |
+| `cover`       | No                                          | Homepage card image and podcast episode art. Not shown on the article page. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg` |
+| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                                                                                       |
+| `embedUrl`    | No                                          | Video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`. Rendered as a player — see [Video and podcast players](#video-and-podcast-players)                         |
+| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                                                                                   |
 
 ### Content type icons
 
@@ -99,9 +99,9 @@ All four types share the article layout. `type` changes three things:
 
 | `type`    | Above the title | Sidebar                 | Media                                   | Follow-on list |
 | --------- | --------------- | ----------------------- | --------------------------------------- | -------------- |
-| `post`    | Date only       | TL;DR                   | Cover                                   | More articles  |
-| `musing`  | Date + Musing   | Pull-quote (“In short”) | Cover                                   | More musings   |
-| `video`   | Date + Video    | TL;DR                   | Player from `embedUrl`, else cover      | More videos    |
+| `post`    | Date only       | TL;DR                   | None                                    | More articles  |
+| `musing`  | Date + Musing   | Pull-quote (“In short”) | None                                    | More musings   |
+| `video`   | Date + Video    | TL;DR                   | Player from `embedUrl`                  | More videos    |
 | `podcast` | Date + Podcast  | TL;DR                   | Cover beside the player from `embedUrl` | More episodes  |
 
 The follow-on list leads with posts of the same type and then fills up to four from everything else.

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  articleCoverWidths,
   authorAvatarWidths,
   authorPhotoWidths,
   episodeArtWidths,
@@ -31,12 +30,6 @@ describe('responsiveImageWidths', () => {
 describe('thumbnailWidths', () => {
   it('uses the card thumbnail candidate list', () => {
     expect(thumbnailWidths(1600)).toEqual([400, 640, 800, 1200]);
-  });
-});
-
-describe('articleCoverWidths', () => {
-  it('uses the article cover candidate list', () => {
-    expect(articleCoverWidths(1920)).toEqual([640, 960, 1280, 1600]);
   });
 });
 

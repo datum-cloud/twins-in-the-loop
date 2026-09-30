@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   ARTICLE_OG_IMAGE,
   DEFAULT_OG_IMAGE,
+  OG_IMAGE_HEIGHT,
+  OG_IMAGE_WIDTH,
   articleOgImage,
   resolveSeo,
   withSiteTitle,
@@ -25,6 +27,9 @@ describe('resolveSeo', () => {
 
     expect(seo.canonical).toBe('https://twinsintheloop.com/about');
     expect(seo.ogImage).toBe(`https://twinsintheloop.com${DEFAULT_OG_IMAGE}`);
+    expect(seo.ogImageType).toBe('image/jpeg');
+    expect(seo.ogImageWidth).toBe(OG_IMAGE_WIDTH);
+    expect(seo.ogImageHeight).toBe(OG_IMAGE_HEIGHT);
     expect(seo.ogTitle).toBe('About · Twins in the Loop');
     expect(seo.ogDescription).toBe('Meet the twins');
     expect(seo.robots).toBe('index, follow');
@@ -55,6 +60,9 @@ describe('resolveSeo', () => {
       'We are infrastructure, open source software, and design nerds who love building for the future.',
     );
     expect(seo.ogImage).toBe('https://twinsintheloop.com/share/about.png');
+    expect(seo.ogImageType).toBe('image/png');
+    expect(seo.ogImageWidth).toBeUndefined();
+    expect(seo.ogImageHeight).toBeUndefined();
     expect(seo.ogType).toBe('website');
   });
 
@@ -101,9 +109,21 @@ describe('articleOgImage', () => {
   });
 
   it('uses a framed share card when a cover and slug are present', () => {
-    expect(articleOgImage(undefined, { src: '/covers/post.png' }, 'post')).toBe(
-      '/og/post.jpg',
+    const image = articleOgImage(
+      undefined,
+      { src: '/covers/post.png' },
+      'post',
     );
+    expect(image).toBe('/og/post.jpg');
+
+    const seo = resolveSeo(
+      { title: 'Post', description: 'Body', og: { image } },
+      site,
+      '/post',
+    );
+    expect(seo.ogImageWidth).toBe(OG_IMAGE_WIDTH);
+    expect(seo.ogImageHeight).toBe(OG_IMAGE_HEIGHT);
+    expect(seo.ogImageType).toBe('image/jpeg');
   });
 
   it('falls back to cover when og.image and slug are omitted', () => {
