@@ -12,6 +12,7 @@ import {
   fetchCollection,
 } from './client';
 import { strapiMediaUrl } from './media';
+import { resolvePublishedPost } from './resolvePost';
 import { POSTS_LIST_KEY, POSTS_TAG, postKey, postTag } from './revalidate';
 
 interface StrapiMedia {
@@ -172,6 +173,24 @@ const listOptions: FetchOptions = {
 
 export async function getPublishedPosts(): Promise<Post[]> {
   return fetchPosts();
+}
+
+/** Cached list first. A slug the list does not know is loaded from Strapi. */
+export async function getPublishedPost(
+  slug: string,
+): Promise<{ post: Post | null; posts: Post[] }> {
+  return resolvePublishedPost(slug, {
+    loadCachedPosts: fetchPosts,
+    loadPostBySlug: (value) => fetchPostBySlug(value, 'origin'),
+    refreshPosts: async () => {
+      const records = await loadPublishedPostRecords('origin');
+      if (records === null) return null;
+      console.info(
+        `[strapi] refreshed post list after slug "${slug}" missed the cache`,
+      );
+      return normalizeAll(records);
+    },
+  });
 }
 
 export async function loadPublishedPostRecords(

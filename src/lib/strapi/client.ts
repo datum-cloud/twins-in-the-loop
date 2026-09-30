@@ -59,6 +59,10 @@ export async function fetchCollection<T>(
     case 'origin': {
       const fresh = await fetcher();
       if (fresh !== null) {
+        // Tag expiry is eventually consistent and can fail without throwing.
+        // A still-fresh list then keeps a renamed slug until the 24h TTL.
+        // Delete the key first so this write replaces it.
+        await cache.delete(cacheOptions.key);
         await cache.set(cacheOptions.key, fresh, { tags: cacheOptions.tags });
       }
       return fresh;

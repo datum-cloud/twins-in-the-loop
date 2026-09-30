@@ -6,16 +6,16 @@ The resolver lives in `src/lib/seo.ts`. Pages pass MDX fields through `BaseLayou
 
 ## What visitors and crawlers see
 
-| Surface                           | Source                                                                                          |
-| --------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                  |
-| Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                 |
-| Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:url`, `og:type`                       |
-| X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                 |
-| RSS (`/rss.xml`)                  | Channel from site settings; items from post `title`, `description`, `published`                 |
-| Sitemap                           | Built at `/sitemap-index.xml` in production. Omitted when `PUBLIC_SITE_ENV` is not `production` |
-| robots.txt                        | Production: allows `/` and points at the sitemap. Other envs: `Disallow: /`                     |
-| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title`                     |
+| Surface                           | Source                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                                 |
+| Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                                |
+| Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:url`, `og:type` |
+| X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                                |
+| RSS (`/rss.xml`)                  | Channel from site settings; items from post `title`, `description`, `published`                                |
+| Sitemap                           | Built at `/sitemap-index.xml` in production. Omitted when `PUBLIC_SITE_ENV` is not `production`                |
+| robots.txt                        | Production: allows `/` and points at the sitemap. Other envs: `Disallow: /`                                    |
+| Copy article link / Share article | Copies or shares the canonical article URL. Web Share uses the post `title`                                    |
 
 ## Shared frontmatter (every collection)
 
@@ -99,7 +99,7 @@ Image paths:
 | Public subfolder | `image: /share/my-post.png`                              | `public/share/my-post.png`         |
 | Absolute         | `image: https://cdn.example.com/card.png`                | Remote URL                         |
 
-Recommended card size: 1200×675 JPEG (16:9), matching the generated article cards.
+Recommended card size: 1200×627 JPEG (1.91:1). That is LinkedIn’s minimum share size and recommended ratio, so the card is not cropped in the feed. Generated article cards and the default images in `public/images/` use this size. Custom `og.image` files should match it; width and height tags are only emitted for images we know are 1200×627.
 
 Defaults:
 
@@ -123,7 +123,7 @@ og:
   image: /share/ai-datacenter-neighbors-og.png
 ```
 
-Articles with a `cover` and no `og.image` generate a 1200×675 JPEG at `/og/{slug}.jpg`: the cover is cropped to fill the card, then `src/assets/covers/frame.png` is laid on top (brand bar + wordmark). Posts without a cover still use `/images/og-news.jpg`.
+Articles with a `cover` and no `og.image` generate a 1200×627 JPEG at `/og/{slug}.jpg`: the cover is cropped to fill the card, then `src/assets/covers/frame.png` is laid on top, aligned to the bottom so the brand bar stays intact. Posts without a cover still use `/images/og-news.jpg`.
 
 `embedUrl` is not a share-card field. It renders a player on the page and feeds JSON-LD, but it does not become `og:video` or a Twitter player card.
 

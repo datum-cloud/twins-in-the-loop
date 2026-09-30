@@ -66,6 +66,7 @@ const pages = defineCollection({
         })
         .optional(),
       heading: z.string(),
+      homeLabel: z.string().optional(),
     }),
 });
 

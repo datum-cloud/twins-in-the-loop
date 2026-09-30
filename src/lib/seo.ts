@@ -6,6 +6,14 @@ export const DEFAULT_OG_IMAGE = '/images/og-default.jpg';
 /** Article pages when `og.image` and `cover` are omitted. */
 export const ARTICLE_OG_IMAGE = '/images/og-news.jpg';
 
+/**
+ * LinkedIn link-preview size.
+ * https://www.linkedin.com/help/linkedin/answer/a521928
+ * Minimum 1200×627, recommended ratio 1.91:1, max 5 MB.
+ */
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 627;
+
 export type OgType = 'website' | 'article';
 
 export interface OgInput {
@@ -31,6 +39,9 @@ export interface ResolvedSeo {
   ogTitle: string;
   ogDescription: string;
   ogImage: string;
+  ogImageType?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   ogType: OgType;
   robots: string;
   keywords?: string[];
@@ -65,6 +76,48 @@ export function framedOgImagePath(slug: string): string {
   return `/og/${slug}.jpg`;
 }
 
+function imagePathname(imageUrl: string): string {
+  if (/^https?:\/\//.test(imageUrl)) {
+    return new URL(imageUrl).pathname;
+  }
+
+  const queryIndex = imageUrl.indexOf('?');
+  return queryIndex === -1 ? imageUrl : imageUrl.slice(0, queryIndex);
+}
+
+/** MIME type LinkedIn accepts. WebP is omitted; their crawler drops it. */
+export function ogImageType(imageUrl: string): string | undefined {
+  const pathname = imagePathname(imageUrl).toLowerCase();
+  if (pathname.endsWith('.jpg') || pathname.endsWith('.jpeg')) {
+    return 'image/jpeg';
+  }
+  if (pathname.endsWith('.png')) {
+    return 'image/png';
+  }
+  if (pathname.endsWith('.gif')) {
+    return 'image/gif';
+  }
+
+  return undefined;
+}
+
+/** Width and height for cards we generate at the LinkedIn size. */
+export function standardOgDimensions(
+  imageUrl: string,
+): { width: number; height: number } | undefined {
+  const pathname = imagePathname(imageUrl);
+  const standard =
+    pathname.endsWith(DEFAULT_OG_IMAGE) ||
+    pathname.endsWith(ARTICLE_OG_IMAGE) ||
+    /\/og\/[^/]+\.jpe?g$/.test(pathname);
+
+  if (!standard) {
+    return undefined;
+  }
+
+  return { width: OG_IMAGE_WIDTH, height: OG_IMAGE_HEIGHT };
+}
+
 export function articleOgImage(
   image: string | { src: string } | undefined,
   cover?: string | { src: string } | undefined,
@@ -95,6 +148,7 @@ export function resolveSeo(
     ? ogSource
     : new URL(withBase(ogSource), site.siteUrl).toString();
   const indexable = options.indexable ?? isSiteIndexable();
+  const dimensions = standardOgDimensions(ogImage);
 
   return {
     title: input.title,
@@ -103,6 +157,9 @@ export function resolveSeo(
     ogTitle: input.og?.title ?? withSiteTitle(input.title, site.title),
     ogDescription: input.og?.description ?? input.description,
     ogImage,
+    ogImageType: ogImageType(ogImage),
+    ogImageWidth: dimensions?.width,
+    ogImageHeight: dimensions?.height,
     ogType: input.og?.type ?? 'website',
     robots: !indexable || input.noindex ? 'noindex, nofollow' : 'index, follow',
     keywords: input.keywords,
