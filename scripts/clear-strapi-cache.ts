@@ -9,7 +9,7 @@
  * Usage:
  *   bun run cache:clear
  *   bun run cache:clear -- --url http://localhost:7788
- *   bun run cache:clear -- --url https://twinsintheloop.com --remote
+ *   bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
  */
 
 const DEFAULT_ORIGIN = 'http://localhost:7788';

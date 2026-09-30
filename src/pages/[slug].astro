@@ -92,7 +92,7 @@ const body = await renderPostBody(post.body);
 const siteSeo = {
   title: site.title,
   description: site.description,
-  siteUrl: Astro.site?.toString() ?? 'https://twinsintheloop.com',
+  siteUrl: Astro.site?.toString() ?? 'https://www.twins-in-the-loop.com',
   defaultOgImage: site.defaultOgImage,
 };
 const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();

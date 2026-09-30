@@ -17,7 +17,7 @@ Allowed field values for the MDX collections are enforced in `src/content.config
 ## Add a blog post
 
 1. In Strapi, create a **Twins Post** entry.
-2. The **slug** is the URL: `my-post-slug` becomes `https://twinsintheloop.com/my-post-slug`.
+2. The **slug** is the URL: `my-post-slug` becomes `https://www.twins-in-the-loop.com/my-post-slug`.
 3. Write the body in a **Rich text** block under `blocks`. Markdown is supported, including fenced code blocks.
 4. Attach a **cover** image and pick one or more **topics**.
 5. **Publish**. The site picks it up within about a minute — no rebuild and no deploy.
@@ -239,7 +239,7 @@ These need a developer change (schema + UI):
 - New content types besides `post`, `musing`, `video`, `podcast`
 - Header nav labels and the Blog / About / Stay in the loop structure
 - Logo artwork (`src/assets/logo/`)
-- Site origin (`site` in `astro.config.mjs`, currently `https://twinsintheloop.com`)
+- Site origin (`site` in `astro.config.mjs`, currently `https://www.twins-in-the-loop.com`)
 
 ## Preview checklist
 

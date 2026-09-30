@@ -8,16 +8,20 @@ export async function GET(context: APIContext) {
   const site = await getSiteSettings();
   const posts = await getPublishedPosts();
 
+  const siteUrl = context.site ?? 'https://www.twins-in-the-loop.com';
+
   return rss({
     title: site.title,
     description: site.description,
-    site: context.site ?? 'https://twinsintheloop.com',
+    site: siteUrl,
     customData: '<language>en-us</language>',
     items: posts.map((post) => ({
       title: post.data.title,
       description: post.data.description,
       pubDate: post.data.published,
-      link: withBase(`/${post.id}`),
+      // Absolute links skip the package's trailing-slash rewrite, so items
+      // match the canonical URL.
+      link: new URL(withBase(`/${post.id}`), siteUrl).toString(),
       categories: post.data.topics,
     })),
   });
