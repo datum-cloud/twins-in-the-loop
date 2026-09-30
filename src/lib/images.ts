@@ -17,6 +17,7 @@ export const LOGO_STACKED_SIZES = '140px';
 
 export const AUTHOR_AVATAR_WIDTHS = [60, 120, 180] as const;
 export const AUTHOR_AVATAR_SIZES = '60px';
+export const AUTHOR_ROW_AVATAR_SIZES = '40px';
 
 export const AUTHOR_PHOTO_WIDTHS = [400, 640, 800] as const;
 export const AUTHOR_PHOTO_SIZES =
