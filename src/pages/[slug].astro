@@ -10,7 +10,7 @@ import Prose from '../components/ui/Prose.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getAuthors, getSiteSettings } from '../lib/content';
 import { type Embed, parseEmbedUrl } from '../lib/embed';
-import { getPublishedPosts } from '../lib/strapi/posts';
+import { getPublishedPost } from '../lib/strapi/posts';
 import { setCdnCacheHeaders } from '../lib/httpCache';
 import { renderPostBody } from '../lib/markdown';
 import { relatedPosts } from '../lib/posts';
@@ -18,14 +18,19 @@ import { articleOgImage } from '../lib/seo';
 import { withBase } from '../lib/siteEnv';
 import { relatedHeading } from '../lib/types';
 
-setCdnCacheHeaders(Astro.response.headers);
-
 const { slug } = Astro.params;
-const posts = await getPublishedPosts();
-const post = posts.find((entry) => entry.id === slug);
-if (!post) {
+if (!slug) {
   return Astro.rewrite('/404');
 }
+
+const { post, posts } = await getPublishedPost(slug);
+if (!post) {
+  // `/404` is its own route. Rewriting a miss back into this dynamic page
+  // loops until Vercel returns 508.
+  return Astro.rewrite('/404');
+}
+
+setCdnCacheHeaders(Astro.response.headers);
 
 const related = relatedPosts(
   posts.map((entry) => ({

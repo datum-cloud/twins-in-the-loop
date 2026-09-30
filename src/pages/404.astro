@@ -1,0 +1,74 @@
+---
+import { getEntry, render } from 'astro:content';
+import PageHero from '../components/layout/PageHero.astro';
+import Button from '../components/ui/Button.astro';
+import Container from '../components/ui/Container.astro';
+import Prose from '../components/ui/Prose.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings } from '../lib/content';
+import { ogImageSrc } from '../lib/seo';
+import { withBase } from '../lib/siteEnv';
+
+Astro.response.status = 404;
+Astro.response.headers.set('Cache-Control', 'private, no-store');
+
+const site = await getSiteSettings();
+const page = await getEntry('pages', 'not-found');
+if (!page) {
+  throw new Error('Missing not-found page content');
+}
+
+const { Content } = await render(page);
+const homeLabel = page.data.homeLabel;
+if (!homeLabel) {
+  throw new Error('Missing not-found home label');
+}
+const siteSeo = {
+  title: site.title,
+  description: site.description,
+  siteUrl: Astro.site?.toString() ?? 'https://twinsintheloop.com',
+  defaultOgImage: site.defaultOgImage,
+};
+---
+
+<BaseLayout
+  path="/404"
+  current="blog"
+  site={siteSeo}
+  title={page.data.title}
+  description={page.data.description}
+  canonical={page.data.canonical}
+  og={{
+    title: page.data.og?.title,
+    description: page.data.og?.description,
+    image: ogImageSrc(page.data.og?.image),
+    type: page.data.og?.type,
+  }}
+  noindex={page.data.noindex}
+  keywords={page.data.keywords}
+  footer={{
+    lead: site.title,
+    blurb: site.footerBlurb,
+    subscribeBlurb: site.subscribeBlurb,
+    subscribeUrl: site.subscribeUrl,
+    datumUrl: site.datumUrl,
+    copyrightName: site.copyright,
+    socials: site.socials,
+  }}
+>
+  <PageHero>
+    <h1 class="tracking-heading text-5xl leading-14.5 font-semibold text-white">
+      {page.data.heading}
+    </h1>
+  </PageHero>
+  <Container columns="12" class="py-20">
+    <div class="col-span-full min-w-0 lg:col-span-8 lg:col-start-5">
+      <Prose variant="intro">
+        <Content />
+      </Prose>
+      <div class="mt-10">
+        <Button href={withBase('/')}>{homeLabel}</Button>
+      </div>
+    </div>
+  </Container>
+</BaseLayout>
