@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.7.1...v1.8.0) (2026-10-01)
+
+
+### Features
+
+* add Rybbit page-view tracking ([1e29714](https://github.com/datum-cloud/twins-in-the-loop/commit/1e2971422738f64b0f0645d1289f9295fde5b370))
+
 ## [1.7.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.6.0...v1.7.0) (2026-09-30)
 
 
