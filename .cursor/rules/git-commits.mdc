@@ -1,11 +1,31 @@
 ---
-description: Conventional Commits and Release Please versioning
+description: Update main, branch before work, and Conventional Commits
 alwaysApply: true
 ---
 
+# Git workflow
+
+## Before starting a task
+
+Do this before the first edit on any implementation task. Skip it for read-only questions.
+
+1. Update local `main` so it matches the remote.
+2. Create a working branch from that `main` and do all work there.
+
+```bash
+git fetch origin
+git checkout main
+git pull --ff-only origin main
+git checkout -b feat/short-description
+```
+
+- Use `fix/…`, `feat/…`, or `chore/…` for the branch name.
+- If the working tree is dirty, stash or move those changes onto a branch before updating `main`.
+- Do not start new work on `main` or `master`.
+
 # Git commits
 
-- Never commit on `main` or `master`. Create a focused branch first (`fix/…`, `feat/…`, `chore/…`), then commit there.
+- Never commit on `main` or `master`. Commit on the working branch created above.
 - Do not push commits to `main`. Ship through a pull request.
 - If a commit landed on local `main` by mistake, move it to a new branch and reset `main` to `origin/main`.
 - Use Conventional Commits: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`.
