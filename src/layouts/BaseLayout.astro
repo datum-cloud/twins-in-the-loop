@@ -74,6 +74,10 @@ const { path, site, current, footer, jsonLd, ...seo } = Astro.props;
     <meta name="msapplication-TileColor" content="#384555" />
     <meta name="theme-color" content="#384555" />
     <Seo {...seo} path={path} site={site} jsonLd={jsonLd} />
+    <script
+      is:inline
+      src="https://app.rybbit.io/api/script.js?siteId=b3f92be23c7a"
+      defer></script>
   </head>
   <body class="text-fjord min-h-screen bg-white font-sans">
     <Header current={current} datumUrl={footer.datumUrl} />
