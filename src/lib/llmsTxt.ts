@@ -1,6 +1,6 @@
 export interface LlmsTxtPost {
   title: string;
-  description: string;
+  description?: string;
   url: string;
 }
 
@@ -20,10 +20,10 @@ function inline(text: string): string {
 export function llmsTxt(input: LlmsTxtInput): string {
   const about = new URL('about', input.siteUrl).toString();
   const feed = new URL('rss.xml', input.siteUrl).toString();
-  const posts = input.posts.map(
-    (post) =>
-      `- [${inline(post.title)}](${post.url}): ${inline(post.description)}`,
-  );
+  const posts = input.posts.map((post) => {
+    const link = `- [${inline(post.title)}](${post.url})`;
+    return post.description ? `${link}: ${inline(post.description)}` : link;
+  });
 
   return [
     `# ${inline(input.title)}`,

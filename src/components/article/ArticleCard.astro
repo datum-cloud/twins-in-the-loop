@@ -14,7 +14,7 @@ import AuthorTag from '../ui/AuthorTag.astro';
 interface Props {
   href: string;
   title: string;
-  excerpt: string;
+  description?: string;
   published: Date;
   author: AuthorId;
   type: ContentType;
@@ -22,7 +22,7 @@ interface Props {
   topics: TopicId[];
 }
 
-const { href, title, excerpt, published, author, type, cover, topics } =
+const { href, title, description, published, author, type, cover, topics } =
   Astro.props;
 ---
 
@@ -60,7 +60,7 @@ const { href, title, excerpt, published, author, type, cover, topics } =
       >
         {title}
       </h2>
-      <p class="text-lg leading-6.5">{excerpt}</p>
+      {description ? <p class="text-lg leading-6.5">{description}</p> : null}
       <p class="text-fjord/60 text-base leading-6">
         {formatPostDate(published)}
       </p>

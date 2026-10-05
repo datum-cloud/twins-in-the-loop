@@ -45,7 +45,6 @@ The site caches Strapi responses for 24 hours and relies on a webhook to purge t
 ---
 title: "Arm's Next Chapter: What Custom Silicon Means for Cloud-Native Apps"
 description: 'Custom silicon is reshaping how cloud-native apps are built, deployed, and priced.'
-excerpt: "Custom silicon is no longer a hyperscaler hobby. Here is what Arm's next chapter means for the rest of us."
 published: 2026-08-28
 updated: 2026-09-01
 author: jacob
@@ -63,26 +62,25 @@ Body copy goes under that frontmatter. Headings, lists, images, and fenced code 
 
 `about` is reserved. Do not name a post `about.mdx`.
 
-Written posts can omit `embedUrl` and `og`. Video and podcast entries should set `type`, `embedUrl`, and usually `og` so the share card matches the cover. Use `tldr` only when the sidebar needs different copy than `excerpt`.
+Written posts can omit `embedUrl` and `og`. Video and podcast entries should set `type`, `embedUrl`, and usually `og` so the share card matches the cover. Use `tldr` only when the sidebar needs different copy than `description`.
 
 ### Post fields
 
-| Field         | Required                                    | Effect                                                                                                                                                                                           |
-| ------------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                                                                  |
-| `description` | Yes                                         | Meta description, RSS description, and social description unless `og.description` is set                                                                                                         |
-| `excerpt`     | Yes                                         | Homepage card teaser. Also fills the TL;DR box if `tldr` is omitted                                                                                                                              |
-| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                                                             |
-| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                                                        |
-| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                                                      |
-| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                                                  |
-| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                                                   |
-| `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                                        |
-| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                                                |
-| `cover`       | No                                          | Homepage card image and podcast episode art. Not shown on the article page. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg` |
-| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `excerpt`                                                                                                                                       |
-| `embedUrl`    | No                                          | Video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`. Rendered as a player — see [Video and podcast players](#video-and-podcast-players)                         |
-| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                                                                                   |
+| Field         | Required                                    | Effect                                                                                                                                                                                                            |
+| ------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | Yes                                         | Article H1, browser title, RSS title, Web Share title. Also `og:title` unless `og.title` is set                                                                                                                   |
+| `description` | No                                          | Meta description (falls back to the site description), RSS and `llms.txt` description, homepage card teaser, and social description unless `og.description` is set. Also fills the TL;DR box if `tldr` is omitted |
+| `published`   | Yes                                         | Sort order, card date, article date, RSS `pubDate`. Use `YYYY-MM-DD`                                                                                                                                              |
+| `updated`     | No                                          | Optional last-updated date (`YYYY-MM-DD`)                                                                                                                                                                         |
+| `author`      | Yes                                         | `zac` or `jacob`. Colors, tags, About lookup, author filter                                                                                                                                                       |
+| `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                                                                   |
+| `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                                                                    |
+| `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                                                         |
+| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                                                                 |
+| `cover`       | No                                          | Homepage card image and podcast episode art. Not shown on the article page. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`                  |
+| `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `description`                                                                                                                                                    |
+| `embedUrl`    | No                                          | Video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`. Rendered as a player — see [Video and podcast players](#video-and-podcast-players)                                          |
+| SEO fields    | See [SEO and sharing](./seo-and-sharing.md) | Nested `og` (`title`, `description`, `image`, `type`), plus `canonical`, `noindex`, `keywords`                                                                                                                    |
 
 ### Content type icons
 
@@ -138,12 +136,12 @@ Every published post is a thumbnail card in one grid, newest first. Author does 
 
 File: `src/content/pages/about.mdx`.
 
-| Field         | Required | Effect                                                              |
-| ------------- | -------- | ------------------------------------------------------------------- |
-| `title`       | Yes      | Browser tab and share title (`About this blog · Twins in the Loop`) |
-| `description` | Yes      | Meta and share description                                          |
-| `heading`     | Yes      | Large title in the dark hero                                        |
-| Body          | Yes      | Intro paragraphs under the hero                                     |
+| Field         | Required | Effect                                                                                                                                                                                                            |
+| ------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`       | Yes      | Browser tab and share title (`About this blog · Twins in the Loop`)                                                                                                                                               |
+| `description` | No       | Meta description (falls back to the site description), RSS and `llms.txt` description, homepage card teaser, and social description unless `og.description` is set. Also fills the TL;DR box if `tldr` is omitted |
+| `heading`     | Yes      | Large title in the dark hero                                                                                                                                                                                      |
+| Body          | Yes      | Intro paragraphs under the hero                                                                                                                                                                                   |
 
 Author cards come from `src/content/authors/`, not from this file. SEO extras are in [SEO and sharing](./seo-and-sharing.md).
 
