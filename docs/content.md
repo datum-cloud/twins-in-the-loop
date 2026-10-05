@@ -39,7 +39,7 @@ A cover only renders if Strapi knows its width and height, which it records auto
 
 ### If a published change doesn't appear
 
-The site caches Strapi responses for 24 hours and relies on a webhook to purge that cache on publish. If an edit isn't showing up, the webhook is the first thing to check — see [vercel.md](./vercel.md#cache-invalidation-webhook).
+The site caches Strapi responses for 24 hours and relies on a webhook to purge that cache on publish. If an edit isn't showing up, check the webhook first, then purge by hand. See [vercel.md](./vercel.md#cache-invalidation-webhook) and [Manual cache purge](./vercel.md#manual-cache-purge).
 
 ```yaml
 ---

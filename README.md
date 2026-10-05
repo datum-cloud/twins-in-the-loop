@@ -60,13 +60,14 @@ In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
 The secret must match `STRAPI_WEBHOOK_SECRET` on Vercel (and in `.env` locally). A successful call returns `{"ok":true,"tags":["twins-posts", ...]}` — the tag must be the plural `twins-posts`. If the secret is unset, the endpoint returns **503**.
 
-Strapi Cloud cannot reach `localhost`. For local cache, with `bun run dev` already running:
+Strapi Cloud cannot reach `localhost`. To drop the runtime cache by hand, with `bun run dev` already running for a local purge:
 
 ```bash
 bun run cache:clear
+bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
 ```
 
-Details: [docs/vercel.md](./docs/vercel.md#cache-invalidation-webhook), [docs/strapi.md](./docs/strapi.md).
+Details: [docs/vercel.md](./docs/vercel.md#manual-cache-purge).
 
 ## Checks
 
