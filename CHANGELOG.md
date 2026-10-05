@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.8.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.1...v1.8.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* **cache:** shorten the edge stale window to 3 minutes ([0e9a370](https://github.com/datum-cloud/twins-in-the-loop/commit/0e9a37036344ad44d2ba06b6c33cbdf79f507e1b))
+* **cache:** shorten the edge stale window to 3 minutes ([#51](https://github.com/datum-cloud/twins-in-the-loop/issues/51)) ([286972f](https://github.com/datum-cloud/twins-in-the-loop/commit/286972f9cbdd5ebfa25fd62e62bbf212702014d3))
+* **release:** load the release-please config on main ([0f87c05](https://github.com/datum-cloud/twins-in-the-loop/commit/0f87c0517dba5c71336873ec3e0ee0b574c2b0df))
+* **release:** load the release-please config on main ([#50](https://github.com/datum-cloud/twins-in-the-loop/issues/50)) ([28a9a87](https://github.com/datum-cloud/twins-in-the-loop/commit/28a9a8757c37d1aa6fe3e8da43b0f0976c533619))
+
 ## [1.8.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.7.1...v1.8.0) (2026-10-01)
 
 
