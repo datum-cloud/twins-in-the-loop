@@ -62,11 +62,10 @@ Keep titles unique and roughly under 60 characters when you can; longer titles s
 
 - Homepage: `description` in `settings.mdx`.
 - About: `description` in `pages/about.mdx`.
-- Articles: `description` in the post. This is **not** the same as `excerpt` or `tldr`.
-  - `description` → search + RSS; also social snippet unless `og.description` is set
-  - `excerpt` → homepage cards and TL;DR fallback
+- Articles: `description` in the post (optional; falls back to the site description). This is **not** the same as `tldr`.
+  - `description` → search + RSS + `llms.txt` + homepage card teaser; also social snippet unless `og.description` is set, and TL;DR fallback
   - `tldr` → article sidebar only
-  - Example: [ai-and-datacenter-conversations.mdx](../src/content/posts/ai-and-datacenter-conversations.mdx) uses a short `description` for snippets and a longer `excerpt` for the card. It has no `tldr`, so the sidebar uses `excerpt`.
+  - Posts with neither `description` nor `tldr` show no card teaser and no TL;DR box.
 
 Aim for one or two sentences (about 150–160 characters).
 

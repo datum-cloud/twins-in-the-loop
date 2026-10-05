@@ -15,7 +15,7 @@ export interface BreadcrumbItem {
 export interface ArticleJsonLdInput {
   type: ContentType;
   title: string;
-  description: string;
+  description?: string;
   url: string;
   /** Absolute URL of the share image. */
   image: string;

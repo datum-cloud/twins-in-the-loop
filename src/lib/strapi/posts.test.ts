@@ -16,7 +16,6 @@ const base = {
   title: 'A post',
   slug: 'a-post',
   description: 'desc',
-  excerpt: 'excerpt',
   author: 'zac',
   type: 'post',
   published: '2026-08-25',

@@ -95,6 +95,7 @@ const siteSeo = {
   siteUrl: Astro.site?.toString() ?? 'https://www.twins-in-the-loop.com',
   defaultOgImage: site.defaultOgImage,
 };
+const postDescription = post.data.description ?? site.description;
 const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
 
 const shareImage = absoluteUrl(
@@ -107,7 +108,7 @@ const jsonLd = [
   articleJsonLd({
     type: post.data.type,
     title: post.data.title,
-    description: post.data.description,
+    description: postDescription,
     url: canonical,
     image: shareImage,
     published: post.data.published,
@@ -130,7 +131,7 @@ const jsonLd = [
   current="article"
   site={siteSeo}
   title={post.data.title}
-  description={post.data.description}
+  description={postDescription}
   canonical={post.data.canonical}
   og={{
     title: post.data.og?.title,
@@ -168,7 +169,7 @@ const jsonLd = [
   />
   <Container columns="12" class="py-20">
     <ArticleSidebar
-      tldr={post.data.tldr ?? post.data.excerpt}
+      tldr={post.data.tldr ?? post.data.description}
       url={canonical}
       title={post.data.title}
       author={post.data.author}

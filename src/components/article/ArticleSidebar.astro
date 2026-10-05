@@ -5,7 +5,7 @@ import ShareActions from './ShareActions.astro';
 type Variant = 'tldr' | 'quote';
 
 interface Props {
-  tldr: string;
+  tldr?: string;
   url: string;
   title: string;
   author: 'zac' | 'jacob';
@@ -42,20 +42,24 @@ switch (variant) {
   ]}
 >
   {
-    variant === 'quote' ? (
-      <Icon name="message-square-quote" size={28} class="text-fjord" />
+    tldr ? (
+      <>
+        {variant === 'quote' ? (
+          <Icon name="message-square-quote" size={28} class="text-fjord" />
+        ) : null}
+        <p
+          class:list={[
+            'text-fjord text-2xl font-semibold',
+            variant === 'quote' && 'mt-4',
+          ]}
+        >
+          {heading}
+        </p>
+        <p class:list={['text-fjord mt-4', bodyClass]}>{tldr}</p>
+      </>
     ) : null
   }
-  <p
-    class:list={[
-      'text-fjord text-2xl font-semibold',
-      variant === 'quote' && 'mt-4',
-    ]}
-  >
-    {heading}
-  </p>
-  <p class:list={['text-fjord mt-4', bodyClass]}>{tldr}</p>
-  <div class="mt-8">
+  <div class:list={[tldr && 'mt-8']}>
     <ShareActions url={url} title={title} />
   </div>
 </aside>

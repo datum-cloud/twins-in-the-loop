@@ -26,6 +26,7 @@ const posts = defineCollection({
   schema: ({ image }) =>
     z.object({
       ...seoFields,
+      description: z.string().optional(),
       og: z
         .object({
           title: z.string().optional(),
@@ -41,7 +42,6 @@ const posts = defineCollection({
       author: z.enum(AUTHOR_IDS),
       type: z.enum(CONTENT_TYPES),
       topics: z.array(z.string()).min(1),
-      excerpt: z.string(),
       cover: image().optional(),
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),

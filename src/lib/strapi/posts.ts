@@ -26,8 +26,7 @@ interface StrapiPostRecord {
   documentId: string;
   title: string;
   slug: string;
-  description: string;
-  excerpt: string;
+  description?: string | null;
   tldr?: string | null;
   author: string;
   type: string;
@@ -58,8 +57,7 @@ export interface PostCover {
 
 export interface PostData {
   title: string;
-  description: string;
-  excerpt: string;
+  description?: string;
   tldr?: string;
   published: Date;
   updated?: Date;
@@ -135,8 +133,7 @@ export function normalizePost(record: StrapiPostRecord): Post | null {
     body,
     data: {
       title: record.title,
-      description: record.description,
-      excerpt: record.excerpt,
+      description: record.description ?? undefined,
       tldr: record.tldr ?? undefined,
       published: new Date(record.published),
       updated: record.updatedAt ? new Date(record.updatedAt) : undefined,
