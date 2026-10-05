@@ -29,7 +29,7 @@ git checkout -b feat/short-description
 - Do not push commits to `main`. Ship through a pull request.
 - If a commit landed on local `main` by mistake, move it to a new branch and reset `main` to `origin/main`.
 - Use Conventional Commits: `feat`, `fix`, `docs`, `chore`, `refactor`, `test`, `ci`.
-- Release Please maps `feat` to minor, `fix` to patch, and `!` / `BREAKING CHANGE` to major.
+- Release Please maps `feat` to minor, `fix` / `refactor` / `style` to patch, and `!` / `BREAKING CHANGE` to major.
 - Keep subject lines imperative and in English. Explain why, not a file dump.
 - Do not skip git hooks. Lefthook runs Prettier, ESLint, and commitlint.
 ---
