@@ -1,7 +1,7 @@
 import type { WebhookEvent } from '@datum-cloud/strapi-revalidate';
 import { describe, expect, it, vi } from 'vitest';
 
-import { warmAfterRevalidate } from './warm';
+import { dropCachedContent } from './warm';
 
 const publish: WebhookEvent = {
   event: 'entry.publish',
@@ -12,48 +12,38 @@ const publish: WebhookEvent = {
   tags: ['twins-posts'],
 };
 
-function io(
-  overrides: Partial<Parameters<typeof warmAfterRevalidate>[1]> = {},
-) {
+function io(overrides: Partial<Parameters<typeof dropCachedContent>[1]> = {}) {
   return {
-    loadPostList: vi.fn(async () => [{ slug: 'on-device-ai' }]),
-    loadPostBySlug: vi.fn(async () => ({ id: 'on-device-ai' })),
+    deleteKey: vi.fn(async () => undefined),
     deleteFallback: vi.fn(async () => undefined),
+    listKeys: ['twins-posts-list', 'twins-topics-list'],
     postKey: (slug: string) => `twins-post-${slug}`,
     ...overrides,
   };
 }
 
-describe('warmAfterRevalidate', () => {
-  it('succeeds from the fetch result without requiring a later cache hit', async () => {
+describe('dropCachedContent', () => {
+  it('deletes list keys and the slug key without writing them back', async () => {
     const deps = io();
-    await expect(warmAfterRevalidate(publish, deps)).resolves.toBeUndefined();
-    expect(deps.loadPostList).toHaveBeenCalledOnce();
-    expect(deps.loadPostBySlug).toHaveBeenCalledWith('on-device-ai');
+    await dropCachedContent(publish, deps);
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-posts-list');
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-topics-list');
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-post-on-device-ai');
     expect(deps.deleteFallback).not.toHaveBeenCalled();
   });
 
-  it('throws when the post list fetch failed (null), not on an empty list', async () => {
-    await expect(
-      warmAfterRevalidate(publish, io({ loadPostList: async () => null })),
-    ).rejects.toThrow(/could not fetch twins-posts/);
-
-    await expect(
-      warmAfterRevalidate(publish, io({ loadPostList: async () => [] })),
-    ).resolves.toBeUndefined();
-  });
-
-  it('drops fallback on unpublish and skips slug re-warm', async () => {
+  it('drops the slug fallback on unpublish so a failed refetch cannot restore it', async () => {
     const deps = io();
-    await warmAfterRevalidate({ ...publish, event: 'entry.unpublish' }, deps);
+    await dropCachedContent({ ...publish, event: 'entry.unpublish' }, deps);
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-post-on-device-ai');
     expect(deps.deleteFallback).toHaveBeenCalledWith('twins-post-on-device-ai');
-    expect(deps.loadPostBySlug).not.toHaveBeenCalled();
   });
 
-  it('skips slug load when the event has no slug', async () => {
+  it('still deletes list keys when the event has no slug', async () => {
     const deps = io();
-    await warmAfterRevalidate({ ...publish, slug: undefined }, deps);
-    expect(deps.loadPostBySlug).not.toHaveBeenCalled();
+    await dropCachedContent({ ...publish, slug: undefined }, deps);
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-posts-list');
+    expect(deps.deleteKey).toHaveBeenCalledWith('twins-topics-list');
     expect(deps.deleteFallback).not.toHaveBeenCalled();
   });
 });

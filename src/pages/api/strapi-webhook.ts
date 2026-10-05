@@ -5,22 +5,20 @@ import {
 import type { APIRoute } from 'astro';
 
 import {
+  POSTS_LIST_KEY,
+  TOPICS_LIST_KEY,
   cache,
   config,
   deleteFallback,
   postKey,
 } from '../../lib/strapi/revalidate';
-import {
-  fetchPostBySlug,
-  loadPublishedPostRecords,
-} from '../../lib/strapi/posts';
-import { warmAfterRevalidate } from '../../lib/strapi/warm';
+import { dropCachedContent } from '../../lib/strapi/warm';
 
 async function onRevalidate(event: WebhookEvent): Promise<void> {
-  await warmAfterRevalidate(event, {
-    loadPostList: () => loadPublishedPostRecords('origin'),
-    loadPostBySlug: (slug) => fetchPostBySlug(slug, 'origin'),
+  await dropCachedContent(event, {
+    deleteKey: (key) => cache.delete(key),
     deleteFallback,
+    listKeys: [POSTS_LIST_KEY, TOPICS_LIST_KEY],
     postKey,
   });
 }

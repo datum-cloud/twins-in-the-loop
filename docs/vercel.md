@@ -85,6 +85,47 @@ In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
 A successful call returns `{"ok":true,"tags":["twins-posts", ...]}`. If `tags` comes back containing the singular `twins-post` instead of `twins-posts`, the tag map in `src/lib/strapi/revalidate.ts` is out of sync with the cache keys and nothing is actually being invalidated.
 
+## Manual cache purge
+
+Use this when a published edit is still missing after the webhook should have run. `POST /api/strapi-cache` expires the `twins-posts` runtime-cache tag. It does not rebuild the site. The next request that misses the cache loads posts from Strapi again.
+
+HTML already stored at the edge can stay stale for up to about 4 minutes: fresh for 60 seconds (`s-maxage`), then stale for 3 minutes (`stale-while-revalidate`) while a background request refreshes it. To check the origin without waiting, open the page with a one-off query string such as `?check=1`.
+
+`bun run dev` must already be running for a local purge. The cache lives in that process, so the script POSTs it instead of building a second cache.
+
+### Local
+
+Dev skips the secret check. The default URL is `http://localhost:7788`.
+
+```bash
+bun run cache:clear
+bun run cache:clear -- --url http://localhost:7788
+```
+
+### Production
+
+`--remote` is required for any host that is not localhost. Without it the script refuses to send `STRAPI_WEBHOOK_SECRET`. The value must match the Vercel environment variable, the same secret the webhook uses.
+
+```bash
+bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
+```
+
+The same call without the script:
+
+```bash
+curl -X POST https://www.twins-in-the-loop.com/api/strapi-cache \
+  -H "Authorization: Bearer $STRAPI_WEBHOOK_SECRET"
+```
+
+`X-Webhook-Secret: $STRAPI_WEBHOOK_SECRET` is also accepted.
+
+| Status | Body                                                   | Meaning                                        |
+| ------ | ------------------------------------------------------ | ---------------------------------------------- |
+| 200    | `{"ok":true,"purged":["twins-posts"]}`                 | The `twins-posts` tag was expired              |
+| 401    | `{"ok":false,"error":"Unauthorized"}`                  | Secret missing or wrong                        |
+| 503    | `{"ok":false,"error":"Webhook secret not configured"}` | `STRAPI_WEBHOOK_SECRET` is unset on the server |
+| 500    | `{"ok":false,"error":"Internal server error"}`         | The purge failed                               |
+
 ## Domain
 
 1. **Settings → Domains** → add `www.twins-in-the-loop.com`.

@@ -9,7 +9,7 @@ Operational setup (env vars, webhook registration, deploy settings) lives in [ve
 ```
 Strapi Cloud ──REST──► fetchCollection() ──► CacheManager ──► normalizePost() ──► pages
      │                                    (Vercel Runtime Cache, 24h)
-     └──webhook──► /api/strapi-webhook ──► invalidate tag + re-warm
+     └──webhook──► /api/strapi-webhook ──► invalidate tag + drop keys
 ```
 
 The site is `output: 'server'` on `@astrojs/vercel`. Only `/about` and `/robots.txt` are prerendered; everything else renders per request off the cache. Publishing in Strapi does not require a rebuild.
@@ -30,15 +30,15 @@ The site is `output: 'server'` on `@astrojs/vercel`. Only `/about` and `/robots.
 
 Two sibling Astro sites already consume this CMS, and they made opposite choices. This site borrows from each:
 
-|                      | **datum.net**                  | **ab.dk**               | **here**                       |
-| -------------------- | ------------------------------ | ----------------------- | ------------------------------ |
-| Output               | `static` + Node adapter        | `server` + Vercel       | `server` + Vercel              |
-| Transport            | GraphQL                        | REST (`@strapi/client`) | REST                           |
-| Cache primary        | Redis + file                   | Vercel Runtime Cache    | Vercel Runtime Cache           |
-| Cache fallback       | persistent file                | memory                  | memory                         |
-| Body format          | markdown in `shared.rich-text` | Strapi Blocks JSON      | markdown in `shared.rich-text` |
-| Webhook hardening    | 503 fail-closed + re-warm      | thin passthrough        | 503 fail-closed + re-warm      |
-| Content layer loader | no                             | no                      | no                             |
+|                      | **datum.net**                  | **ab.dk**               | **here**                          |
+| -------------------- | ------------------------------ | ----------------------- | --------------------------------- |
+| Output               | `static` + Node adapter        | `server` + Vercel       | `server` + Vercel                 |
+| Transport            | GraphQL                        | REST (`@strapi/client`) | REST                              |
+| Cache primary        | Redis + file                   | Vercel Runtime Cache    | Vercel Runtime Cache              |
+| Cache fallback       | persistent file                | memory                  | memory                            |
+| Body format          | markdown in `shared.rich-text` | Strapi Blocks JSON      | markdown in `shared.rich-text`    |
+| Webhook hardening    | 503 fail-closed + re-warm      | thin passthrough        | 503 fail-closed, purge on publish |
+| Content layer loader | no                             | no                      | no                                |
 
 - **Content shape follows datum.net.** `twins-post` stores its body as markdown inside a `shared.rich-text` block, exactly like datum.net's `article`. Its `unified` + `rehype-expressive-code` pipeline ports directly, which is what keeps code blocks rendering identically to the old MDX build. ab.dk's Blocks renderer would have been the wrong tool.
 - **Runtime shape follows ab.dk.** This site deploys to Vercel, so datum.net's Redis + Docker + `server.mjs` stack does not apply.

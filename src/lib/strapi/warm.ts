@@ -1,41 +1,30 @@
 import type { WebhookEvent } from '@datum-cloud/strapi-revalidate';
 
-/** Events meaning "this entry no longer exists" — don't re-warm the slug. */
-const DELETE_EVENTS = new Set(['entry.delete', 'entry.unpublish']);
+/** Events meaning "this entry no longer exists" — drop its fallback copy too. */
+const GONE_EVENTS = new Set(['entry.delete', 'entry.unpublish']);
 
-export interface WarmAfterRevalidateIo {
-  /** Return `null` only when Strapi was unreachable. An empty list is success. */
-  loadPostList: () => Promise<unknown[] | null>;
-  loadPostBySlug: (slug: string) => Promise<unknown | null>;
+export interface DropCachedContentIo {
+  deleteKey: (key: string) => Promise<void>;
   deleteFallback: (key: string) => Promise<void>;
+  listKeys: readonly string[];
   postKey: (slug: string) => string;
 }
 
 /**
- * Re-fetch after tag invalidation. Trust the fetcher return value — do not
- * `cache.get` again. Vercel `expireTag` can still hide a successful `set`
- * from a follow-up get in the same request.
+ * Drop cached Strapi entries after tag invalidation. Do not write them back
+ * in this request: Vercel `expireTag` is eventually consistent and can expire
+ * or hide a `set` from the same webhook invocation, so the next read keeps
+ * the previous body until the 24h TTL. The following page request misses and
+ * fills the cache from Strapi.
  */
-export async function warmAfterRevalidate(
+export async function dropCachedContent(
   event: WebhookEvent,
-  io: WarmAfterRevalidateIo,
+  io: DropCachedContentIo,
 ): Promise<void> {
-  const list = await io.loadPostList();
-  if (list === null) {
-    throw new Error(
-      'Cache warm failed: could not fetch twins-posts from Strapi',
-    );
-  }
+  const slugKey = event.slug ? io.postKey(event.slug) : undefined;
+  const keys = slugKey ? [...io.listKeys, slugKey] : [...io.listKeys];
+  await Promise.all(keys.map((key) => io.deleteKey(key)));
 
-  if (!event.slug) return;
-
-  if (DELETE_EVENTS.has(event.event)) {
-    await io.deleteFallback(io.postKey(event.slug));
-    return;
-  }
-
-  const post = await io.loadPostBySlug(event.slug);
-  if (!post) {
-    throw new Error(`Cache warm failed: could not load post "${event.slug}"`);
-  }
+  if (!slugKey || !GONE_EVENTS.has(event.event)) return;
+  await io.deleteFallback(slugKey);
 }
