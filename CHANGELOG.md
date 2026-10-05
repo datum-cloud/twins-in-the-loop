@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.3](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.2...v1.8.3) (2026-10-05)
+
+
+### Bug Fixes
+
+* **cache:** drop Strapi entries on webhook instead of rewriting them ([f419b35](https://github.com/datum-cloud/twins-in-the-loop/commit/f419b3550d81b1cdfb41c320377bb289413b42a7))
+* **cache:** drop Strapi entries on webhook instead of rewriting them ([#61](https://github.com/datum-cloud/twins-in-the-loop/issues/61)) ([1079b14](https://github.com/datum-cloud/twins-in-the-loop/commit/1079b143cc4fe0d87751516d36355f10236f009e))
+
 ## [1.8.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.1...v1.8.2) (2026-10-05)
 
 
