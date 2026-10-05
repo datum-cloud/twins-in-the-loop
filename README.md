@@ -48,7 +48,7 @@ The `STRAPI_*` variables are read at request time, not build time. A build succe
 
 ## Strapi cache webhook
 
-Publishing in Strapi does not rebuild the site. Register a webhook so the runtime cache is purged and re-warmed.
+Publishing in Strapi does not rebuild the site. Register a webhook so the runtime cache is purged. The next request fills it from Strapi.
 
 In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
