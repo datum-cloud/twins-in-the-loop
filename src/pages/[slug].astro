@@ -95,7 +95,9 @@ const siteSeo = {
   siteUrl: Astro.site?.toString() ?? 'https://www.twins-in-the-loop.com',
   defaultOgImage: site.defaultOgImage,
 };
-const postDescription = post.data.description ?? site.description;
+const documentTitle = post.data.metaTitle ?? post.data.title;
+const postDescription =
+  post.data.metaDescription ?? post.data.description ?? site.description;
 const canonical = new URL(`/${post.id}`, siteSeo.siteUrl).toString();
 
 const shareImage = absoluteUrl(
@@ -130,7 +132,7 @@ const jsonLd = [
   path={`/${post.id}`}
   current="article"
   site={siteSeo}
-  title={post.data.title}
+  title={documentTitle}
   description={postDescription}
   canonical={post.data.canonical}
   og={{

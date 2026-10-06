@@ -8,7 +8,7 @@ The resolver lives in `src/lib/seo.ts`. Pages pass MDX fields through `BaseLayou
 
 | Surface                           | Source                                                                                                                                             |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Browser tab                       | `title`, then ` · Twins in the Loop` unless the title already is the site name                                                                     |
+| Browser tab                       | Article `metaTitle` when set, otherwise `title`, then ` · Twins in the Loop` unless the title already is the site name                             |
 | Google snippet                    | `<title>`, `description`, `canonical`, `robots`                                                                                                    |
 | Slack / LinkedIn / iMessage       | Open Graph: `og:title`, `og:description`, `og:image`, `og:image:width`, `og:image:height`, `og:url`, `og:type`                                     |
 | X / Twitter cards                 | `twitter:title`, `twitter:description`, `twitter:image` (`summary_large_image`)                                                                    |
@@ -185,8 +185,10 @@ From `src/content/pages/about.mdx`:
 
 From `src/content/posts/{slug}.mdx`:
 
-- `title` → tab and share-sheet title; `og.title` → `og:title` / `twitter:title` when set
-- `description` → meta and RSS; `og.description` → social description when set
+- `title` → on-page H1, RSS, and the share sheet. The browser tab uses Strapi `metaTitle` when set, otherwise `title`
+- `description` → RSS, cards, and the TL;DR fallback. The meta description uses Strapi `metaDescription` when set, otherwise `description`
+- `og.title` → `og:title` / `twitter:title` when set
+- `og.description` → social description when set
 - Share image: `og.image`, then framed cover `/og/{slug}.jpg`, then `/images/og-news.jpg`
 - `og.type` on posts defaults to `article` even if `og` is omitted
 - JSON-LD follows `type`: `post` and `musing` are `BlogPosting`, `video` is `VideoObject` (with `embedUrl`), `podcast` is `PodcastEpisode`. All of them use `title`, `description`, `published`, author `name`/LinkedIn URL, publisher, and the absolute share image. A `BreadcrumbList` is added too. Posts also emit `article:published_time`, `article:modified_time`, `article:author`, and `article:tag`; every page emits `og:site_name` and `og:locale`
