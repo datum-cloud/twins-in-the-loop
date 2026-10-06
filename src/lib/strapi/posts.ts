@@ -39,6 +39,8 @@ interface StrapiPostRecord {
   cover?: StrapiMedia | null;
   topics?: { slug: string }[] | null;
   seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
     ogTitle?: string | null;
     ogDescription?: string | null;
     ogType?: string | null;
@@ -57,7 +59,11 @@ export interface PostCover {
 
 export interface PostData {
   title: string;
+  /** Document `<title>` when set. The on-page headline stays `title`. */
+  metaTitle?: string;
   description?: string;
+  /** Search snippet when set. Cards, RSS, and the sidebar stay on `description`. */
+  metaDescription?: string;
   tldr?: string;
   published: Date;
   updated?: Date;
@@ -98,6 +104,11 @@ function toCover(media: StrapiMedia | null | undefined): PostCover | undefined {
     height: media.height,
     alt: media.alternativeText ?? '',
   };
+}
+
+function optionalText(value: string | null | undefined): string | undefined {
+  const trimmed = value?.trim();
+  return trimmed ? trimmed : undefined;
 }
 
 function toKeywords(value: unknown): string[] | undefined {
@@ -145,6 +156,8 @@ export function normalizePost(record: StrapiPostRecord): Post | null {
       embedUrl: record.embedUrl ?? undefined,
       canonical: record.canonical ?? undefined,
       noindex: record.noindex ?? false,
+      metaTitle: optionalText(record.seo?.metaTitle),
+      metaDescription: optionalText(record.seo?.metaDescription),
       keywords: toKeywords(record.seo?.keywords),
       og: {
         title: record.seo?.ogTitle ?? undefined,

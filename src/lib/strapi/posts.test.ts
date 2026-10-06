@@ -104,6 +104,27 @@ describe('normalizePost', () => {
     expect(post?.data.keywords).toEqual(['a', 'b']);
   });
 
+  it('maps meta title and description, and drops blank strings', () => {
+    const post = normalizePost({
+      ...base,
+      seo: {
+        metaTitle: '  Search title  ',
+        metaDescription: 'Search snippet',
+      },
+    });
+
+    expect(post?.data.metaTitle).toBe('Search title');
+    expect(post?.data.metaDescription).toBe('Search snippet');
+    expect(post?.data.title).toBe('A post');
+
+    const blank = normalizePost({
+      ...base,
+      seo: { metaTitle: '   ', metaDescription: '' },
+    });
+    expect(blank?.data.metaTitle).toBeUndefined();
+    expect(blank?.data.metaDescription).toBeUndefined();
+  });
+
   it('treats absent booleans as false rather than undefined', () => {
     const post = normalizePost(base);
 
