@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.9.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.3...v1.9.0) (2026-10-07)
+
+
+### Features
+
+* open off-site links in a new tab ([8f18c32](https://github.com/datum-cloud/twins-in-the-loop/commit/8f18c3240cc031541d68d4eb7673c92edfac839f))
+* open off-site links in a new tab ([#70](https://github.com/datum-cloud/twins-in-the-loop/issues/70)) ([69a2f5d](https://github.com/datum-cloud/twins-in-the-loop/commit/69a2f5dab1eb06887b7f35190219bb12831ba0d6))
+* **seo:** use Twins Post meta title and description ([c7503ae](https://github.com/datum-cloud/twins-in-the-loop/commit/c7503aec8af3d304e9c0b6fc226420419dead63e))
+* **seo:** use Twins Post meta title and description ([#66](https://github.com/datum-cloud/twins-in-the-loop/issues/66)) ([a5b5e35](https://github.com/datum-cloud/twins-in-the-loop/commit/a5b5e35c2a9e3166eb8c525e8015f3554cee13d4))
+
 ## [1.8.3](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.2...v1.8.3) (2026-10-05)
 
 
