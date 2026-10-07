@@ -7,6 +7,7 @@ import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
 
 import { expressiveCodeOptions } from './expressiveCodeOptions';
+import { markExternalLinks } from './externalLinks';
 import { transformMarkdownFigures } from './markdownFigure';
 import { resolveMarkdownMediaUrls } from './strapi/media';
 
@@ -30,6 +31,7 @@ export async function renderPostBody(markdown: string): Promise<string> {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeExpressiveCode, expressiveCodeOptions)
+    .use(markExternalLinks)
     .use(rehypeStringify, { allowDangerousHtml: true })
     .process(transformMarkdownFigures(resolveMarkdownMediaUrls(markdown)));
 
