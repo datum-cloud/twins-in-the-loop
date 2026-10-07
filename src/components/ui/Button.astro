@@ -1,5 +1,6 @@
 ---
 import type { HTMLAttributes } from 'astro/types';
+import { opensInNewTab } from '../../lib/externalLinks';
 import type { IconName } from '../../lib/types';
 import Icon from './Icon.astro';
 
@@ -20,6 +21,7 @@ const {
   class: className,
   ...rest
 } = Astro.props;
+const newTab = external || opensInNewTab(href);
 
 const classes = {
   solid:
@@ -35,8 +37,8 @@ const classes = {
 <a
   href={href}
   class:list={[classes[variant], className]}
-  target={external ? '_blank' : undefined}
-  rel={external ? 'noreferrer noopener' : undefined}
+  target={newTab ? '_blank' : undefined}
+  rel={newTab ? 'noreferrer noopener' : undefined}
   {...rest}
 >
   <slot />
