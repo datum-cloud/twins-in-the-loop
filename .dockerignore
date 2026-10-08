@@ -1,0 +1,16 @@
+.git
+.github
+.claude
+.cursor
+.vscode
+.vercel
+.astro
+dist
+node_modules
+coverage
+docs
+scripts
+*.md
+.env
+.env.*
+datum/secret.yaml
