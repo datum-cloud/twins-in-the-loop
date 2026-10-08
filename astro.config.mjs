@@ -1,4 +1,5 @@
 import mdx from '@astrojs/mdx';
+import node from '@astrojs/node';
 import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
@@ -7,11 +8,19 @@ import expressiveCode from 'astro-expressive-code';
 import { expressiveCodeOptions } from './src/lib/expressiveCodeOptions.ts';
 import { strapiMediaHostname } from './src/lib/strapi/mediaHost.ts';
 
+// ADAPTER=node builds a standalone Node server for the Datum Compute container
+// image (see Dockerfile.datum). Everything else (local dev, Vercel CI) keeps
+// the default Vercel adapter.
+const adapter =
+  process.env.ADAPTER === 'node'
+    ? node({ mode: 'standalone' })
+    : vercel({ imageService: true });
+
 export default defineConfig({
   site: process.env.SITE ?? 'https://www.twins-in-the-loop.com',
   base: process.env.BASE_PATH || '/',
   output: 'server',
-  adapter: vercel({ imageService: true }),
+  adapter,
   server: {
     port: 7788,
   },
