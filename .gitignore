@@ -26,3 +26,6 @@ pnpm-debug.log*
 
 # test output
 coverage/
+
+# Written by `datumctl compute deploy`
+workload.yaml
