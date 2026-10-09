@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.10.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.9.0...v1.10.0) (2026-10-09)
+
+
+### Features
+
+* remove accent border from author photos ([c566f53](https://github.com/datum-cloud/twins-in-the-loop/commit/c566f532f6d0f69556c02e38339056299e386c8d))
+* update default Open Graph image ([ff5a9fe](https://github.com/datum-cloud/twins-in-the-loop/commit/ff5a9fea1598d08b08d9f64df238e150e98d4897))
+* update twin author photos and remove unused pngs ([095a299](https://github.com/datum-cloud/twins-in-the-loop/commit/095a299a7698e6ae8607b803a4f073b6972cc29f))
+* update twin photos, default OG image, and remove photo accent border ([#76](https://github.com/datum-cloud/twins-in-the-loop/issues/76)) ([9cf3857](https://github.com/datum-cloud/twins-in-the-loop/commit/9cf3857044a356bb084e34ca5f2d1de7c5b6831e))
+
 ## [1.9.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.8.3...v1.9.0) (2026-10-07)
 
 
