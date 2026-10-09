@@ -1,7 +1,7 @@
 {
   "name": "twins-in-the-loop",
   "type": "module",
-  "version": "1.9.0",
+  "version": "1.10.0",
   "private": true,
   "packageManager": "bun@1.2.16",
   "engines": {
