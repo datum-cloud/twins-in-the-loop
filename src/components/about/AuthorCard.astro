@@ -1,7 +1,6 @@
 ---
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
-import type { AuthorId } from '../../lib/types';
 import {
   AUTHOR_PHOTO_SIZES,
   authorPhotoWidths,
@@ -11,7 +10,6 @@ import {
 import Button from '../ui/Button.astro';
 
 interface Props {
-  author: AuthorId;
   name: string;
   role: string;
   photo: ImageMetadata;
@@ -19,12 +17,11 @@ interface Props {
   email: string;
 }
 
-const { author, name, role, photo, linkedin, email } = Astro.props;
-const accent = author === 'zac' ? 'border-zac' : 'border-jacob bg-jacob-tag';
+const { name, role, photo, linkedin, email } = Astro.props;
 ---
 
 <article class="flex flex-col gap-8">
-  <div class:list={['aspect-square overflow-hidden border-b-8', accent]}>
+  <div class="aspect-square overflow-hidden">
     <Image
       src={photo}
       alt={name}
