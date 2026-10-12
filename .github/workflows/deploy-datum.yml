@@ -49,7 +49,12 @@ jobs:
           curl -fsSLo "$RUNNER_TEMP/datumctl.deb" \
             "https://github.com/datum-cloud/datumctl/releases/download/v${DATUMCTL_VERSION}/datumctl_${DATUMCTL_VERSION}_linux_amd64.deb"
           sudo dpkg -i "$RUNNER_TEMP/datumctl.deb"
-          datumctl plugin install "compute@${COMPUTE_PLUGIN_VERSION}"
+          # The 72 MB plugin download has a fixed 60 s client timeout.
+          for attempt in 1 2 3; do
+            datumctl plugin install "compute@${COMPUTE_PLUGIN_VERSION}" && break
+            [ "$attempt" = 3 ] && { echo "::error::could not install the compute plugin"; exit 1; }
+            sleep 10
+          done
 
       - name: Log in to Datum Cloud
         env:
