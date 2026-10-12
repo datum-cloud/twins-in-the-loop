@@ -5,9 +5,6 @@ name: Deploy Datum Compute
 # general-purpose runtime (the unikernel runtime was unstable on project-z6vm2,
 # see docs/datum-compute-z6vm2-investigation.md).
 on:
-  # TEMP: remove once the workflow is on main and has been run once.
-  push:
-    branches: [feat/datum-compute-unikernel]
   workflow_dispatch:
     inputs:
       project:
