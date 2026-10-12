@@ -129,5 +129,5 @@ These went to the Datum team:
 ## Workflow note
 
 The manual workflow `deploy-datum.yml` ends with a smoke test that retries for
-three minutes. During an incident like this one it fails even though the deploy
+five minutes. During an incident like this one it fails even though the deploy
 itself succeeded. Read the edge log before assuming the build is at fault.

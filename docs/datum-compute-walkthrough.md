@@ -339,7 +339,7 @@ variable), `location` (default `us-central-1`) and `site_env` (`staging` or
 The job installs `datumctl` and the `compute` plugin, logs in as a service
 account, checks that the Strapi Secret has all three keys, runs
 `datumctl compute build --push` to `ghcr.io/datum-cloud/twins-in-the-loop:sha-<commit>`,
-deploys, then retries `GET /` and `/rss.xml` for 3 minutes.
+deploys, then retries `GET /` and `/rss.xml` for 5 minutes.
 
 One-time setup:
 
@@ -350,6 +350,10 @@ One-time setup:
    make sure this repository has the **Write** role, so `GITHUB_TOKEN` can push.
 4. Create the Secret `twins-strapi-secrets` in the target project (see
    Prerequisites). The job stops early if it is missing.
+
+The job starts its own `buildkitd` container and sets `BUILDKIT_HOST`. Without
+it the build fails with `exporter "oci" could not be found`, because the Docker
+BuildKit built into a GitHub runner has no OCI exporter.
 
 The tag is `sha-<first 7 chars of the commit>`. Running the workflow again on
 the same commit reuses the tag, so the instance is not replaced; push a new

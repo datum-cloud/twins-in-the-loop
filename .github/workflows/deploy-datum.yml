@@ -3,9 +3,6 @@ name: Deploy Datum Compute
 # Manual only. Production still ships through deploy-vercel.yml; this builds the
 # unikernel image from Dockerfile.datum and rolls it out to Datum Compute.
 on:
-  # TEMP: remove once the workflow is on main and has been run once.
-  push:
-    branches: [feat/datum-compute-unikernel]
   workflow_dispatch:
     inputs:
       project:
@@ -90,7 +87,7 @@ jobs:
         run: |
           docker run -d --name buildkitd --privileged -p 127.0.0.1:1234:1234 \
             "moby/buildkit:${BUILDKIT_VERSION}" --addr tcp://0.0.0.0:1234
-          for i in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             (echo > /dev/tcp/127.0.0.1/1234) 2>/dev/null && break
             sleep 1
           done
@@ -131,13 +128,14 @@ jobs:
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
       # The URL's DNS can lag the rollout by a minute, and the edge may answer
-      # 503 until the instance is reachable, so retry before failing.
+      # 503 for several minutes after an instance is replaced (about 4 minutes
+      # on project-z6vm2), so retry before failing.
       - name: Smoke test
         env:
           URL: ${{ steps.deploy.outputs.url }}
         run: |
           [ -n "$URL" ] || { echo "::error::deploy printed no URL"; exit 1; }
-          for i in $(seq 1 12); do
+          for i in $(seq 1 20); do
             code="$(curl -s -o /dev/null -m 15 -w '%{http_code}' "$URL/" || true)"
             echo "attempt $i: GET / -> ${code:-000}"
             if [ "$code" = 200 ]; then
@@ -149,7 +147,7 @@ jobs:
             fi
             sleep 15
           done
-          echo "::error::$URL did not return 200 within 3 minutes"
+          echo "::error::$URL did not return 200 within 5 minutes"
           exit 1
 
       - name: Summary
