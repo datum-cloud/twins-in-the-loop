@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.10.0...v1.11.0) (2026-10-12)
+
+
+### Features
+
+* update Jacob photo and default OG image ([24f6741](https://github.com/datum-cloud/twins-in-the-loop/commit/24f6741172a0990cfd9576054ec4d496ac1e6144))
+* update Jacob photo and default OG image ([#84](https://github.com/datum-cloud/twins-in-the-loop/issues/84)) ([5d8f65e](https://github.com/datum-cloud/twins-in-the-loop/commit/5d8f65ed7a42c3170d4deac1791e7f74238671ae))
+
 ## [1.10.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.9.0...v1.10.0) (2026-10-09)
 
 
