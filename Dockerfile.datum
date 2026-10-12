@@ -1,5 +1,7 @@
-# Unikernel-compatible image for Datum Compute. Build and push it with
-# `datumctl compute build`, never plain `docker build` (see docs/datum-compute-walkthrough.md).
+# Image for Datum Compute. For the general-purpose runtime a plain `docker build`
+# is enough (the deploy workflow does this). For the unikernel runtime build and
+# push it with `datumctl compute build` instead: a plain image cannot boot there
+# (see docs/datum-compute-walkthrough.md).
 
 # Astro needs a real Node >=22.12; Bun's Node shim reports an older version.
 FROM node:22-slim AS build

@@ -328,18 +328,26 @@ Secret. Report it to the Datum team with the `/api/diag` output.
 
 ## Deploy from GitHub Actions
 
-`.github/workflows/deploy-datum.yml` builds the unikernel image and deploys it.
-It is manual only (**Actions → Deploy Datum Compute → Run workflow**).
-Production on Vercel is unchanged and still ships from `deploy-vercel.yml`.
+`.github/workflows/deploy-datum.yml` builds a container image and deploys it to
+the **general-purpose** runtime as the workload `twins-in-the-loop-gp`. It is
+manual only (**Actions → Deploy Datum Compute → Run workflow**). Production on
+Vercel is unchanged and still ships from `deploy-vercel.yml`.
+
+It uses `general-purpose` because the unikernel runtime was unstable on
+`project-z6vm2`: in a same-time comparison `general-purpose` answered 20 of 20
+requests and `unikernel` 11 of 20. See the
+[investigation](./datum-compute-z6vm2-investigation.md). The unikernel steps in
+this walkthrough still work for a manual deploy.
 
 Inputs: `project` (default `project-z6vm2`, or the `DATUM_PROJECT` repo
 variable), `location` (default `us-central-1`) and `site_env` (`staging` or
 `production`; `production` makes `/api/diag` return 404).
 
 The job installs `datumctl` and the `compute` plugin, logs in as a service
-account, checks that the Strapi Secret has all three keys, runs
-`datumctl compute build --push` to `ghcr.io/datum-cloud/twins-in-the-loop:sha-<commit>`,
-deploys, then retries `GET /` and `/rss.xml` for 5 minutes.
+account, checks that the Strapi Secret has all three keys, builds the image for
+`linux/amd64` with `docker/build-push-action`, pushes it to
+`ghcr.io/datum-cloud/twins-in-the-loop:general-purpose-<commit>`, deploys, then
+retries `GET /` and `/rss.xml` for 5 minutes.
 
 One-time setup:
 
@@ -351,13 +359,12 @@ One-time setup:
 4. Create the Secret `twins-strapi-secrets` in the target project (see
    Prerequisites). The job stops early if it is missing.
 
-The job starts its own `buildkitd` container and sets `BUILDKIT_HOST`. Without
-it the build fails with `exporter "oci" could not be found`, because the Docker
-BuildKit built into a GitHub runner has no OCI exporter.
+The tag is `general-purpose-<first 7 chars of the commit>`. Running the workflow
+again on the same commit reuses the tag, so the instance is not replaced; push a
+new commit to roll out a new build.
 
-The tag is `sha-<first 7 chars of the commit>`. Running the workflow again on
-the same commit reuses the tag, so the instance is not replaced; push a new
-commit to roll out a new build.
+A workload keeps its runtime class. To move an existing workload to another
+runtime, deploy under a new name and destroy the old one.
 
 ## Troubleshooting
 

@@ -1,8 +1,13 @@
 name: Deploy Datum Compute
 
-# Manual only. Production still ships through deploy-vercel.yml; this builds the
-# unikernel image from Dockerfile.datum and rolls it out to Datum Compute.
+# Manual only. Production still ships through deploy-vercel.yml; this builds a
+# container image from Dockerfile.datum and rolls it out to Datum Compute on the
+# general-purpose runtime (the unikernel runtime was unstable on project-z6vm2,
+# see docs/datum-compute-z6vm2-investigation.md).
 on:
+  # TEMP: remove once the workflow is on main and has been run once.
+  push:
+    branches: [feat/datum-compute-unikernel]
   workflow_dispatch:
     inputs:
       project:
@@ -27,11 +32,10 @@ concurrency:
 
 env:
   IMAGE_REPO: ghcr.io/datum-cloud/twins-in-the-loop
-  WORKLOAD: twins-in-the-loop
+  WORKLOAD: twins-in-the-loop-gp
   SECRET_NAME: twins-strapi-secrets
   DATUMCTL_VERSION: 0.21.0
   COMPUTE_PLUGIN_VERSION: v0.12.4
-  BUILDKIT_VERSION: v0.34.0
 
 jobs:
   deploy:
@@ -66,7 +70,7 @@ jobs:
           datumctl login --credentials "$RUNNER_TEMP/datum-sa.json"
           rm -f "$RUNNER_TEMP/datum-sa.json"
 
-      # Fail before building 650 MB if the instances could not reach Strapi.
+      # Fail before building if the instances could not reach Strapi.
       - name: Check the Strapi Secret exists
         run: |
           datumctl get secret "$SECRET_NAME" -n default --project "$DATUM_PROJECT" -o json |
@@ -81,37 +85,31 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # The runner's built-in Docker BuildKit has no OCI exporter, which
-      # `datumctl compute build` needs, so run a standalone buildkitd.
-      - name: Start BuildKit
+      - id: ref
+        name: Name the image
         run: |
-          docker run -d --name buildkitd --privileged -p 127.0.0.1:1234:1234 \
-            "moby/buildkit:${BUILDKIT_VERSION}" --addr tcp://0.0.0.0:1234
-          for _ in $(seq 1 30); do
-            (echo > /dev/tcp/127.0.0.1/1234) 2>/dev/null && break
-            sleep 1
-          done
-          echo "BUILDKIT_HOST=tcp://127.0.0.1:1234" >> "$GITHUB_ENV"
+          # A unique tag per commit matters: redeploying the same tag does not
+          # replace the running instance.
+          echo "image=${IMAGE_REPO}:general-purpose-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
 
-      # Must be `datumctl compute build`: an image from plain `docker build`
-      # pulls fine but cannot boot on the unikernel runtime. A unique tag per
-      # commit matters too, because redeploying the same tag does not replace
-      # the running instance.
-      - name: Build and push the unikernel image
-        id: build
-        env:
-          SITE_ENV: ${{ inputs.site_env || 'staging' }}
-        run: |
-          image="${IMAGE_REPO}:sha-${GITHUB_SHA::7}"
-          datumctl compute build --push \
-            --build-arg "PUBLIC_SITE_ENV=${SITE_ENV}" \
-            --output "$image" .
-          echo "image=${image}" >> "$GITHUB_OUTPUT"
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build and push the image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.datum
+          platforms: linux/amd64
+          push: true
+          build-args: PUBLIC_SITE_ENV=${{ inputs.site_env || 'staging' }}
+          tags: ${{ steps.ref.outputs.image }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Deploy
         id: deploy
         env:
-          IMAGE: ${{ steps.build.outputs.image }}
+          IMAGE: ${{ steps.ref.outputs.image }}
           LOCATION: ${{ inputs.location || 'us-central-1' }}
         run: |
           datumctl compute deploy "$WORKLOAD" \
@@ -120,7 +118,7 @@ jobs:
             --location "$LOCATION" \
             --http-port 4321 \
             --instance-type datumcloud/d1-standard-2 \
-            --runtime-class unikernel \
+            --runtime-class general-purpose \
             --env "HOST=::" \
             --env-from-secret "$SECRET_NAME" \
             --yes | tee "$RUNNER_TEMP/deploy.log"
@@ -153,7 +151,7 @@ jobs:
       - name: Summary
         if: always()
         env:
-          IMAGE: ${{ steps.build.outputs.image }}
+          IMAGE: ${{ steps.ref.outputs.image }}
           URL: ${{ steps.deploy.outputs.url }}
         run: |
           {
