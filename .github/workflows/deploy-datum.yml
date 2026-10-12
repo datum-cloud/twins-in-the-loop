@@ -3,6 +3,9 @@ name: Deploy Datum Compute
 # Manual only. Production still ships through deploy-vercel.yml; this builds the
 # unikernel image from Dockerfile.datum and rolls it out to Datum Compute.
 on:
+  # TEMP: remove once the workflow is on main and has been run once.
+  push:
+    branches: [feat/datum-compute-unikernel]
   workflow_dispatch:
     inputs:
       project:
@@ -40,7 +43,7 @@ jobs:
       name: datum-compute
       url: ${{ steps.deploy.outputs.url }}
     env:
-      DATUM_PROJECT: ${{ inputs.project || vars.DATUM_PROJECT }}
+      DATUM_PROJECT: ${{ inputs.project || vars.DATUM_PROJECT || 'project-z6vm2' }}
     steps:
       - uses: actions/checkout@v5
 
@@ -87,7 +90,7 @@ jobs:
       - name: Build and push the unikernel image
         id: build
         env:
-          SITE_ENV: ${{ inputs.site_env }}
+          SITE_ENV: ${{ inputs.site_env || 'staging' }}
         run: |
           image="${IMAGE_REPO}:sha-${GITHUB_SHA::7}"
           datumctl compute build --push \
@@ -99,7 +102,7 @@ jobs:
         id: deploy
         env:
           IMAGE: ${{ steps.build.outputs.image }}
-          LOCATION: ${{ inputs.location }}
+          LOCATION: ${{ inputs.location || 'us-central-1' }}
         run: |
           datumctl compute deploy "$WORKLOAD" \
             --project "$DATUM_PROJECT" \
