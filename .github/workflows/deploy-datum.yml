@@ -34,6 +34,7 @@ env:
   SECRET_NAME: twins-strapi-secrets
   DATUMCTL_VERSION: 0.21.0
   COMPUTE_PLUGIN_VERSION: v0.12.4
+  BUILDKIT_VERSION: v0.34.0
 
 jobs:
   deploy:
@@ -82,6 +83,18 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # The runner's built-in Docker BuildKit has no OCI exporter, which
+      # `datumctl compute build` needs, so run a standalone buildkitd.
+      - name: Start BuildKit
+        run: |
+          docker run -d --name buildkitd --privileged -p 127.0.0.1:1234:1234 \
+            "moby/buildkit:${BUILDKIT_VERSION}" --addr tcp://0.0.0.0:1234
+          for i in $(seq 1 30); do
+            (echo > /dev/tcp/127.0.0.1/1234) 2>/dev/null && break
+            sleep 1
+          done
+          echo "BUILDKIT_HOST=tcp://127.0.0.1:1234" >> "$GITHUB_ENV"
 
       # Must be `datumctl compute build`: an image from plain `docker build`
       # pulls fine but cannot boot on the unikernel runtime. A unique tag per
