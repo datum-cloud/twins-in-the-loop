@@ -5,10 +5,12 @@ returned 503 or timed out from the Datum edge, while the platform reported the
 workload as healthy. The same image worked in another project. This page records
 what we saw, how we ruled things out, and how to repeat the diagnosis.
 
-**Status:** recovered without any change on our side. At 00:03 on 13 October,
-20 of 20 requests returned 200 on both edge addresses. **The root cause is not
-confirmed.** It sat in the data path between the edge and the instance, which
-`datumctl` cannot see. See [Open questions](#open-questions).
+**Status:** intermittent, not fixed. The edge recovered once (20 of 20 requests
+returned 200 at 00:03 on 13 October) and then went back to flapping. At about
+04:25 the same workload, untouched for four hours, again answered 503 on part of
+the requests. **The root cause is not confirmed.** It sits in the data path
+between the edge and the instance, which `datumctl` cannot see. See
+[Open questions](#open-questions).
 
 ## Setup
 
@@ -47,6 +49,14 @@ confirmed.** It sat in the data path between the edge and the instance, which
 7. About 23:25: requests started to succeed, mixed with 503. Sample of 12 per
    edge: one edge 11 of 12, the other 5 of 12.
 8. 00:03 on 13 October: 10 of 10 on both edges.
+9. 00:30: a CI deploy replaced the instance. The edge answered 503 for about four
+   minutes, then recovered (200 from 00:34).
+10. 04:25, with no change on our side (same instance generation, up for four
+    hours): one edge 1 to 2 of 8 requests, the other 2 of 8 and then 8 of 8
+    minutes later. Failures were `503` at exactly 10 seconds, and successes came
+    in short bursts.
+11. At the same time `project-2h27h`, running the same image, answered 200 on 16
+    of 16 requests on both edges.
 
 ## What we ruled out
 
