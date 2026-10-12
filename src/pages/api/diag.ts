@@ -2,6 +2,8 @@ import { lookup } from 'node:dns/promises';
 
 import type { APIRoute } from 'astro';
 
+import { isSiteIndexable } from '../../lib/siteEnv';
+
 export const prerender = false;
 
 const TIMEOUT_MS = 5000;
@@ -67,6 +69,11 @@ async function resolve(host: string) {
 }
 
 export const GET: APIRoute = async () => {
+  // Unauthenticated and reveals egress details; never expose it in production.
+  if (isSiteIndexable()) {
+    return new Response('Not found', { status: 404 });
+  }
+
   const strapi = (process.env.STRAPI_URL ?? '').replace(/\/+$/, '');
   const hosts = [
     strapi ? new URL(strapi).hostname : '',
