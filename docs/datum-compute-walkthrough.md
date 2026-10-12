@@ -273,9 +273,16 @@ curl -i https://<hostname>/                             # 200 with page content
 curl -s https://<hostname>/rss.xml | grep -c '<item>'   # more than 0 when Strapi works
 ```
 
-A unikernel instance has no `logs` command and no `kubectl logs` equivalent.
-`workloads describe` and `instances` are the deepest status views `datumctl`
-offers.
+Instance logs and edge access logs are both available:
+
+```bash
+datumctl compute logs twins-in-the-loop            # app stdout, per generation
+datumctl compute logs twins-in-the-loop --alb      # requests the edge saw, with status and latency
+```
+
+`--alb` is the quickest way to tell an app problem from a routing problem. A
+`503` at about `10000ms` means the edge could not connect to the instance, even
+when `workloads describe` says `Serving: Healthy`.
 
 ### If the hostname does not resolve on your machine
 
@@ -318,6 +325,35 @@ instance had no working DNS or IPv4 egress, so no Strapi content loaded. The
 same image built as a plain container and run locally with the same Secret
 loaded articles, so the cause is the platform network, not the app or the
 Secret. Report it to the Datum team with the `/api/diag` output.
+
+## Deploy from GitHub Actions
+
+`.github/workflows/deploy-datum.yml` builds the unikernel image and deploys it.
+It is manual only (**Actions → Deploy Datum Compute → Run workflow**).
+Production on Vercel is unchanged and still ships from `deploy-vercel.yml`.
+
+Inputs: `project` (default `project-z6vm2`, or the `DATUM_PROJECT` repo
+variable), `location` (default `us-central-1`) and `site_env` (`staging` or
+`production`; `production` makes `/api/diag` return 404).
+
+The job installs `datumctl` and the `compute` plugin, logs in as a service
+account, checks that the Strapi Secret has all three keys, runs
+`datumctl compute build --push` to `ghcr.io/datum-cloud/twins-in-the-loop:sha-<commit>`,
+deploys, then retries `GET /` and `/rss.xml` for 3 minutes.
+
+One-time setup:
+
+1. Create a GitHub environment named `datum-compute`.
+2. Create a Datum service account with edit access to the project and save its
+   credentials JSON as the environment secret `DATUM_SA_CREDENTIALS`.
+3. In the `twins-in-the-loop` package settings under **Manage Actions access**,
+   make sure this repository has the **Write** role, so `GITHUB_TOKEN` can push.
+4. Create the Secret `twins-strapi-secrets` in the target project (see
+   Prerequisites). The job stops early if it is missing.
+
+The tag is `sha-<first 7 chars of the commit>`. Running the workflow again on
+the same commit reuses the tag, so the instance is not replaced; push a new
+commit to roll out a new build.
 
 ## Troubleshooting
 
