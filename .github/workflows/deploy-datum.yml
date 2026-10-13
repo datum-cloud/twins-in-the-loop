@@ -1,10 +1,29 @@
 name: Deploy Datum Compute
 
-# Manual only. Production still ships through deploy-vercel.yml; this builds a
-# container image from Dockerfile.datum and rolls it out to Datum Compute on the
-# general-purpose runtime (the unikernel runtime was unstable on project-z6vm2,
-# see docs/datum-compute-z6vm2-investigation.md).
+# Runs after each release (called from release-please.yml, next to the Vercel
+# deploy) and by hand. It builds a container image from Dockerfile.datum and
+# rolls it out to Datum Compute on the general-purpose runtime (the unikernel
+# runtime was unstable on project-z6vm2, see
+# docs/datum-compute-z6vm2-investigation.md).
 on:
+  workflow_call:
+    inputs:
+      project:
+        description: Datum project ID (falls back to the DATUM_PROJECT repo variable)
+        type: string
+        default: ''
+      location:
+        description: Datum Compute location
+        type: string
+        default: us-central-1
+      site_env:
+        description: PUBLIC_SITE_ENV baked into the image
+        type: string
+        default: production
+      version:
+        description: Release tag (for example v1.12.0), added as an extra image tag
+        type: string
+        default: ''
   workflow_dispatch:
     inputs:
       project:
@@ -18,6 +37,9 @@ on:
         type: choice
         options: [staging, production]
         default: staging
+      version:
+        description: Optional release tag (for example v1.12.0), added as an extra image tag
+        default: ''
 
 permissions:
   contents: read
@@ -84,10 +106,19 @@ jobs:
 
       - id: ref
         name: Name the image
+        env:
+          VERSION: ${{ inputs.version }}
         run: |
           # A unique tag per commit matters: redeploying the same tag does not
-          # replace the running instance.
-          echo "image=${IMAGE_REPO}:general-purpose-${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          # replace the running instance. The release tag is only extra.
+          image="${IMAGE_REPO}:general-purpose-${GITHUB_SHA::7}"
+          {
+            echo "image=${image}"
+            echo "tags<<EOF"
+            echo "$image"
+            if [ -n "$VERSION" ]; then echo "${IMAGE_REPO}:general-purpose-${VERSION#v}"; fi
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - uses: docker/setup-buildx-action@v3
 
@@ -99,7 +130,7 @@ jobs:
           platforms: linux/amd64
           push: true
           build-args: PUBLIC_SITE_ENV=${{ inputs.site_env || 'staging' }}
-          tags: ${{ steps.ref.outputs.image }}
+          tags: ${{ steps.ref.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
