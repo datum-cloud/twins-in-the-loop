@@ -329,9 +329,17 @@ Secret. Report it to the Datum team with the `/api/diag` output.
 ## Deploy from GitHub Actions
 
 `.github/workflows/deploy-datum.yml` builds a container image and deploys it to
-the **general-purpose** runtime as the workload `twins-in-the-loop-gp`. It is
-manual only (**Actions → Deploy Datum Compute → Run workflow**). Production on
-Vercel is unchanged and still ships from `deploy-vercel.yml`.
+the **general-purpose** runtime as the workload `twins-in-the-loop-gp`. It runs
+in two ways:
+
+- **After each release.** `release-please.yml` calls it in the `deploy-datum` job
+  when Release Please creates a release, next to the existing `deploy-vercel`
+  job. The two jobs are independent, so a failed Datum deploy does not stop
+  Vercel. The release deploy builds with `site_env=production`, and adds the
+  image tag `general-purpose-<version>` (for example `general-purpose-1.12.0`).
+- **By hand.** Actions → Deploy Datum Compute → Run workflow.
+
+Production on Vercel is unchanged and still ships from `deploy-vercel.yml`.
 
 It uses `general-purpose` because the unikernel runtime was unstable on
 `project-z6vm2`: in a same-time comparison `general-purpose` answered 20 of 20
@@ -359,9 +367,15 @@ One-time setup:
 4. Create the Secret `twins-strapi-secrets` in the target project (see
    Prerequisites). The job stops early if it is missing.
 
-The tag is `general-purpose-<first 7 chars of the commit>`. Running the workflow
-again on the same commit reuses the tag, so the instance is not replaced; push a
-new commit to roll out a new build.
+The deploy tag is `general-purpose-<first 7 chars of the commit>`. Running the
+workflow again on the same commit reuses the tag, so the instance is not
+replaced; push a new commit to roll out a new build.
+
+`release-please.yml` runs on every push to `main`, so an error in the
+`deploy-datum` job can break releases. The job must keep its own `permissions`
+block (`contents: read`, `packages: write`): a called workflow cannot hold more
+permissions than the job that calls it. Run `actionlint` after editing either
+file.
 
 A workload keeps its runtime class. To move an existing workload to another
 runtime, deploy under a new name and destroy the old one.
