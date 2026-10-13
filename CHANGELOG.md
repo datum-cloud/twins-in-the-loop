@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.12.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.11.0...v1.12.0) (2026-10-13)
+
+
+### Features
+
+* add Datum Compute unikernel container build ([7dde3ea](https://github.com/datum-cloud/twins-in-the-loop/commit/7dde3ea090b51c53dab210c8c54fcd7982a6cb04))
+* deploy to Datum Compute on the general-purpose runtime ([#74](https://github.com/datum-cloud/twins-in-the-loop/issues/74)) ([967bf87](https://github.com/datum-cloud/twins-in-the-loop/commit/967bf8715dc26a83cda0eafe55cd1bde4107ad1a))
+
+
+### Bug Fixes
+
+* gate /api/diag outside production ([e08f15a](https://github.com/datum-cloud/twins-in-the-loop/commit/e08f15a466ab7be13a23e396c083530caa97f8b4))
+
 ## [1.11.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.10.0...v1.11.0) (2026-10-12)
 
 
