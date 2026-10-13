@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
       - id: release
         uses: googleapis/release-please-action@v4
@@ -24,4 +25,17 @@ jobs:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
     uses: ./.github/workflows/deploy-vercel.yml
+    secrets: inherit
+
+  deploy-datum:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    # A called workflow cannot hold more permissions than this job grants.
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/deploy-datum.yml
+    with:
+      site_env: production
+      version: ${{ needs.release-please.outputs.tag_name }}
     secrets: inherit
