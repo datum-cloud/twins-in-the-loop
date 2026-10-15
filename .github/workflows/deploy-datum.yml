@@ -20,6 +20,10 @@ on:
         description: PUBLIC_SITE_ENV baked into the image
         type: string
         default: production
+      site:
+        description: SITE (canonical origin) baked into the image
+        type: string
+        default: https://www.twins-in-the-loop.com
       version:
         description: Release tag (for example v1.12.0), added as an extra image tag
         type: string
@@ -33,10 +37,13 @@ on:
         description: Datum Compute location
         default: us-central-1
       site_env:
-        description: PUBLIC_SITE_ENV baked into the image (production hides /api/diag)
+        description: PUBLIC_SITE_ENV baked into the image (production allows indexing and hides /api/diag)
         type: choice
-        options: [staging, production]
-        default: staging
+        options: [production, staging]
+        default: production
+      site:
+        description: SITE (canonical origin) baked into the image
+        default: https://www.twins-in-the-loop.com
       version:
         description: Optional release tag (for example v1.12.0), added as an extra image tag
         default: ''
@@ -129,7 +136,10 @@ jobs:
           file: Dockerfile.datum
           platforms: linux/amd64
           push: true
-          build-args: PUBLIC_SITE_ENV=${{ inputs.site_env || 'staging' }}
+          # Both are inlined at build time, so a runtime --env would not change them.
+          build-args: |
+            PUBLIC_SITE_ENV=${{ inputs.site_env || 'production' }}
+            SITE=${{ inputs.site || 'https://www.twins-in-the-loop.com' }}
           tags: ${{ steps.ref.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -152,6 +162,33 @@ jobs:
             --yes | tee "$RUNNER_TEMP/deploy.log"
           url="$(grep -oE 'https://[a-z0-9.-]+\.datumproxy\.net' "$RUNNER_TEMP/deploy.log" | tail -n 1)"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
+
+      # Custom domains live on the workload's HTTPProxy next to the generated
+      # datumproxy.net name, together with the rule that redirects the apex to
+      # www. Re-applying both after every deploy keeps a rollout from dropping
+      # them. A hostname whose DNS still points elsewhere stays pending and
+      # does not affect the others. Set the DATUM_HOSTNAMES repo variable
+      # (space separated) to change the list.
+      - name: Keep custom hostnames and the apex redirect on the HTTPProxy
+        env:
+          HOSTNAMES: ${{ vars.DATUM_HOSTNAMES || 'datum-compute.twins-in-the-loop.com www.twins-in-the-loop.com twins-in-the-loop.com' }}
+        run: |
+          datumctl get httpproxy "$WORKLOAD" -n default --project "$DATUM_PROJECT" -o json |
+            jq --arg h "$HOSTNAMES" '
+              ($h | split(" ") | map(select(length > 0))) as $want
+              | {apiVersion, kind,
+                 metadata: {name: .metadata.name, namespace: .metadata.namespace},
+                 spec: (.spec + {
+                   hostnames: (((.spec.hostnames // []) + $want) | unique),
+                   rules: ([{
+                     matches: [{path: {type: "PathPrefix", value: "/"},
+                                headers: [{name: "Host", type: "Exact", value: "twins-in-the-loop.com"}]}],
+                     filters: [{type: "RequestRedirect",
+                                requestRedirect: {scheme: "https", hostname: "www.twins-in-the-loop.com", statusCode: 301}}]
+                   }] + (.spec.rules | map(select(([.filters[]?.type] | index("RequestRedirect")) | not))))
+                 })}' |
+            datumctl apply -f - --project "$DATUM_PROJECT" ||
+            echo "::warning::could not re-apply the custom hostnames and redirect on $WORKLOAD"
 
       # The URL's DNS can lag the rollout by a minute, and the edge may answer
       # 503 for several minutes after an instance is replaced (about 4 minutes
