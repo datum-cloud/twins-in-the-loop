@@ -21,12 +21,6 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
-  deploy-vercel:
-    needs: release-please
-    if: needs.release-please.outputs.release_created == 'true'
-    uses: ./.github/workflows/deploy-vercel.yml
-    secrets: inherit
-
   deploy-datum:
     needs: release-please
     if: needs.release-please.outputs.release_created == 'true'
