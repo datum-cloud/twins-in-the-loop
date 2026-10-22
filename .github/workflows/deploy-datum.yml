@@ -160,7 +160,7 @@ jobs:
             --env "HOST=::" \
             --env-from-secret "$SECRET_NAME" \
             --yes | tee "$RUNNER_TEMP/deploy.log"
-          url="$(grep -oE 'https://[a-z0-9.-]+\.datumproxy\.net' "$RUNNER_TEMP/deploy.log" | tail -n 1)"
+          url="$(awk '/^Publishing\.\.\./ { p = 1 } p && NF == 1 && $1 ~ /^https:\/\// { u = $1 } END { print u }' "$RUNNER_TEMP/deploy.log")"
           echo "url=${url}" >> "$GITHUB_OUTPUT"
 
       # Custom domains live on the workload's HTTPProxy next to the generated
