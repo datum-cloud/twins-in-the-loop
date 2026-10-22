@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.12.1...v1.12.2) (2026-10-22)
+
+
+### Bug Fixes
+
+* Read the published URL from any deploy ([1f3d4a3](https://github.com/datum-cloud/twins-in-the-loop/commit/1f3d4a38ba99ac3dd1eab0aaf4c9e91abdaee068))
+* Smoke-test the site at its published address ([#97](https://github.com/datum-cloud/twins-in-the-loop/issues/97)) ([80112c1](https://github.com/datum-cloud/twins-in-the-loop/commit/80112c1aabe70350800ff0acc6216fd8b1830535))
+
 ## [1.12.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.12.0...v1.12.1) (2026-10-22)
 
 
