@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.1](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.12.0...v1.12.1) (2026-10-22)
+
+
+### Bug Fixes
+
+* pin the image to Node 22.23.4 ([28c63cc](https://github.com/datum-cloud/twins-in-the-loop/commit/28c63cc183b4a2e37aeaf89d92cdaf3c8f86be65))
+* pin the site image to Node 22.23.4, the October security fix ([#95](https://github.com/datum-cloud/twins-in-the-loop/issues/95)) ([5a78ebd](https://github.com/datum-cloud/twins-in-the-loop/commit/5a78ebd44495b822d5efbc69a9753aa54c528a9b))
+
 ## [1.12.0](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.11.0...v1.12.0) (2026-10-13)
 
 
