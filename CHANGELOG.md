@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.12.3](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.12.2...v1.12.3) (2026-10-23)
+
+
+### Bug Fixes
+
+* Move the Datum Compute site image to Debian 13 ([#101](https://github.com/datum-cloud/twins-in-the-loop/issues/101)) ([93a47ee](https://github.com/datum-cloud/twins-in-the-loop/commit/93a47ee8b26b8df515807a315f10ad0c043ac487))
+* move the site image to Debian 13 ([3ee4f87](https://github.com/datum-cloud/twins-in-the-loop/commit/3ee4f873ddd53b8d67129fc11cc084b7f576393c))
+
 ## [1.12.2](https://github.com/datum-cloud/twins-in-the-loop/compare/v1.12.1...v1.12.2) (2026-10-22)
 
 
