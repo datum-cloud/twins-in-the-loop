@@ -90,12 +90,12 @@ system binaries** to **System**.
 The site normally deploys to Vercel, so `main` has no container setup. You need
 four things in the repo before you build:
 
-| File               | Purpose                                                                                              |
-| ------------------ | ---------------------------------------------------------------------------------------------------- |
-| `Dockerfile.datum` | Two-stage build on `node:22-slim`; runs `node ./dist/server/entry.mjs` on port `4321` with `HOST=::` |
-| `.dockerignore`    | Keeps `.env`, `.git`, `node_modules`, and docs out of the image                                      |
-| `astro.config.mjs` | Picks `@astrojs/node` (standalone) when `ADAPTER=node`, otherwise the Vercel adapter                 |
-| `package.json`     | `@astrojs/node` dependency and the `build:container` script (`ADAPTER=node astro build`)             |
+| File               | Purpose                                                                                                          |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `Dockerfile.datum` | Two-stage build on `node:22.23.4-trixie-slim`; runs `node ./dist/server/entry.mjs` on port `4321` with `HOST=::` |
+| `.dockerignore`    | Keeps `.env`, `.git`, `node_modules`, and docs out of the image                                                  |
+| `astro.config.mjs` | Picks `@astrojs/node` (standalone) when `ADAPTER=node`, otherwise the Vercel adapter                             |
+| `package.json`     | `@astrojs/node` dependency and the `build:container` script (`ADAPTER=node astro build`)                         |
 
 Check whether they are on `main` yet. If they are not, work on a branch from an
 up-to-date `main` and add them:
