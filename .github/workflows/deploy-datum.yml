@@ -76,7 +76,7 @@ jobs:
     env:
       DATUM_PROJECT: ${{ inputs.project || vars.DATUM_PROJECT || 'project-z6vm2' }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Install datumctl
         run: |
