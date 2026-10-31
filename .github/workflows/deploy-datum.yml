@@ -2,8 +2,8 @@ name: Deploy Datum Compute
 
 # Runs after each release (called from release-please.yml, or on any stable
 # release published by hand) and by hand. It builds a container image from
-# Dockerfile.datum and rolls it out to Datum Compute on the general-purpose runtime (the unikernel
-# runtime was unstable on project-z6vm2, see
+# Dockerfile.datum and rolls it out to Datum Compute on the general-purpose
+# runtime (the unikernel runtime was unstable on project-z6vm2, see
 # docs/datum-compute-z6vm2-investigation.md).
 on:
   release:
