@@ -1,4 +1,4 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
 /**
  * Purge the Strapi cache owned by a running site process.
@@ -7,9 +7,9 @@
  * process rather than constructing a second CacheManager (which would miss).
  *
  * Usage:
- *   bun run cache:clear
- *   bun run cache:clear -- --url http://localhost:7788
- *   bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
+ *   npm run cache:clear
+ *   npm run cache:clear -- --url http://localhost:7788
+ *   npm run cache:clear -- --url https://www.twins-in-the-loop.com --remote
  */
 
 const DEFAULT_ORIGIN = 'http://localhost:7788';
@@ -55,7 +55,7 @@ async function main(): Promise<void> {
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     console.error(
-      `Could not reach ${endpoint}. Start the site first (bun run dev), then retry.\n${reason}`,
+      `Could not reach ${endpoint}. Start the site first (npm run dev), then retry.\n${reason}`,
     );
     process.exit(1);
   }

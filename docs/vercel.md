@@ -6,22 +6,22 @@ Production is `www.twins-in-the-loop.com`. Preview deployments are staging: site
 
 > **Vercel is the only host.** GitHub Pages staging has been removed — Pages is static-only and cannot run the SSR routes or the webhook endpoint. Use Vercel Preview URLs for staging.
 
-Local `bun run build` commands live in the [README](../README.md#build). Copy [`.env.example`](../.env.example) for local overrides.
+Local `npm run build` commands live in the [README](../README.md#build). Copy [`.env.example`](../.env.example) for local overrides.
 
 ## One-time project setup
 
 1. Sign in at [vercel.com](https://vercel.com) with the GitHub account that can access this repo.
 2. **Add New… → Project** and import `twins-in-the-loop`.
 3. Confirm Vercel detected **Astro**. If not, set **Framework Preset** to Astro.
-4. Confirm these build settings (Vercel usually infers them from `bun.lock` and `package.json`):
+4. Confirm these build settings (Vercel usually infers them from `package-lock.json` and `package.json`):
 
    | Setting          | Value           |
    | ---------------- | --------------- |
    | Root Directory   | `.` (repo root) |
-   | Install Command  | `bun install`   |
-   | Build Command    | `bun run build` |
+   | Install Command  | `npm install`   |
+   | Build Command    | `npm run build` |
    | Output Directory | _(leave empty)_ |
-   | Node.js Version  | `22.x`          |
+   | Node.js Version  | `26.x`          |
 
    Leave **Output Directory** empty. `@astrojs/vercel` emits Build Output API v3 into `.vercel/output`, which Vercel detects automatically. Setting it to `dist` will break the deploy.
 
@@ -91,15 +91,15 @@ Use this when a published edit is still missing after the webhook should have ru
 
 HTML already stored at the edge can stay stale for up to about 4 minutes: fresh for 60 seconds (`s-maxage`), then stale for 3 minutes (`stale-while-revalidate`) while a background request refreshes it. To check the origin without waiting, open the page with a one-off query string such as `?check=1`.
 
-`bun run dev` must already be running for a local purge. The cache lives in that process, so the script POSTs it instead of building a second cache.
+`npm run dev` must already be running for a local purge. The cache lives in that process, so the script POSTs it instead of building a second cache.
 
 ### Local
 
 Dev skips the secret check. The default URL is `http://localhost:7788`.
 
 ```bash
-bun run cache:clear
-bun run cache:clear -- --url http://localhost:7788
+npm run cache:clear
+npm run cache:clear -- --url http://localhost:7788
 ```
 
 ### Production
@@ -107,7 +107,7 @@ bun run cache:clear -- --url http://localhost:7788
 `--remote` is required for any host that is not localhost. Without it the script refuses to send `STRAPI_WEBHOOK_SECRET`. The value must match the Vercel environment variable, the same secret the webhook uses.
 
 ```bash
-bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
+npm run cache:clear -- --url https://www.twins-in-the-loop.com --remote
 ```
 
 The same call without the script:
@@ -139,11 +139,11 @@ Until the custom domain is attached, Production still works on `*.vercel.app`. U
 From the repo root, with [Vercel CLI](https://vercel.com/docs/cli) logged in:
 
 ```bash
-bunx vercel login
-bunx vercel link
-bunx vercel env pull .env.local
-bunx vercel          # preview
-bunx vercel --prod   # production
+npx vercel login
+npx vercel link
+npx vercel env pull .env.local
+npx vercel          # preview
+npx vercel --prod   # production
 ```
 
 Do not commit `.vercel/` if your team prefers dashboard-only linking; `.env.local` is gitignored.
@@ -189,7 +189,7 @@ Release Please (`.github/workflows/release-please.yml`) cuts GitHub Releases wit
 
 2. Leave **Preview** deploys enabled for branches and pull requests (A and B already do this).
 3. Create `VERCEL_TOKEN` on the [Account Tokens](https://vercel.com/account/tokens) page (personal account, not the team switcher). Scope it to the team, then the `twins-in-the-loop` project. Copy the value once (`vcp_…`); Vercel will not show it again.
-4. Copy **Team ID** and **Project ID** from the dashboard (or from `.vercel/project.json` after `bunx vercel link`):
+4. Copy **Team ID** and **Project ID** from the dashboard (or from `.vercel/project.json` after `npx vercel link`):
 
    | GitHub secret       | Vercel name | Where to copy                                                                                                                       |
    | ------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- |
@@ -239,16 +239,16 @@ CSS 404s or missing `/about` usually mean **Output Directory** was set instead o
 
 ## Install failures (`lefthook`)
 
-`package.json` `prepare` runs `lefthook install`. If `bun install` fails on Vercel because git hooks cannot be installed, set **Install Command** to:
+`package.json` `prepare` runs `lefthook install`. If `npm install` fails on Vercel because git hooks cannot be installed, set **Install Command** to:
 
 ```bash
-bun install --frozen-lockfile
+npm ci
 ```
 
 If it still fails, use:
 
 ```bash
-bun install --frozen-lockfile --ignore-scripts
+npm ci --ignore-scripts
 ```
 
 Only use `--ignore-scripts` if the default install cannot complete. This project allows `esbuild` scripts in `package.json`; skipping all scripts can break native deps.

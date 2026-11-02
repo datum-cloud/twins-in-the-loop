@@ -16,12 +16,12 @@ Guides for editing Twins in the Loop without changing layout code.
 After edits, preview locally:
 
 ```bash
-bun run dev
+npm run dev
 ```
 
 Then confirm with:
 
 ```bash
-bun run check
-bun run build
+npm run check
+npm run build
 ```

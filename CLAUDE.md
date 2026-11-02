@@ -1,14 +1,14 @@
 # Twins in the Loop
 
-Astro 7 + Tailwind 4 editorial site. Package manager is Bun.
+Astro 7 + Tailwind 4 editorial site. Package manager is npm.
 
 ## Commands
 
-- `bun run dev`
-- `bun run test`
-- `bun run lint`
-- `bun run check`
-- `bun run build`
+- `npm run dev`
+- `npm run test`
+- `npm run lint`
+- `npm run check`
+- `npm run build`
 
 ## Conventions
 

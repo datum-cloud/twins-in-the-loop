@@ -8,7 +8,7 @@ export default [
       '.astro/**',
       '.vercel/**',
       'node_modules/**',
-      'bun.lock',
+      'package-lock.json',
     ],
   },
   ...tseslint.configs.recommended,
