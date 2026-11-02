@@ -99,9 +99,9 @@ Both worth a conscious decision rather than treating as oversights:
 ## Verifying a change
 
 ```bash
-bun run lint && bun run check && bun run test
+npm run lint && npm run check && npm run test
 # must pass with Strapi env unset — no route may reach the CMS at build time
-env -u STRAPI_URL -u STRAPI_TOKEN -u STRAPI_WEBHOOK_SECRET bun run build
+env -u STRAPI_URL -u STRAPI_TOKEN -u STRAPI_WEBHOOK_SECRET npm run build
 ```
 
 Webhook, in order — the last one is what proves the tag map:

@@ -221,8 +221,8 @@ Source pack lives in `src/assets/favicons/`. Only those three public files are w
 
 ## Verify after an SEO change
 
-1. `bun run dev` and View Source on the page.
+1. `npm run dev` and View Source on the page.
 2. Confirm `<title>`, `meta name="description"`, `og:image`, `link rel="canonical"`.
 3. Open `/rss.xml` if you changed post titles or descriptions.
-4. `bun run build` and check `dist/` for the same tags.
+4. `npm run build` and check `dist/` for the same tags.
 5. After deploy, paste the live URL into a social debugger.

@@ -7,21 +7,21 @@ Editorial website for Datum co-founders Zac and Jacob Smith.
 - Astro 7
 - Tailwind CSS 4
 - MDX content collections
-- Bun
+- npm, on Node 26
 
 ## Develop
 
 ```bash
-bun install
+npm install
 cp .env.example .env
-bun run dev
+npm run dev
 ```
 
 `.env` is gitignored. `.env.example` lists the build-time variables.
 
 ## Build
 
-`bun run build` is the same command for both environments. The difference is the env at build time.
+`npm run build` is the same command for both environments. The difference is the env at build time.
 
 | Variable          | Production                               | Staging                                                               |
 | ----------------- | ---------------------------------------- | --------------------------------------------------------------------- |
@@ -33,13 +33,13 @@ bun run dev
 Production (live domain):
 
 ```bash
-PUBLIC_SITE_ENV=production SITE=https://www.twins-in-the-loop.com BASE_PATH=/ bun run build
+PUBLIC_SITE_ENV=production SITE=https://www.twins-in-the-loop.com BASE_PATH=/ npm run build
 ```
 
 Staging (noindex — useful to inspect robots tags):
 
 ```bash
-PUBLIC_SITE_ENV=staging SITE=https://www.twins-in-the-loop.com BASE_PATH=/ bun run build
+PUBLIC_SITE_ENV=staging SITE=https://www.twins-in-the-loop.com BASE_PATH=/ npm run build
 ```
 
 Or copy `.env.example` to `.env`. [`.github/workflows/ci.yml`](./.github/workflows/ci.yml) runs a production-shaped check; [`.github/workflows/deploy-vercel.yml`](./.github/workflows/deploy-vercel.yml) ships production on a release tag. Staging is a Vercel Preview URL — see [docs/vercel.md](./docs/vercel.md).
@@ -60,11 +60,11 @@ In Strapi Admin → **Settings → Webhooks → Create new webhook**:
 
 The secret must match `STRAPI_WEBHOOK_SECRET` on Vercel (and in `.env` locally). A successful call returns `{"ok":true,"tags":["twins-posts", ...]}` — the tag must be the plural `twins-posts`. If the secret is unset, the endpoint returns **503**.
 
-Strapi Cloud cannot reach `localhost`. To drop the runtime cache by hand, with `bun run dev` already running for a local purge:
+Strapi Cloud cannot reach `localhost`. To drop the runtime cache by hand, with `npm run dev` already running for a local purge:
 
 ```bash
-bun run cache:clear
-bun run cache:clear -- --url https://www.twins-in-the-loop.com --remote
+npm run cache:clear
+npm run cache:clear -- --url https://www.twins-in-the-loop.com --remote
 ```
 
 Details: [docs/vercel.md](./docs/vercel.md#manual-cache-purge).
@@ -72,10 +72,10 @@ Details: [docs/vercel.md](./docs/vercel.md#manual-cache-purge).
 ## Checks
 
 ```bash
-bun run lint
-bun run check
-bun run test
-bun run build
+npm run lint
+npm run check
+npm run test
+npm run build
 ```
 
 Blog posts come from Strapi — see [docs/strapi.md](./docs/strapi.md). Other page copy lives in `src/content` and should be edited there, not in Astro layouts. (`src/content/posts/` is kept as reference only; no route reads it.)

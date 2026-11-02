@@ -3,20 +3,18 @@
 # push it with `datumctl compute build` instead: a plain image cannot boot there
 # (see docs/datum-compute-walkthrough.md).
 
-# Astro needs a real Node >=22.12; Bun's Node shim reports an older version.
 FROM node:26.13.0-trixie-slim AS build
-COPY --from=oven/bun:1.2.16 /usr/local/bin/bun /usr/local/bin/bun
 WORKDIR /app
 # Inlined by Astro at build time, so they are build args rather than runtime env.
 ARG PUBLIC_SITE_ENV=staging
 ARG SITE=https://www.twins-in-the-loop.com
 ARG BASE_PATH=/
 ENV PUBLIC_SITE_ENV=$PUBLIC_SITE_ENV SITE=$SITE BASE_PATH=$BASE_PATH
-COPY package.json bun.lock ./
+COPY package.json package-lock.json ./
 # The `prepare` script runs `lefthook install`, which fails without a .git dir.
-RUN bun install --frozen-lockfile --ignore-scripts
+RUN npm ci --ignore-scripts
 COPY . .
-RUN bun run build:container
+RUN npm run build:container
 
 FROM node:26.13.0-trixie-slim AS runtime
 LABEL org.opencontainers.image.source=https://github.com/datum-cloud/twins-in-the-loop

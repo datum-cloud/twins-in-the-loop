@@ -12,7 +12,7 @@
 
 > `src/content/posts/*.mdx` is kept as **reference only**. No route reads it — editing those files changes nothing on the site.
 
-Allowed field values for the MDX collections are enforced in `src/content.config.ts`. Invalid frontmatter fails `bun run check` and `bun run build`.
+Allowed field values for the MDX collections are enforced in `src/content.config.ts`. Invalid frontmatter fails `npm run check` and `npm run build`.
 
 ## Add a blog post
 
@@ -76,7 +76,7 @@ Written posts can omit `embedUrl` and `og`. Video and podcast entries should set
 | `type`        | Yes                                         | `post`, `musing`, `video`, or `podcast`. Sets the icon on cards                                                                                                                                                     |
 | `topics`      | Yes                                         | One or more of `ai`, `data-centers`, `infrastructure`, `hardware`. Powers homepage topic chips                                                                                                                      |
 | `featured`    | No                                          | Stored on the post. Homepage shows every published post as a thumbnail card, newest first                                                                                                                           |
-| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `bun run dev`                                                                                                                   |
+| `draft`       | No                                          | Default `false`. `true` hides the post from production builds. Drafts still show in `npm run dev`                                                                                                                   |
 | `cover`       | No                                          | Homepage card image and podcast episode art. Not shown on the article page. Share image is the framed `/og/{slug}.jpg` unless `og.image` is set. Posts without a cover use `/images/og-news.jpg`                    |
 | `tldr`        | No                                          | Sidebar TL;DR on the article page. Falls back to `description`                                                                                                                                                      |
 | `embedUrl`    | No                                          | Video/podcast URL (`https://…`). Required in practice for `type: video` or `podcast`. Rendered as a player — see [Video and podcast players](#video-and-podcast-players)                                            |
@@ -241,8 +241,8 @@ These need a developer change (schema + UI):
 
 ## Preview checklist
 
-1. `bun run dev` and open the URL.
+1. `npm run dev` and open the URL.
 2. Homepage: card vs list, topic chip, author filter.
 3. Article: hero, TL;DR, body, related list, share buttons.
 4. About: heading, intro, both author cards.
-5. `bun run check` and `bun run build` before you commit.
+5. `npm run check` and `npm run build` before you commit.
